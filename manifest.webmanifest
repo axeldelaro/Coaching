@@ -1,0 +1,17 @@
+{
+  "name": "RECOMP — Coach recomposition",
+  "short_name": "RECOMP",
+  "description": "Coach d'entraînement et de nutrition : programme modulable, courses, carnet, rappels.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4F7F5",
+  "theme_color": "#0E8A5F",
+  "lang": "fr",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
