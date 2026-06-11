@@ -1,82 +1,87 @@
-# RECOMP — Coach entraînement & nutrition (PWA)
+# RECOMP — « LE SYSTÈME »
 
-Application web installable (Android/iOS/desktop) : programme d'entraînement modulable, suivi de séances avec RPE et minuteur de repos, nutrition avec recettes et liste de courses auto-générée, coach scripté qui s'adapte à tes données, carnet avec graphiques, rappels.
+Application web installable (PWA) de recomposition corporelle, transformée en **véritable jeu de progression** inspiré de l'interface de *Solo Leveling* : fenêtres « Système » translucides et lumineuses, montées de niveau, points d'aptitude à répartir, rangs de Chasseur, PV/PM, classe qui évolue selon ton style d'entraînement.
 
-- **100 % gratuit** : hébergement GitHub Pages + Supabase (offre gratuite).
-- **Multi-comptes** : chaque utilisateur (toi + tes amis) a son compte, son anamnèse, son programme adapté.
-- **Hors-ligne** : l'app fonctionne sans réseau ; les données se synchronisent au retour de la connexion.
-- **Sécurité** : données chiffrées au repos (AES-256) côté Supabase, isolation par compte via Row Level Security.
+100 % hors-ligne, personnalisable, et liée à tes exercices réels.
 
 ---
 
-## 1 · Créer la base Supabase (5 min)
+## Le jeu de progression
 
-1. Crée un compte gratuit sur [supabase.com](https://supabase.com) → **New project** (choisis une région UE).
-2. Dans le projet : **SQL Editor** → colle le contenu de `supabase/schema.sql` → **Run**. Cela crée les tables `profiles` et `logs` avec les règles de sécurité.
-3. **Authentication → Providers → Email** : vérifie que Email est activé.
-   - Optionnel : désactive « Confirm email » pour que tes amis puissent se connecter sans clic de confirmation.
-4. **Project Settings → API** : copie **Project URL** et **anon public key**.
-5. Ouvre `js/config.js` et colle les deux valeurs.
+Tout ce que tu fais réellement nourrit ta fiche de Chasseur :
 
-> La clé « anon » est publique par conception : la sécurité repose sur les policies RLS du schéma (chaque utilisateur ne peut lire/écrire que ses propres lignes), pas sur le secret de la clé.
-
-**Sans configuration**, l'app démarre en *mode local* : tout fonctionne mais les données restent sur l'appareil (pratique pour tester).
-
-## 2 · Déployer sur GitHub Pages (5 min)
-
-1. Crée un dépôt GitHub (public) et pousse tout le contenu de ce dossier à la racine.
-2. **Settings → Pages → Source : Deploy from a branch** → branche `main`, dossier `/ (root)` → **Save**.
-3. Ton app est en ligne sous `https://ton-pseudo.github.io/ton-repo/` après ~1 minute.
-
-Le routage utilise des ancres (`#/...`) : aucune configuration serveur nécessaire, pas de 404.
-
-## 3 · Installer sur Android
-
-1. Ouvre l'URL dans **Chrome**.
-2. Menu ⋮ → **Ajouter à l'écran d'accueil** (ou bannière « Installer l'application »).
-3. L'app s'ouvre en plein écran, fonctionne hors-ligne, et apparaît comme une app native.
-
-## Partager avec des amis
-
-Envoie-leur simplement l'URL. Chacun crée son compte ; l'anamnèse (blessures, matériel, allergies, objectif) génère un programme et des cibles caloriques personnalisés. Les données sont strictement isolées par compte.
-
----
-
-## Fonctionnalités
-
-| Onglet | Contenu |
+| Élément | Comment ça monte |
 |---|---|
-| **Accueil** | Anneau de progression hebdo, kcal du jour, séance suivante, conseil prioritaire du coach, tip du jour |
-| **Entraîner** | Programme modulable (variantes ↔, séries −/+), lecteur de séance avec saisie kg/reps/RPE, minuteur de repos (vibration + notification), brouillon auto-sauvegardé |
-| **Repas** | Cibles Mifflin-St Jeor, barres de macros en temps réel, 10 recettes filtrées selon allergies, fiches recettes |
-| **Courses** | Menu de la semaine → liste agrégée par rayon, cases à cocher persistantes |
-| **Coach** | Conseils quotidiens priorisés (pause, RPE, sommeil, tendance de poids, régularité), chat à réponses rapides, adaptation automatique de la séance du jour |
-| **Carnet** | Poids/sommeil/énergie/notes quotidiens, graphique poids 30 j, séances/semaine vs objectif, historique des séances |
-| **Réglages** | Rappels (séance, pesée, hydratation), cibles éditables, refaire l'anamnèse, export JSON complet, déconnexion |
+| **XP / Niveau** | +120 par donjon (séance), +6 par série, +80 par record, +30 par carnet, +20 par jour de repas loggé |
+| **Rang de Chasseur** | E → D (niv 5) → C (niv 10) → B (niv 15) → A (niv 20) → S (niv 25) |
+| **5 statistiques** | FORCE, AGILITÉ, VITALITÉ, INTELLIGENCE, PERCEPTION — **dérivées de ton activité réelle** |
+| **Points d'aptitude** | 3 points libres à chaque niveau, à répartir manuellement dans tes stats |
+| **PV / PM / Endurance** | calculés depuis VITALITÉ et INTELLIGENCE |
+| **Classe** | évolue selon ta stat dominante : Combattant→Berserker→Monarque de Fer, Rôdeur→Assassin→Monarque des Ombres, etc. |
+| **Compétences** | 10 compétences débloquées par paliers (niveau, série, records, volume) |
+| **Duel d'Ombre** | toi (cette semaine) vs ton ombre (toi il y a 7 jours) |
 
-## Limites connues (offre 100 % gratuite)
+Les stats sont liées au **type** d'exercice : le volume en force nourrit la FORCE, le cardio et les répétitions l'AGILITÉ, la régularité la VITALITÉ, le carnet/les repas l'INTELLIGENCE, le suivi du RPE et la série la PERCEPTION.
 
-- **Rappels** : notifications locales uniquement (pas de serveur push). Elles se déclenchent si l'app est ouverte ou récemment ouverte en arrière-plan ; Android peut les retarder sur certaines surcouches agressives (Xiaomi, etc.).
-- **Supabase free tier** : le projet se met en pause après ~1 semaine sans requête — il redémarre automatiquement à la prochaine connexion (quelques secondes de latence).
-- **iOS** : installation possible via Safari → Partager → « Sur l'écran d'accueil » ; les notifications web y sont plus restreintes qu'Android.
+> **Bien-être d'abord.** Le programme intègre des jours de repos (2 à 4 donjons/semaine). Les quêtes ratées ne « punissent » rien de réel — un jour off est explicitement normal et fait partie de la progression.
 
-## Pistes d'évolution
+---
 
-- Chiffrement côté client (WebCrypto) des notes du carnet avant envoi à Supabase.
-- Notifications push serveur via Supabase Edge Functions + FCM.
-- Partage de programmes entre amis (table `programs` publique en lecture).
+## Les 5 fenêtres (navigation par gestes, sans barre d'icônes)
 
-## Structure
+On glisse horizontalement entre les panneaux ; le bandeau du haut suit.
+
+1. **STATUT** — la fenêtre iconique : rang, niveau, classe, PV/PM, les 5 stats avec boutons `[+]` d'allocation, quête journalière (« entrer dans le donjon ») et hebdomadaire.
+2. **DONJON** — ton programme (les « portails »), édition des séries, substitution de compétences, et le grimoire complet de **67 exercices**.
+3. **RATION** — nutrition : générateur de journée selon tes cibles, recettes (micros/coût/batch), liste de réapprovisionnement par rayon.
+4. **SYSTÈME** — le coach scripté hors-ligne : conseils du jour corrélés à ton sommeil/RPE, analyse hebdo, et réponses à tes questions (base de 52 fiches).
+5. **ARCHIVES** — duel d'ombre, carnet (poids/sommeil/énergie), courbes 30 jours, records (1RM Epley), titres et compétences débloqués.
+
+---
+
+## Personnalisation (réglages)
+
+- **Couleur du Système** : 6 presets (Cyan Système, Bleu Mana, Violet Monarque, Or Rang S, Vert Portail, Magenta Ombre) + **couleur libre** (sélecteur natif). Le glow de toute l'interface s'adapte.
+- **Taille du texte** : 14 → 20 px.
+- **Thème** : Nuit (par défaut), Papier (clair), ou Auto (suit le système).
+- **Matériel** : 12 options (haltères, barre de traction, chaise romaine, banc, élastiques, kettlebell, anneaux, barre+disques, roue abdominale, corde, step, poids du corps).
+- **Exclusions alimentaires** : 15 (œufs, oignons/ail, lactose, gluten, poisson, viande rouge, volaille, légumineuses, fruits à coque, soja, sucre, alcool, caféine, porc, vegan).
+- **Cibles nutrition** éditables, **rappels** locaux, **export JSON**.
+
+Le programme se régénère automatiquement selon ton matériel et tes blessures (la contrainte clavicule remplace tout développé standard par des variantes adaptées : développé épaules → pompes pike, dips → pompes surélevées).
+
+---
+
+## Structure des fichiers
 
 ```
-index.html              Shell de l'app
-css/style.css           Design system (thème clair « clinique athlétique »)
-js/config.js            ⚠️ À remplir : URL + clé anon Supabase
-js/data.js              Programme par défaut, variantes, recettes, tips
-js/coach.js             Moteur de règles du coach
-js/app.js               Routeur, vues, couche données, rappels
-sw.js                   Service worker (hors-ligne)
-manifest.webmanifest    Manifest PWA
-icons/                  Icônes 192/512 + maskable
-supabase/schema.sql     Schéma + Row Level Security
+recomp/
+├── index.html              Shell + anti-flash thème + polices Système
+├── manifest.webmanifest     PWA (sombre #04060E)
+├── sw.js                    Service worker (cache recomp-v4, hors-ligne)
+├── css/
+│   └── style.css            Interface « Système » : fenêtres lumineuses, coins angulaires
+├── js/
+│   ├── config.js            Clés Supabase (mode LOCAL auto si absentes)
+│   ├── exercises.js         67 exercices détaillés (technique, erreurs, régressions)
+│   ├── knowledge.js         52 fiches de connaissance (coach)
+│   ├── data.js              Programme, 25 recettes, badges, tips, catalogues matériel/exclusions/couleurs
+│   ├── coach.js             Moteur du coach scripté (signaux, conseils, analyse, Q/R)
+│   ├── rpg.js               Moteur de jeu : XP, niveaux, rangs, stats, points, PV/PM, classe, compétences, duel
+│   └── app.js               Application (données, rendu, hors-ligne, charts)
+├── icons/                   Portail lumineux (192, 512, maskable)
+└── supabase/
+    └── schema.sql           Schéma multi-comptes (profiles + logs, RLS)
 ```
+
+## Polices
+
+Orbitron (affichage/chiffres), Rajdhani (texte), Share Tech Mono (terminal « [ SYSTÈME ] »).
+
+## Installation
+
+1. Héberger le dossier (GitHub Pages, Netlify, ou tout serveur statique).
+2. Ouvrir sur mobile → « Ajouter à l'écran d'accueil ».
+3. **Mode LOCAL** par défaut (données sur l'appareil). Pour le multi-appareils : créer un projet Supabase gratuit, exécuter `supabase/schema.sql`, renseigner l'URL + clé anon dans `js/config.js`.
+
+Aucune dépendance, aucun build. Fonctionne entièrement hors-ligne après la première visite.

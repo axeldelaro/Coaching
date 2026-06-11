@@ -1,17 +1,18 @@
 {
-  "name": "RECOMP — Coach recomposition",
+  "name": "RECOMP — Le Système",
   "short_name": "RECOMP",
-  "description": "Coach d'entraînement et de nutrition : programme modulable, courses, carnet, rappels.",
-  "start_url": "./index.html",
+  "description": "Un vrai jeu de progression lié à tes entraînements. Monte en niveau, répartis tes points, domine ton ombre.",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#F4F7F5",
-  "theme_color": "#0E8A5F",
+  "background_color": "#04060E",
+  "theme_color": "#04060E",
+  "categories": ["health", "fitness", "lifestyle"],
   "lang": "fr",
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

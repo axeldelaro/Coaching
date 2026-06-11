@@ -1,108 +1,192 @@
 // ============================================================
-// RECOMP — Données embarquées
-// Programme par défaut (modulable), recettes, tips du jour
+// RECOMP — Données : programme, recettes, badges, tips
+// (la bibliothèque d'exercices vit dans exercises.js,
+//  la base de connaissances du coach dans knowledge.js)
 // ============================================================
 
-// --- Programme par défaut --------------------------------------------------
-// Conçu pour : haltères 2×16 kg + chaise romaine + barre de traction.
-// Adapté automatiquement à l'anamnèse (blessures, matériel) lors de l'onboarding.
+// --- Programme par défaut ----------------------------------------------------
+// Chaque exercice référence un id de la bibliothèque (EXLIB) + sa prescription.
 window.DEFAULT_PROGRAM = {
   name: 'Recomposition 4 semaines',
   weeks: 4,
-  note: "Surcharge progressive : +1 rép par série chaque semaine à RPE constant, puis +charge quand le haut de fourchette est atteint.",
+  note: "Surcharge progressive : +1 rép par série à RPE constant chaque semaine, puis +charge quand le haut de fourchette est atteint.",
   sessions: [
     {
-      id: 'A',
-      name: 'Séance A — Bas du corps & abdos',
+      id: 'A', name: 'Séance A', sub: 'Bas du corps & abdos', emoji: '🦵',
       exercises: [
-        { id: 'a1', name: 'Goblet squat (haltère 16 kg)', sets: 4, reps: '10–12', tempo: '3010', rest: 90, rpe: '7–8',
-          cue: "Haltère vertical contre le sternum, coudes sous la charge. Descente 3 s, talons ancrés, genoux dans l'axe des orteils." },
-        { id: 'a2', name: 'Fentes arrière alternées (2×16 kg)', sets: 3, reps: '10/jambe', tempo: '2010', rest: 90, rpe: '7',
-          cue: "Pas arrière contrôlé, tibia avant vertical, bassin neutre. Poussée talon avant." },
-        { id: 'a3', name: 'Soulevé de terre roumain haltères', sets: 4, reps: '10', tempo: '3110', rest: 90, rpe: '7–8',
-          cue: "Hanches en arrière, dos neutre, haltères au contact des cuisses. Étirement ischio net, pause 1 s en bas." },
-        { id: 'a4', name: 'Extensions lombaires (chaise romaine)', sets: 3, reps: '12–15', tempo: '2012', rest: 60, rpe: '7',
-          cue: "Amplitude contrôlée, pause 2 s en haut SANS hyperextension. Gainage abdominal constant." },
-        { id: 'a5', name: 'Relevés de jambes (chaise romaine)', sets: 3, reps: '12–15', tempo: '2011', rest: 60, rpe: '7–8',
-          cue: "Rétroversion du bassin en fin de montée : ce sont les abdos qui enroulent, pas les fléchisseurs de hanche seuls." },
-        { id: 'a6', name: 'Mollets debout (haltères)', sets: 4, reps: '15–20', tempo: '2011', rest: 45, rpe: '8',
-          cue: "Amplitude complète : étirement bas 1 s, contraction haute 1 s. Sur une marche si possible." }
+        { exo: 'goblet-squat',   sets: 4, reps: '10–12',   tempo: '3010', rest: 90,  rpe: '7–8' },
+        { exo: 'rear-lunge',     sets: 3, reps: '10/jambe', tempo: '2010', rest: 90,  rpe: '7'   },
+        { exo: 'romanian-dl',    sets: 4, reps: '10',      tempo: '3110', rest: 90,  rpe: '7–8' },
+        { exo: 'back-ext',       sets: 3, reps: '12–15',   tempo: '2012', rest: 60,  rpe: '7'   },
+        { exo: 'leg-raise',      sets: 3, reps: '12–15',   tempo: '2011', rest: 60,  rpe: '7–8' },
+        { exo: 'calf-raise',     sets: 4, reps: '15–20',   tempo: '2011', rest: 45,  rpe: '8'   }
       ]
     },
     {
-      id: 'B',
-      name: 'Séance B — Haut du corps & dos',
+      id: 'B', name: 'Séance B', sub: 'Haut du corps & dos', emoji: '💪',
       exercises: [
-        { id: 'b1', name: 'Tractions (prise neutre ou pronation)', sets: 4, reps: 'max 6–10', tempo: '2011', rest: 120, rpe: '8',
-          cue: "Départ bras tendus, omoplates basses. Tire les coudes vers les hanches. Si <5 reps : négatives lentes 5 s." },
-        { id: 'b2', name: 'Rowing unilatéral haltère 16 kg', sets: 4, reps: '10–12/bras', tempo: '2011', rest: 90, rpe: '7–8',
-          cue: "Appui main/genou sur banc ou chaise, dos plat. Coude le long du corps, contraction omoplate 1 s." },
-        { id: 'b3', name: 'Dips — PROTOCOLE CONDITIONNEL', sets: 3, reps: '8–10', tempo: '2010', rest: 90, rpe: '6–7', flag: 'clavicule',
-          cue: "⚠️ Clavicule : buste quasi vertical, amplitude PARTIELLE (coudes à 90° max), descente contrôlée. Au MOINDRE inconfort articulaire → remplacer immédiatement par pompes surélevées (mains sur table)." },
-        { id: 'b4', name: 'Curl haltères alterné', sets: 3, reps: '10–12', tempo: '2011', rest: 60, rpe: '8',
-          cue: "Coudes fixes contre le buste, supination complète en haut, descente contrôlée 2 s." },
-        { id: 'b5', name: 'Shrugs haltères (2×16 kg)', sets: 3, reps: '12–15', tempo: '2011', rest: 60, rpe: '7',
-          cue: "Hausse verticale des épaules, pause 1 s en haut. Pas de rotation : montée/descente pure." },
-        { id: 'b6', name: 'Planche (gainage)', sets: 3, reps: '45–60 s', tempo: '—', rest: 60, rpe: '7',
-          cue: "Bassin rétroversé, fessiers serrés, respiration continue. Stop dès que le bassin tombe." }
+        { exo: 'pullup-neutral', sets: 4, reps: 'max 6–10', tempo: '2011', rest: 120, rpe: '8'   },
+        { exo: 'db-row',         sets: 4, reps: '10–12/bras', tempo: '2011', rest: 90, rpe: '7–8' },
+        { exo: 'dips-partial',   sets: 3, reps: '8–10',    tempo: '2010', rest: 90,  rpe: '6–7' },
+        { exo: 'db-curl',        sets: 3, reps: '10–12',   tempo: '2011', rest: 60,  rpe: '8'   },
+        { exo: 'shrugs',         sets: 3, reps: '12–15',   tempo: '2011', rest: 60,  rpe: '7'   },
+        { exo: 'plank',          sets: 3, reps: '45–60 s', tempo: '—',    rest: 60,  rpe: '7'   }
       ]
     }
   ]
 };
 
-// Variantes de remplacement proposées dans l'éditeur de programme
-window.EXERCISE_SWAPS = {
-  a1: ['Squat bulgare (haltère 16 kg)', 'Squat sumo haltère', 'Box squat poids du corps'],
-  a2: ['Fentes marchées', 'Step-up sur chaise (haltères)', 'Squat bulgare'],
-  a3: ['SDT roumain unilatéral', 'Good morning haltère', 'Hip thrust haltère sur banc'],
-  a4: ['Superman au sol', 'Hip hinge poids du corps'],
-  a5: ['Crunch lesté (haltère)', 'Planche latérale', 'Dead bug'],
-  a6: ['Mollets unilatéral sur marche', 'Mollets assis haltère sur genou'],
-  b1: ['Négatives lentes 5 s', 'Rowing inversé sous table', 'Tractions assistées (pied sur chaise)'],
-  b2: ['Rowing buste penché 2 haltères', 'Rowing inversé sous table'],
-  b3: ['Pompes surélevées (mains sur table)', 'Pompes genoux', 'Planche dynamique'],
-  b4: ['Curl marteau', 'Curl concentré', 'Curl prise serrée 1 haltère'],
-  b5: ['Tirage horizontal serviette', 'Y-raise au sol (léger)'],
-  b6: ['Planche latérale', 'Hollow hold', 'Dead bug']
-};
-
-// --- Recettes (sans œufs, sans oignons par défaut) --------------------------
-// Macros approximatives par portion, sources type CIQUAL.
-// ing: [nom, quantité en g (ou ml), rayon de courses]
+// --- Recettes ------------------------------------------------------------------
+// Toutes sans œufs ni oignons. micros = points forts micronutritionnels.
+// cost = €/portion approximatif · time = minutes · batch = adapté au batch cooking
 window.RECIPES = [
-  { id: 'r1', name: 'Poulet, riz & brocoli', meal: 'déjeuner', kcal: 520, p: 45, c: 55, f: 11,
-    ing: [['Filet de poulet', 150, 'Boucherie'], ['Riz basmati (cru)', 70, 'Épicerie'], ['Brocoli', 200, 'Légumes'], ["Huile d'olive", 10, 'Épicerie']],
-    steps: "Cuire le riz. Saisir le poulet en dés 6–8 min. Brocoli vapeur 5 min. Assembler, huile d'olive en finition, sel/paprika." },
-  { id: 'r2', name: 'Bœuf 5%, patate douce & haricots verts', meal: 'dîner', kcal: 540, p: 42, c: 50, f: 14,
-    ing: [['Steak haché 5%', 150, 'Boucherie'], ['Patate douce', 250, 'Légumes'], ['Haricots verts', 200, 'Légumes'], ["Huile d'olive", 8, 'Épicerie']],
-    steps: "Patate douce en cubes au four 25 min (200 °C). Steak à la poêle. Haricots vapeur 8 min. Sel, poivre, cumin." },
-  { id: 'r3', name: 'Bowl skyr, flocons & banane', meal: 'petit-déj', kcal: 430, p: 32, c: 55, f: 9,
+  // ---------- PETIT-DÉJ ----------
+  { id: 'r-skyr-bowl', name: 'Bowl skyr, flocons & banane', meal: 'petit-déj', kcal: 430, p: 32, c: 55, f: 9, time: 5, cost: 1.6,
+    micros: ['Calcium', 'Potassium', 'B12'],
     ing: [['Skyr nature', 250, 'Frais'], ["Flocons d'avoine", 50, 'Épicerie'], ['Banane', 120, 'Fruits'], ['Beurre de cacahuète', 10, 'Épicerie']],
-    steps: "Mélanger skyr et flocons, laisser gonfler 5 min. Banane en rondelles, beurre de cacahuète en filet." },
-  { id: 'r4', name: 'Pâtes au thon & tomate (sans oignon)', meal: 'déjeuner', kcal: 530, p: 38, c: 65, f: 11,
-    ing: [['Pâtes complètes (crues)', 80, 'Épicerie'], ['Thon au naturel', 140, 'Conserves'], ['Coulis de tomate', 200, 'Conserves'], ["Huile d'olive", 8, 'Épicerie'], ['Ail (facultatif)', 5, 'Légumes']],
-    steps: "Cuire les pâtes al dente. Chauffer le coulis avec l'ail et l'origan, ajouter le thon égoutté 2 min. Mélanger." },
-  { id: 'r5', name: 'Wrap poulet crudités', meal: 'déjeuner', kcal: 480, p: 38, c: 45, f: 15,
+    steps: "Mélange skyr et flocons, laisse gonfler 5 min. Banane en rondelles, filet de beurre de cacahuète." },
+  { id: 'r-porridge', name: 'Porridge protéiné fruits rouges', meal: 'petit-déj', kcal: 420, p: 34, c: 50, f: 8, time: 7, cost: 1.8,
+    micros: ['Fibres', 'Antioxydants', 'Manganèse'],
+    ing: [["Flocons d'avoine", 60, 'Épicerie'], ['Whey vanille', 30, 'Épicerie'], ['Fruits rouges surgelés', 100, 'Surgelés'], ['Lait demi-écrémé', 150, 'Frais']],
+    steps: "Flocons + lait 2 min au micro-ondes. Hors chauffe, incorpore la whey (sinon elle coagule). Fruits rouges réchauffés dessus." },
+  { id: 'r-overnight', name: 'Overnight oats choco-noisette', meal: 'petit-déj', kcal: 450, p: 28, c: 58, f: 12, time: 5, cost: 1.5, batch: true,
+    batchNote: "Prépare 3 bocaux d'un coup : se conserve 3 jours au frigo.",
+    micros: ['Magnésium', 'Fibres', 'Fer'],
+    ing: [["Flocons d'avoine", 60, 'Épicerie'], ['Fromage blanc 3%', 150, 'Frais'], ['Lait demi-écrémé', 100, 'Frais'], ['Cacao non sucré', 8, 'Épicerie'], ['Noisettes', 12, 'Épicerie'], ['Miel', 10, 'Épicerie']],
+    steps: "Mélange tout dans un bocal la veille. Le matin : prêt. Noisettes concassées au moment de servir." },
+  { id: 'r-galettes', name: "Galettes d'avoine à la banane (sans œuf)", meal: 'petit-déj', kcal: 390, p: 22, c: 60, f: 8, time: 12, cost: 1.2,
+    micros: ['Potassium', 'Fibres'],
+    ing: [["Flocons d'avoine", 70, 'Épicerie'], ['Banane bien mûre', 130, 'Fruits'], ['Whey vanille', 20, 'Épicerie'], ['Lait demi-écrémé', 60, 'Frais']],
+    steps: "Écrase la banane (c'est elle qui lie, pas besoin d'œuf), mélange tout. Poêle anti-adhésive feu moyen, 2 min par face." },
+  { id: 'r-smoothie', name: 'Smoothie banane-beurre de cacahuète', meal: 'petit-déj', kcal: 410, p: 30, c: 45, f: 12, time: 3, cost: 1.4,
+    micros: ['Potassium', 'Magnésium', 'B12'],
+    ing: [['Lait demi-écrémé', 250, 'Frais'], ['Banane', 100, 'Fruits'], ['Whey vanille', 30, 'Épicerie'], ['Beurre de cacahuète', 12, 'Épicerie']],
+    steps: "Tout au blender 30 s. Idéal les matins pressés ou en post-séance." },
+  // ---------- DÉJEUNER ----------
+  { id: 'r-poulet-riz', name: 'Poulet, riz & brocoli', meal: 'déjeuner', kcal: 520, p: 45, c: 55, f: 11, time: 20, cost: 2.8, batch: true,
+    batchNote: "Le classique du meal prep : cuis 600 g de poulet et 280 g de riz d'un coup = 4 boîtes.",
+    micros: ['Vitamine C', 'B6', 'Sélénium'],
+    ing: [['Filet de poulet', 150, 'Boucherie'], ['Riz basmati (cru)', 70, 'Épicerie'], ['Brocoli', 200, 'Légumes'], ["Huile d'olive", 10, 'Épicerie']],
+    steps: "Cuis le riz. Saisis le poulet en dés 6–8 min (paprika, ail en poudre). Brocoli vapeur 5 min — encore croquant pour garder la vitamine C. Huile d'olive en finition." },
+  { id: 'r-pates-thon', name: 'Pâtes au thon & tomate', meal: 'déjeuner', kcal: 530, p: 38, c: 65, f: 11, time: 15, cost: 2.2,
+    micros: ['Oméga-3', 'Lycopène', 'Iode'],
+    ing: [['Pâtes complètes (crues)', 80, 'Épicerie'], ['Thon au naturel', 140, 'Conserves'], ['Coulis de tomate', 200, 'Conserves'], ["Huile d'olive", 8, 'Épicerie'], ['Ail', 5, 'Légumes']],
+    steps: "Pâtes al dente. Chauffe le coulis avec ail et origan, ajoute le thon égoutté 2 min. Le lycopène de la tomate cuite est mieux absorbé avec un filet d'huile." },
+  { id: 'r-wrap-poulet', name: 'Wrap poulet crudités', meal: 'déjeuner', kcal: 480, p: 38, c: 45, f: 15, time: 10, cost: 2.5,
+    micros: ['Bêta-carotène', 'Fibres'],
     ing: [['Tortilla de blé', 70, 'Épicerie'], ['Filet de poulet', 120, 'Boucherie'], ['Carotte râpée', 60, 'Légumes'], ['Concombre', 60, 'Légumes'], ['Fromage blanc 3%', 40, 'Frais']],
-    steps: "Poulet grillé en lamelles. Tartiner la tortilla de fromage blanc citronné, garnir, rouler serré." },
-  { id: 'r6', name: 'Dahl de lentilles corail (sans oignon)', meal: 'dîner', kcal: 510, p: 26, c: 75, f: 10,
-    ing: [['Lentilles corail (crues)', 90, 'Épicerie'], ['Riz basmati (cru)', 50, 'Épicerie'], ['Lait de coco léger', 100, 'Conserves'], ['Tomates concassées', 150, 'Conserves'], ['Curry/curcuma', 5, 'Épicerie']],
-    steps: "Lentilles + tomates + épices + 250 ml d'eau, 15 min à feu doux. Lait de coco en fin de cuisson. Servir sur riz." },
-  { id: 'r7', name: 'Sardines, pommes de terre & courgettes', meal: 'dîner', kcal: 500, p: 34, c: 45, f: 19,
+    steps: "Poulet grillé en lamelles. Tartine la tortilla de fromage blanc citronné, garnis, roule serré. Transportable partout." },
+  { id: 'r-quinoa-bowl', name: 'Bowl quinoa, poulet & avocat', meal: 'déjeuner', kcal: 560, p: 40, c: 48, f: 20, time: 20, cost: 3.2,
+    micros: ['Folates', 'Vitamine E', 'Magnésium'],
+    ing: [['Quinoa (cru)', 70, 'Épicerie'], ['Filet de poulet', 130, 'Boucherie'], ['Avocat', 70, 'Fruits'], ['Tomates cerises', 100, 'Légumes'], ['Citron', 20, 'Fruits']],
+    steps: "Quinoa 12 min à l'eau salée. Poulet grillé. Assemble avec avocat en dés, tomates, jus de citron. Protéine complète + bons lipides." },
+  { id: 'r-salade-riz', name: 'Salade de riz thon-maïs', meal: 'déjeuner', kcal: 490, p: 32, c: 62, f: 12, time: 15, cost: 2.0, batch: true,
+    batchNote: "Se prépare en saladier pour 3 portions, 3 jours au frigo.",
+    micros: ['Iode', 'Sélénium'],
+    ing: [['Riz (cru)', 70, 'Épicerie'], ['Thon au naturel', 120, 'Conserves'], ['Maïs', 80, 'Conserves'], ['Tomate', 100, 'Légumes'], ["Huile d'olive", 10, 'Épicerie']],
+    steps: "Riz refroidi + thon + maïs + tomate en dés. Vinaigrette légère. Le riz refroidi forme de l'amidon résistant : meilleur pour la satiété." },
+  { id: 'r-tartines', name: 'Tartines complètes thon-avocat', meal: 'déjeuner', kcal: 470, p: 30, c: 42, f: 19, time: 8, cost: 2.6,
+    micros: ['Oméga-3', 'Vitamine E', 'Fibres'],
+    ing: [['Pain complet', 90, 'Boulangerie'], ['Thon au naturel', 100, 'Conserves'], ['Avocat', 80, 'Fruits'], ['Citron', 15, 'Fruits']],
+    steps: "Écrase l'avocat au citron, étale, ajoute le thon émietté. Poivre, piment d'Espelette. Déjeuner express." },
+  // ---------- DÎNER ----------
+  { id: 'r-boeuf-patate', name: 'Bœuf 5 %, patate douce & haricots', meal: 'dîner', kcal: 540, p: 42, c: 50, f: 14, time: 30, cost: 3.0, batch: true,
+    batchNote: "Rôtis 1 kg de patates douces d'un coup : elles se réchauffent parfaitement.",
+    micros: ['Fer héminique', 'Bêta-carotène', 'Zinc'],
+    ing: [['Steak haché 5%', 150, 'Boucherie'], ['Patate douce', 250, 'Légumes'], ['Haricots verts', 200, 'Légumes'], ["Huile d'olive", 8, 'Épicerie']],
+    steps: "Patate douce en cubes au four 25 min à 200 °C. Steak à la poêle. Haricots vapeur 8 min. Le fer du bœuf est le mieux absorbé de tous." },
+  { id: 'r-dahl', name: 'Dahl de lentilles corail', meal: 'dîner', kcal: 510, p: 26, c: 75, f: 10, time: 20, cost: 1.5, batch: true,
+    batchNote: "×3 sans effort : le dahl est encore meilleur réchauffé le lendemain.",
+    micros: ['Fer', 'Folates', 'Fibres'],
+    ing: [['Lentilles corail (crues)', 90, 'Épicerie'], ['Riz basmati (cru)', 50, 'Épicerie'], ['Lait de coco léger', 100, 'Conserves'], ['Tomates concassées', 150, 'Conserves'], ['Curry + curcuma', 5, 'Épicerie']],
+    steps: "Lentilles + tomates + épices + 250 ml d'eau, 15 min feu doux. Lait de coco en fin. Sers sur riz. Le repas le moins cher de l'app." },
+  { id: 'r-sardines', name: 'Sardines, pommes de terre & courgettes', meal: 'dîner', kcal: 500, p: 34, c: 45, f: 19, time: 20, cost: 2.4,
+    micros: ['Oméga-3 EPA/DHA', 'Calcium', 'Vitamine D'],
     ing: [["Sardines à l'huile (égouttées)", 100, 'Conserves'], ['Pommes de terre', 300, 'Légumes'], ['Courgette', 200, 'Légumes'], ['Citron', 30, 'Fruits']],
-    steps: "Pommes de terre vapeur 15 min, courgettes poêlées 6 min. Sardines tièdes dessus, citron, persil. Riche en oméga-3 et calcium." },
-  { id: 'r8', name: 'Porridge protéiné fruits rouges', meal: 'petit-déj', kcal: 420, p: 34, c: 50, f: 8,
-    ing: [["Flocons d'avoine", 60, 'Épicerie'], ['Whey (ou skyr 150 g)', 30, 'Épicerie'], ['Fruits rouges surgelés', 100, 'Surgelés'], ['Lait demi-écrémé', 150, 'Frais']],
-    steps: "Flocons + lait 2 min au micro-ondes. Hors chauffe, incorporer la whey. Fruits rouges réchauffés dessus." },
-  { id: 'r9', name: 'Chili express bœuf-haricots (sans oignon)', meal: 'dîner', kcal: 560, p: 44, c: 55, f: 15,
-    ing: [['Steak haché 5%', 130, 'Boucherie'], ['Haricots rouges (égouttés)', 130, 'Conserves'], ['Tomates concassées', 200, 'Conserves'], ['Riz (cru)', 50, 'Épicerie'], ['Paprika fumé/cumin', 5, 'Épicerie']],
-    steps: "Saisir la viande, ajouter tomates + haricots + épices, mijoter 10 min. Servir sur riz. Se prépare en lot ×3." },
-  { id: 'r10', name: 'Collation fromage blanc, miel & amandes', meal: 'collation', kcal: 280, p: 22, c: 24, f: 11,
+    steps: "Pommes de terre vapeur 15 min, courgettes poêlées 6 min. Sardines tièdes dessus, citron, persil. Avec les arêtes = la meilleure source de calcium qui existe." },
+  { id: 'r-chili', name: 'Chili express bœuf-haricots', meal: 'dîner', kcal: 560, p: 44, c: 55, f: 15, time: 20, cost: 2.7, batch: true,
+    batchNote: "LA recette à tripler : congèle en portions, dépanne n'importe quel soir.",
+    micros: ['Fer', 'Fibres', 'Zinc'],
+    ing: [['Steak haché 5%', 130, 'Boucherie'], ['Haricots rouges (égouttés)', 130, 'Conserves'], ['Tomates concassées', 200, 'Conserves'], ['Riz (cru)', 50, 'Épicerie'], ['Paprika fumé + cumin', 5, 'Épicerie']],
+    steps: "Saisis la viande, ajoute tomates + haricots + épices, mijote 10 min. Sers sur riz." },
+  { id: 'r-curry-poulet', name: 'Curry de poulet coco-riz', meal: 'dîner', kcal: 570, p: 42, c: 58, f: 16, time: 25, cost: 3.0, batch: true,
+    batchNote: "Double les quantités : le curry se bonifie au frigo.",
+    micros: ['B6', 'Sélénium', 'Curcumine'],
+    ing: [['Filet de poulet', 150, 'Boucherie'], ['Riz basmati (cru)', 65, 'Épicerie'], ['Lait de coco léger', 120, 'Conserves'], ['Courgette', 150, 'Légumes'], ['Curry', 6, 'Épicerie']],
+    steps: "Poulet saisi, courgette en dés 3 min, lait de coco + curry, mijote 10 min. Sur riz. Le curcuma du curry + poivre noir = duo anti-inflammatoire." },
+  { id: 'r-saumon', name: 'Saumon, riz & épinards', meal: 'dîner', kcal: 580, p: 38, c: 50, f: 22, time: 18, cost: 4.2,
+    micros: ['Oméga-3 EPA/DHA', 'Vitamine D', 'Fer'],
+    ing: [['Pavé de saumon', 140, 'Poissonnerie'], ['Riz (cru)', 65, 'Épicerie'], ['Épinards frais', 150, 'Légumes'], ['Citron', 20, 'Fruits']],
+    steps: "Saumon au four 12 min à 200 °C (ou poêle côté peau). Épinards tombés 2 min à l'ail. 2 poissons gras/semaine = la cible oméga-3." },
+  { id: 'r-boeuf-brocoli', name: 'Bœuf sauté au brocoli (façon asiatique)', meal: 'dîner', kcal: 520, p: 40, c: 48, f: 16, time: 15, cost: 3.4,
+    micros: ['Fer', 'Vitamine C', 'Zinc'],
+    ing: [['Bœuf à sauter (rumsteck)', 140, 'Boucherie'], ['Brocoli', 200, 'Légumes'], ['Riz (cru)', 60, 'Épicerie'], ['Sauce soja', 15, 'Épicerie'], ['Ail + gingembre', 8, 'Légumes']],
+    steps: "Wok très chaud : bœuf en lamelles 2 min, réserve. Brocoli 4 min avec un fond d'eau. Réunis avec soja-ail-gingembre. La vitamine C du brocoli booste l'absorption du fer." },
+  { id: 'r-dinde-pates', name: 'Pâtes à la dinde hachée & courgettes', meal: 'dîner', kcal: 540, p: 44, c: 60, f: 11, time: 18, cost: 2.8, batch: true,
+    batchNote: "La sauce se congèle très bien en portions.",
+    micros: ['B3', 'Sélénium', 'Lycopène'],
+    ing: [['Dinde hachée', 150, 'Boucherie'], ['Pâtes complètes (crues)', 75, 'Épicerie'], ['Coulis de tomate', 180, 'Conserves'], ['Courgette', 150, 'Légumes'], ['Ail', 5, 'Légumes']],
+    steps: "Dinde revenue à l'ail, courgette râpée (invisible dans la sauce !), coulis, 8 min. La dinde : aussi protéinée que le poulet, souvent moins chère." },
+  { id: 'r-tofu', name: 'Tofu sauté, riz & légumes (végé)', meal: 'dîner', kcal: 490, p: 28, c: 58, f: 15, time: 18, cost: 2.3,
+    micros: ['Calcium', 'Fer', 'Isoflavones'],
+    ing: [['Tofu ferme', 180, 'Frais'], ['Riz (cru)', 60, 'Épicerie'], ['Poivron', 120, 'Légumes'], ['Sauce soja', 15, 'Épicerie'], ['Huile de sésame', 8, 'Épicerie']],
+    steps: "Tofu pressé puis doré 6 min (il doit croustiller). Poivron sauté. Soja + sésame en finition. Option végé complète de l'app." },
+  { id: 'r-soupe-lentilles', name: 'Soupe complète lentilles-carottes', meal: 'dîner', kcal: 430, p: 24, c: 60, f: 9, time: 25, cost: 1.4, batch: true,
+    batchNote: "Une marmite = 4 dîners. Se congèle parfaitement.",
+    micros: ['Fer', 'Bêta-carotène', 'Fibres'],
+    ing: [['Lentilles vertes (crues)', 80, 'Épicerie'], ['Carottes', 200, 'Légumes'], ['Pommes de terre', 150, 'Légumes'], ['Bouillon de légumes', 500, 'Épicerie'], ['Cumin', 3, 'Épicerie']],
+    steps: "Tout dans la marmite, 25 min. Mixe la moitié pour le velouté, garde l'autre pour la mâche. Rassasiant pour très peu de calories." },
+  // ---------- COLLATIONS ----------
+  { id: 'r-fb-miel', name: 'Fromage blanc, miel & amandes', meal: 'collation', kcal: 280, p: 22, c: 24, f: 11, time: 2, cost: 1.1,
+    micros: ['Calcium', 'Caséine lente', 'Vitamine E'],
     ing: [['Fromage blanc 3%', 250, 'Frais'], ['Miel', 15, 'Épicerie'], ['Amandes', 15, 'Épicerie']],
-    steps: "Assembler. Caséine à digestion lente : idéale le soir pour la récupération musculaire nocturne." }
+    steps: "Assemble. La caséine du fromage blanc se digère en 6–7 h : la collation parfaite du soir pour nourrir le muscle pendant la nuit." },
+  { id: 'r-yaourt-granola', name: 'Yaourt grec, granola & kiwi', meal: 'collation', kcal: 290, p: 18, c: 32, f: 10, time: 3, cost: 1.5,
+    micros: ['Vitamine C', 'Probiotiques', 'Calcium'],
+    ing: [['Yaourt grec', 170, 'Frais'], ['Granola', 30, 'Épicerie'], ['Kiwi', 90, 'Fruits']],
+    steps: "Assemble. 1 kiwi = 100 % de la vitamine C journalière. Les probiotiques du yaourt soutiennent la digestion des protéines." },
+  { id: 'r-riz-au-lait', name: 'Riz au lait protéiné vanille', meal: 'collation', kcal: 310, p: 24, c: 45, f: 5, time: 25, cost: 1.2, batch: true,
+    batchNote: "Prépare 4 pots d'un coup, 4 jours au frigo. Le dessert qui rentre dans les macros.",
+    micros: ['Calcium', 'B12'],
+    ing: [['Riz rond (cru)', 50, 'Épicerie'], ['Lait demi-écrémé', 300, 'Frais'], ['Whey vanille', 25, 'Épicerie'], ['Cannelle', 2, 'Épicerie']],
+    steps: "Riz dans le lait à feu doux 25 min en remuant. Hors du feu, attends 5 min puis incorpore la whey (jamais sur le feu)." },
+  { id: 'r-pois-chiches', name: 'Pois chiches rôtis croustillants', meal: 'collation', kcal: 250, p: 13, c: 35, f: 7, time: 30, cost: 0.8, batch: true,
+    batchNote: "Une plaque entière se garde 4 jours en boîte hermétique : le snack salé anti-chips.",
+    micros: ['Fibres', 'Fer', 'Folates'],
+    ing: [['Pois chiches (égouttés)', 150, 'Conserves'], ["Huile d'olive", 6, 'Épicerie'], ['Paprika fumé', 3, 'Épicerie']],
+    steps: "Sèche bien les pois chiches, huile + épices, four 200 °C 25–30 min en secouant à mi-cuisson. Croustillant garanti." }
 ];
 
-// --- Tips du jour ------------------------------------------------------------
+// --- Badges --------------------------------------------------------------------
+// check(s) reçoit les stats agrégées calculées par l'app.
+window.BADGES = [
+  { id: 'first-blood',  icon: '🩸', name: 'Première pierre',   desc: '1ʳᵉ séance enregistrée',            check: s => s.workouts >= 1 },
+  { id: 'w5',           icon: '🔨', name: 'La machine démarre', desc: '5 séances',                         check: s => s.workouts >= 5 },
+  { id: 'w15',          icon: '⚙️', name: 'Régulier',           desc: '15 séances',                        check: s => s.workouts >= 15 },
+  { id: 'w30',          icon: '🏭', name: 'Infatigable',        desc: '30 séances',                        check: s => s.workouts >= 30 },
+  { id: 'streak3',      icon: '✏️', name: 'Carnet ouvert',      desc: '3 jours de carnet d\'affilée',      check: s => s.journalStreak >= 3 },
+  { id: 'streak7',      icon: '🔥', name: 'Semaine parfaite',   desc: '7 jours de carnet d\'affilée',      check: s => s.journalStreak >= 7 },
+  { id: 'streak21',     icon: '🌋', name: 'Discipline de fer',  desc: '21 jours de carnet d\'affilée',     check: s => s.journalStreak >= 21 },
+  { id: 'pr1',          icon: '🏆', name: 'Premier record',     desc: '1ᵉʳ record personnel battu',        check: s => s.prCount >= 1 },
+  { id: 'pr10',         icon: '👑', name: 'Collectionneur',     desc: '10 records personnels',             check: s => s.prCount >= 10 },
+  { id: 'vol10',        icon: '🐘', name: '10 tonnes',          desc: '10 000 kg de volume cumulé',        check: s => s.totalVolume >= 10000 },
+  { id: 'vol50',        icon: '🚛', name: '50 tonnes',          desc: '50 000 kg de volume cumulé',        check: s => s.totalVolume >= 50000 },
+  { id: 'sets100',      icon: '💯', name: 'Centurion',          desc: '100 séries validées',               check: s => s.totalSets >= 100 },
+  { id: 'sets500',      icon: '🗿', name: 'Monument',           desc: '500 séries validées',               check: s => s.totalSets >= 500 },
+  { id: 'weight7',      icon: '⚖️', name: 'Rigueur balance',    desc: '7 pesées sur une semaine',          check: s => s.weighWeek >= 7 },
+  { id: 'pullup10',     icon: '🦍', name: 'Gorille',            desc: '10 tractions dans une série',       check: s => s.bestPullups >= 10 },
+  { id: 'month1',       icon: '🌱', name: 'Un mois',            desc: '30 jours de carnet au total',       check: s => s.journalDays >= 30 },
+  { id: 'w50',          icon: '🏛️', name: 'Titan',             desc: '50 séances',                        check: s => s.workouts >= 50 },
+  { id: 'w100',         icon: '⚡', name: 'Légende',           desc: '100 séances',                       check: s => s.workouts >= 100 },
+  { id: 'streak30',     icon: '💎', name: 'Habitude d\'acier',  desc: '30 jours de carnet d\'affilée',     check: s => s.journalStreak >= 30 },
+  { id: 'streak60',     icon: '🌟', name: 'Incassable',        desc: '60 jours de carnet d\'affilée',     check: s => s.journalStreak >= 60 },
+  { id: 'pr25',         icon: '🥇', name: 'Chasseur de records', desc: '25 records personnels',            check: s => s.prCount >= 25 },
+  { id: 'pr50',         icon: '🏅', name: 'Briseur de limites', desc: '50 records personnels',             check: s => s.prCount >= 50 },
+  { id: 'vol100',       icon: '🏔️', name: '100 tonnes',         desc: '100 000 kg de volume cumulé',       check: s => s.totalVolume >= 100000 },
+  { id: 'sets1000',     icon: '🏰', name: 'Forteresse',        desc: '1 000 séries validées',             check: s => s.totalSets >= 1000 }
+];
+
+// --- Tips du jour ----------------------------------------------------------------
 window.TIPS = [
   "Protéines : vise 1,6–2 g/kg/jour réparties sur 3–4 prises de ≥25 g pour maximiser la synthèse protéique.",
   "La progression se joue sur le carnet : bats tes chiffres de la semaine dernière d'1 rép ou 1 kg, pas plus.",
@@ -129,9 +213,63 @@ window.TIPS = [
   "Ton poids fluctue de ±1 kg avec l'eau, le sel et les glucides. Juge la tendance sur 7 jours.",
   "Respiration : inspire en descente, expire à l'effort. Gainage réflexe et tension maîtrisée.",
   "Prépare tes repas en lot 2×/semaine : la meilleure stratégie anti-craquage connue.",
-  "Fibre : 25–35 g/jour (légumes, légumineuses, avoine) pour la satiété et la santé digestive.",
+  "Fibres : 25–35 g/jour (légumes, légumineuses, avoine) pour la satiété et la santé digestive.",
   "Si la motivation baisse : réduis l'objectif de la séance à 50 %. Une fois commencé, tu finiras souvent à 100 %.",
   "Oméga-3 (sardines, maquereau 2×/semaine) : anti-inflammatoire et soutien de la récupération.",
   "Le matériel ne fait pas le résultat : tension, effort proche de l'échec et progression suffisent.",
-  "Note ton RPE à chaque série : c'est la donnée qui permet au coach d'ajuster ton volume."
+  "Note ton RPE à chaque série : c'est la donnée qui permet au coach d'ajuster ton volume.",
+  "Le stress chronique élève le cortisol et favorise le stockage abdominal. 5 min de respiration lente le soir : 4 s inspire, 6 s expire.",
+  "La surcharge progressive ne veut pas dire +5 kg à chaque séance. +1 rép, +1 s de tempo, -10 s de repos : tout ça compte.",
+  "Les fibres dans l'assiette ralentissent la vidange gastrique : tu as moins faim et tes glucides sont mieux gérés par l'insuline.",
+  "Unilatéral = double la difficulté sans changer la charge. Passe au curl unilatéral, au step-up unilatéral, au SDT unilatéral.",
+  "Photos de progression : même éclairage, même heure, même lieu. La comparaison objective bat le miroir quotidien.",
+  "La marche post-repas (15 min) réduit le pic glycémique de 30 %. Prends l'habitude après le déjeuner.",
+  "Ne sous-estime pas les légumineuses : 25 g de protéines, 15 g de fibres et quasi zéro gras pour 100 g de lentilles sèches.",
+  "Le magnésium améliore le sommeil et réduit les crampes. Sources : amandes, chocolat noir, eaux minérales riches (Hépar, Contrex)."
+];
+
+// --- Catalogue matériel (pour l'onboarding et les réglages) --------------------
+window.EQUIPMENT_OPTIONS = [
+  { id: 'halteres',       label: 'Haltères',              icon: '🏋️' },
+  { id: 'barre',          label: 'Barre de traction',      icon: '🔱' },
+  { id: 'chaise_romaine', label: 'Chaise romaine',         icon: '🪑' },
+  { id: 'banc',           label: 'Banc plat/incliné',      icon: '📐' },
+  { id: 'elastiques',     label: 'Élastiques/bandes',      icon: '🟩' },
+  { id: 'kettlebell',     label: 'Kettlebell',              icon: '🔔' },
+  { id: 'anneaux',        label: 'Anneaux de gym',         icon: '⭕' },
+  { id: 'barre_sol',      label: 'Barre + disques',        icon: '🏗️' },
+  { id: 'ab_wheel',       label: 'Roue abdominale',        icon: '☸️' },
+  { id: 'corde',          label: 'Corde à sauter',         icon: '🪢' },
+  { id: 'step',           label: 'Marche / step',          icon: '🪜' },
+  { id: 'poids_corps',    label: 'Poids du corps seul',    icon: '🤸' }
+];
+
+// --- Catalogue exclusions alimentaires -----------------------------------------
+window.EXCLUSION_OPTIONS = [
+  { id: 'oeufs',          label: 'Œufs',                   icon: '🥚' },
+  { id: 'oignons',        label: 'Oignons / ail',          icon: '🧅' },
+  { id: 'lactose',        label: 'Lactose (lait, fromage)', icon: '🥛' },
+  { id: 'gluten',         label: 'Gluten (blé, orge…)',    icon: '🌾' },
+  { id: 'fruits_de_mer',  label: 'Poisson / fruits de mer',icon: '🐟' },
+  { id: 'viande_rouge',   label: 'Viande rouge',           icon: '🥩' },
+  { id: 'volaille',       label: 'Volaille',               icon: '🍗' },
+  { id: 'legumineuses',   label: 'Légumineuses (pois, lentilles)', icon: '🫘' },
+  { id: 'noix',           label: 'Fruits à coque',         icon: '🥜' },
+  { id: 'soja',           label: 'Soja',                   icon: '🫛' },
+  { id: 'sucre',          label: 'Sucre ajouté',           icon: '🍬' },
+  { id: 'alcool',         label: 'Alcool (dans recettes)', icon: '🍾' },
+  { id: 'cafe',           label: 'Caféine / café',         icon: '☕' },
+  { id: 'porc',           label: 'Porc / charcuterie',     icon: '🐷' },
+  { id: 'vegan',          label: 'Vegan (aucun produit animal)', icon: '🌱' }
+];
+
+// --- Catalogue thèmes visuels --------------------------------------------------
+window.ACCENT_PRESETS = [
+  { id: 'cyan',    label: 'CYAN SYSTÈME',    value: '#2BD9FE' },
+  { id: 'blue',    label: 'BLEU MANA',       value: '#5B8DEF' },
+  { id: 'purple',  label: 'VIOLET MONARQUE', value: '#9D7BFF' },
+  { id: 'gold',    label: 'OR RANG S',       value: '#FFD66B' },
+  { id: 'green',   label: 'VERT PORTAIL',    value: '#28E0A8' },
+  { id: 'magenta', label: 'MAGENTA OMBRE',   value: '#FF5BA8' },
+  { id: 'custom',  label: 'COULEUR LIBRE',   value: null }
 ];

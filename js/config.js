@@ -8,6 +8,6 @@
 //    du fichier supabase/schema.sql (chaque utilisateur ne voit que SES lignes).
 
 window.RECOMP_CONFIG = {
-  SUPABASE_URL: 'https://gggusberqdjhateoihmi.supabase.co',
-  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnZ3VzYmVycWRqaGF0ZW9paG1pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMTMwNTQsImV4cCI6MjA5NjY4OTA1NH0.vv6NQdG8EkvpQHtkqFhd9UpSrRn73N1Grr-WAtpTqx0'
+  SUPABASE_URL: 'https://VOTRE-PROJET.supabase.co',
+  SUPABASE_ANON_KEY: 'VOTRE_CLE_ANON_PUBLIQUE'
 };

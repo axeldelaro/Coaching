@@ -1,59 +1,56 @@
 // ============================================================
-// RECOMP — Application principale
+// RECOMP « FIGHT CAMP » — Application
+// Navigation : deck horizontal à gestes (zéro barre d'icônes)
 // ============================================================
 const CFG = window.RECOMP_CONFIG || {};
 const LOCAL_MODE = !CFG.SUPABASE_URL || CFG.SUPABASE_URL.includes('VOTRE-PROJET');
-let sb = null; // client Supabase (chargé dynamiquement, peut rester null si CDN indisponible)
-
+let sb = null;
 async function initSupabase() {
   if (LOCAL_MODE) return;
   try {
     const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
     sb = createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY);
-  } catch {
-    sb = null; // l'app fonctionnera en lecture du cache local ; retry possible
-  }
+  } catch { sb = null; }
 }
 
-// ---------- État global ----------
-const S = {
-  user: null,          // { id, email }
-  profile: null,       // ligne profiles
-  logs: [],            // logs 60 derniers jours
-  outbox: JSON.parse(localStorage.getItem('rc_outbox') || '[]'),
-  timer: null
-};
+const S = { user: null, profile: null, logs: [], outbox: JSON.parse(localStorage.getItem('rc_outbox') || '[]'), timer: null };
 
 // ---------- Utilitaires ----------
-const $ = (sel, el = document) => el.querySelector(sel);
-const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
-const app = $('#app');
-const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const todayStr = () => new Date().toISOString().slice(0, 10);
 const uid = () => crypto.randomUUID();
-
+const daysSince = d => Math.round((Date.now() - new Date(d)) / 86400000);
 function toast(msg) {
-  const t = $('#toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._h);
-  t._h = setTimeout(() => t.classList.remove('show'), 2600);
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2400);
 }
-
 function lsKey(k) { return `rc_${S.user?.id || 'anon'}_${k}`; }
 function cacheSet(k, v) { localStorage.setItem(lsKey(k), JSON.stringify(v)); }
-function cacheGet(k, dflt = null) {
-  try { return JSON.parse(localStorage.getItem(lsKey(k))) ?? dflt; } catch { return dflt; }
-}
+function cacheGet(k, d = null) { try { return JSON.parse(localStorage.getItem(lsKey(k))) ?? d; } catch { return d; } }
 
-// ---------- Couche données (Supabase + cache + outbox) ----------
+// ---------- Thème + Accent + Taille ----------
+const mqDark = matchMedia("(prefers-color-scheme: dark)");
+function applyTheme() {
+  const pref = S.profile?.settings?.theme || localStorage.getItem("rc_theme") || "dark";
+  const dark = pref === "dark" || (pref === "auto" && mqDark.matches);
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  const meta = $("meta[name=theme-color]"); if (meta) meta.content = dark ? "#04060E" : "#E8EDF7";
+  const fs = S.profile?.settings?.fontSize || localStorage.getItem("rc_fontsize") || "16";
+  document.documentElement.style.fontSize = fs + "px";
+  const accent = S.profile?.settings?.accent || localStorage.getItem("rc_accent") || "#2BD9FE";
+  document.documentElement.style.setProperty("--accent", accent);
+}
+function applyAccent(color) { if (!color) return; document.documentElement.style.setProperty("--accent", color); localStorage.setItem("rc_accent", color); }
+mqDark.addEventListener("change", () => { applyTheme(); });
+
+// ---------- Données ----------
 async function dbLoadProfile() {
   if (LOCAL_MODE || !sb) { S.profile = cacheGet('profile'); return; }
   const { data, error } = await sb.from('profiles').select('*').eq('id', S.user.id).maybeSingle();
-  if (!error && data) { S.profile = data; cacheSet('profile', data); }
-  else S.profile = cacheGet('profile'); // fallback offline
+  if (!error && data) { S.profile = data; cacheSet('profile', data); } else S.profile = cacheGet('profile');
 }
-
 async function dbSaveProfile(patch) {
   S.profile = { ...(S.profile || { id: S.user.id }), ...patch, updated_at: new Date().toISOString() };
   cacheSet('profile', S.profile);
@@ -62,18 +59,15 @@ async function dbSaveProfile(patch) {
   const { error } = await sb.from('profiles').upsert(S.profile);
   if (error) queueOp({ t: 'profile', row: S.profile });
 }
-
 async function dbLoadLogs() {
-  const since = new Date(Date.now() - 60 * 86400000).toISOString().slice(0, 10);
+  const since = new Date(Date.now() - 120 * 86400000).toISOString().slice(0, 10);
   if (LOCAL_MODE || !sb) { S.logs = cacheGet('logs', []); return; }
   const { data, error } = await sb.from('logs').select('*').gte('day', since).order('day', { ascending: false });
-  if (!error && data) { S.logs = data; cacheSet('logs', data); }
-  else S.logs = cacheGet('logs', []);
+  if (!error && data) { S.logs = data; cacheSet('logs', data); } else S.logs = cacheGet('logs', []);
 }
-
 async function dbSaveLog(kind, day, payload, { unique = false } = {}) {
   let row = unique ? S.logs.find(l => l.kind === kind && l.day === day) : null;
-  if (row) { row.payload = payload; }
+  if (row) row.payload = payload;
   else { row = { id: uid(), user_id: S.user.id, day, kind, payload, created_at: new Date().toISOString() }; S.logs.unshift(row); }
   cacheSet('logs', S.logs);
   if (LOCAL_MODE) return row;
@@ -82,611 +76,744 @@ async function dbSaveLog(kind, day, payload, { unique = false } = {}) {
   if (error) queueOp({ t: 'log', row });
   return row;
 }
-
-function queueOp(op) {
-  S.outbox.push(op);
-  localStorage.setItem('rc_outbox', JSON.stringify(S.outbox));
-}
-
+function queueOp(op) { S.outbox.push(op); localStorage.setItem('rc_outbox', JSON.stringify(S.outbox)); }
 async function flushOutbox() {
   if (LOCAL_MODE || !sb || !S.outbox.length || !navigator.onLine) return;
   const pending = [...S.outbox]; S.outbox = [];
   for (const op of pending) {
-    const { error } = op.t === 'profile'
-      ? await sb.from('profiles').upsert(op.row)
-      : await sb.from('logs').upsert(op.row);
+    const { error } = op.t === 'profile' ? await sb.from('profiles').upsert(op.row) : await sb.from('logs').upsert(op.row);
     if (error) S.outbox.push(op);
   }
   localStorage.setItem('rc_outbox', JSON.stringify(S.outbox));
-  if (!S.outbox.length) toast('☁️ Données synchronisées');
+  if (!S.outbox.length) toast('☁ Synchronisé');
 }
 window.addEventListener('online', flushOutbox);
-
 function offlinePill() {
   let p = $('.offline-pill');
-  if (!navigator.onLine && !p) {
-    p = document.createElement('div');
-    p.className = 'offline-pill';
-    p.textContent = 'Hors-ligne — les données seront synchronisées';
-    document.body.appendChild(p);
-  } else if (navigator.onLine && p) p.remove();
+  if (!navigator.onLine && !p) { p = document.createElement('div'); p.className = 'offline-pill'; p.textContent = 'Hors-ligne — sync au retour'; document.body.appendChild(p); }
+  else if (navigator.onLine && p) p.remove();
 }
 window.addEventListener('online', offlinePill);
 window.addEventListener('offline', offlinePill);
 
-// ---------- Calculs nutritionnels ----------
+// ---------- Bibliothèque / records ----------
+const getExo = id => window.EXLIB.find(e => e.id === id);
+const exoOf = set => set.exoId ? getExo(set.exoId) : window.findExercise(set.ex);
+const setScore = s => (s.weight > 0 && s.reps > 0) ? s.weight * (1 + s.reps / 30) : (s.reps || 0);
+const fmtPR = set => set.weight > 0 ? `${set.weight} kg × ${set.reps} (≈${Math.round(setScore(set))} 1RM)` : `${set.reps} reps`;
+function bestBefore(exoId, beforeDay) {
+  let best = null;
+  S.logs.filter(l => l.kind === 'workout' && l.day <= beforeDay).forEach(w => {
+    (w.payload.sets || []).forEach(s => {
+      if (exoOf(s)?.id !== exoId) return;
+      const sc = setScore(s);
+      if (!best || sc > best.score) best = { score: sc, set: s, day: w.day };
+    });
+  });
+  return best;
+}
+function lastPerf(exoId) {
+  for (const w of S.logs.filter(l => l.kind === 'workout')) {
+    const sets = (w.payload.sets || []).filter(s => exoOf(s)?.id === exoId);
+    if (sets.length) return { ...sets.reduce((a, b) => setScore(b) > setScore(a) ? b : a), day: w.day };
+  }
+  return null;
+}
+function currentPRs() {
+  const map = {};
+  S.logs.filter(l => l.kind === 'workout').forEach(w => (w.payload.sets || []).forEach(s => {
+    const e = exoOf(s); if (!e) return;
+    const sc = setScore(s);
+    if (!map[e.id] || sc > map[e.id].score) map[e.id] = { exo: e, score: sc, set: s, day: w.day };
+  }));
+  return Object.values(map).sort((a, b) => b.day.localeCompare(a.day));
+}
+function statsAll() {
+  const f = window.RPG.fighter(S.logs, S.profile);
+  const journal = S.logs.filter(l => l.kind === 'journal');
+  return {
+    workouts: f.workouts, totalSets: f.sets, totalVolume: f.volume, prCount: f.prCount,
+    journalStreak: f.streak, journalDays: journal.length,
+    weighWeek: journal.filter(j => +j.payload.weight > 0 && daysSince(j.day) < 7).length,
+    bestPullups: Math.max(0, ...S.logs.filter(l => l.kind === 'workout').flatMap(w => w.payload.sets || []).filter(s => (exoOf(s)?.id || '').startsWith('pullup')).map(s => +s.reps || 0))
+  };
+}
+const unlockedBadges = () => { const st = statsAll(); return window.BADGES.filter(b => b.check(st)); };
+
+// ---------- Confettis (papier déchiré rouge/encre) ----------
+function confetti(duration = 1700) {
+  let c = $('#confetti');
+  if (!c) { c = document.createElement('canvas'); c.id = 'confetti'; document.body.appendChild(c); }
+  c.width = innerWidth; c.height = innerHeight;
+  const ctx = c.getContext('2d');
+  const acc = cssVar('--accent') || '#2BD9FE';
+  const colors = [acc, '#5B8DEF', '#FFD66B', acc, '#9D7BFF'];
+  const parts = Array.from({ length: 110 }, () => ({
+    x: Math.random() * c.width, y: -20 - Math.random() * c.height * 0.4,
+    w: 7 + Math.random() * 7, h: 9 + Math.random() * 9,
+    vy: 3 + Math.random() * 4, vx: -1.5 + Math.random() * 3,
+    rot: Math.random() * Math.PI, vr: -0.15 + Math.random() * 0.3,
+    col: colors[Math.floor(Math.random() * colors.length)]
+  }));
+  const t0 = performance.now();
+  (function frame(t) {
+    ctx.clearRect(0, 0, c.width, c.height);
+    parts.forEach(p => { p.x += p.vx; p.y += p.vy; p.rot += p.vr; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.fillStyle = p.col; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore(); });
+    if (t - t0 < duration) requestAnimationFrame(frame); else c.remove();
+  })(t0);
+}
+
+// ---------- Charts ----------
+function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function drawLine(canvas, values) {
+  const color = cssVar('--accent'), inkc = cssVar('--mute');
+  const dpr = devicePixelRatio || 1, w = canvas.clientWidth, h = canvas.clientHeight;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr); ctx.clearRect(0, 0, w, h);
+  const vals = values.filter(v => v != null);
+  if (vals.length < 2) { ctx.fillStyle = inkc; ctx.font = 'bold 12px Rajdhani, system-ui'; ctx.fillText('PAS ENCORE ASSEZ DE DONNÉES', 10, h / 2); return; }
+  const min = Math.min(...vals), max = Math.max(...vals), pad = 10, span = (max - min) || 1;
+  const X = i => pad + i / (values.length - 1) * (w - 2 * pad);
+  const Y = v => h - pad - (v - min) / span * (h - 2 * pad);
+  ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.lineJoin = 'miter'; ctx.beginPath();
+  let started = false;
+  values.forEach((v, i) => { if (v == null) return; if (!started) { ctx.moveTo(X(i), Y(v)); started = true; } else ctx.lineTo(X(i), Y(v)); });
+  ctx.stroke();
+  ctx.fillStyle = color;
+  values.forEach((v, i) => { if (v != null) ctx.fillRect(X(i) - 3, Y(v) - 3, 6, 6); });
+  ctx.fillStyle = inkc; ctx.font = 'bold 11px Rajdhani, system-ui';
+  ctx.fillText(max.toFixed(1), 4, 12); ctx.fillText(min.toFixed(1), 4, h - 4);
+}
+function drawBars(canvas, labels, values, { target = null } = {}) {
+  const color = cssVar('--ink'), red = cssVar('--accent'), mute = cssVar('--mute');
+  const dpr = devicePixelRatio || 1, w = canvas.clientWidth, h = canvas.clientHeight;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr); ctx.clearRect(0, 0, w, h);
+  const max = Math.max(...values, target || 0, 1), bw = w / values.length;
+  values.forEach((v, i) => {
+    const bh = v / max * (h - 28);
+    ctx.fillStyle = document.documentElement.dataset.theme === 'dark' ? red : color;
+    ctx.fillRect(i * bw + bw * 0.22, h - 18 - bh, bw * 0.56, bh);
+    ctx.fillStyle = mute; ctx.font = "bold 11px 'Share Tech Mono', monospace"; ctx.textAlign = 'center';
+    ctx.fillText(labels[i], i * bw + bw / 2, h - 5);
+    if (v) ctx.fillText(v, i * bw + bw / 2, h - 23 - bh);
+  });
+  if (target) {
+    const ty = h - 18 - target / max * (h - 28);
+    ctx.strokeStyle = red; ctx.setLineDash([5, 5]); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, ty); ctx.lineTo(w, ty); ctx.stroke(); ctx.setLineDash([]);
+  }
+}
+
+// ---------- Nutrition / programme ----------
 function computeTargets(a) {
   const w = +a.weight, h = +a.height, age = +a.age;
   const bmr = Math.round(10 * w + 6.25 * h - 5 * age + (a.sex === 'F' ? -161 : 5));
-  const factors = { sedentaire: 1.2, leger: 1.375, actif: 1.55, tres_actif: 1.725 };
-  const tdee = Math.round(bmr * (factors[a.activity] || 1.375));
-  const delta = { perte: -350, maintien: 0, prise: +250 }[a.goal] ?? -350;
-  let kcal = tdee + delta;
-  kcal = Math.max(kcal, a.sex === 'F' ? 1300 : 1500);
-  const p = Math.round(1.8 * w);
-  const f = Math.round(0.9 * w);
-  const c = Math.max(0, Math.round((kcal - p * 4 - f * 9) / 4));
-  return { bmr, tdee, kcal, p, c, f };
+  const tdee = Math.round(bmr * ({ sedentaire: 1.2, leger: 1.375, actif: 1.55, tres_actif: 1.725 }[a.activity] || 1.375));
+  let kcal = Math.max(tdee + ({ perte: -350, maintien: 0, prise: 250 }[a.goal] ?? -350), a.sex === 'F' ? 1300 : 1500);
+  const p = Math.round(1.8 * w), f = Math.round(0.9 * w);
+  return { bmr, tdee, kcal, p, c: Math.max(0, Math.round((kcal - p * 4 - f * 9) / 4)), f };
 }
-
-// ---------- Adaptation du programme à l'anamnèse ----------
 function buildProgram(a) {
   const prog = JSON.parse(JSON.stringify(window.DEFAULT_PROGRAM));
-  const inj = (a.injuries || []).map(x => x.toLowerCase()).join(' ');
+  const inj = (a.injuries || []).join(' ');
   const eq = a.equipment || [];
-  const B = prog.sessions.find(s => s.id === 'B');
-  if (/épaule|epaule|clavicule|coiffe/.test(inj)) {
-    const dips = B.exercises.find(e => e.id === 'b3');
-    dips.name = 'Pompes surélevées (mains sur table)';
-    dips.cue = "⚠️ Antécédent épaule/clavicule : poussée limitée. Mains sur table stable, corps gainé, descente 2 s, amplitude sans douleur. Si 0 gêne après 2 semaines : réessayer les dips partiels.";
-    dips.flag = 'clavicule';
+  const has = id => eq.includes(id);
+  const swap = (from, to) => prog.sessions.forEach(s => s.exercises.forEach(e => { if (e.exo === from) e.exo = to; }));
+
+  // ── Blessures / contraintes articulaires ─────────────────────
+  if (/epaule|clavicule/.test(inj)) {
+    swap('dips-partial', 'incline-pushup');
+    swap('db-shoulder-press', 'pike-pushup'); // shoulder press → pike si clavicule
   }
-  if (!eq.includes('barre')) {
-    const pull = B.exercises.find(e => e.id === 'b1');
-    pull.name = 'Rowing inversé (sous une table solide)';
-    pull.cue = "Allongé sous la table, prise large, corps gainé en planche. Tire la poitrine vers le bord. Plus les pieds sont loin, plus c'est dur.";
-  }
-  if (!eq.includes('chaise_romaine')) {
-    const A = prog.sessions.find(s => s.id === 'A');
-    const lomb = A.exercises.find(e => e.id === 'a4');
-    lomb.name = 'Superman au sol';
-    lomb.cue = "Allongé ventre au sol, lève bras et jambes 2 s, redescends contrôlé. Regard au sol, nuque neutre.";
-    const abs = A.exercises.find(e => e.id === 'a5');
-    abs.name = 'Crunch + dead bug';
-    abs.cue = "Crunch : décolle les omoplates, pas la lombaire. Dead bug : lombaires plaquées au sol en permanence.";
+  if (/poignet/.test(inj)) {
+    swap('plank', 'dead-bug'); // planche poignets → dead bug
+    swap('incline-pushup', 'band-row'); // pompes → rowing élastique
   }
   if (/genou/.test(inj)) {
-    const A = prog.sessions.find(s => s.id === 'A');
-    A.exercises.forEach(e => { if (/squat|fente/i.test(e.name)) e.cue += " ⚠️ Genou : amplitude SANS douleur uniquement, tempo lent, stop à 3/10."; });
+    prog.sessions.forEach(s => s.exercises.forEach(e => {
+      if (['goblet-squat', 'rear-lunge', 'bulgarian-split', 'walking-lunge', 'step-up', 'lateral-lunge'].includes(e.exo))
+        e.note = '⚠ GENOU : AMPLITUDE SANS DOULEUR · STOP À 3/10';
+    }));
   }
+  if (/lombaire/.test(inj)) {
+    swap('romanian-dl', 'glute-bridge');
+    swap('back-ext', 'dead-bug');
+    prog.sessions.forEach(s => s.exercises.forEach(e => {
+      if (['kb-swing', 'hip-thrust-db'].includes(e.exo)) e.note = '⚠ LOMBAIRES : GAINAGE MAXIMAL · STOP SI IRRADIATION';
+    }));
+  }
+
+  // ── Matériel manquant ─────────────────────────────────────────
+  if (!has('barre')) {
+    swap('pullup-neutral', has('anneaux') ? 'ring-row' : 'inverted-row');
+    swap('pullup-supine', has('elastiques') ? 'band-row' : 'inverted-row');
+    swap('pullup-weighted', has('anneaux') ? 'ring-row' : 'inverted-row');
+    swap('hanging-knee-raise', 'leg-raise');
+    swap('toes-to-bar', 'hollow-hold');
+  }
+  if (!has('chaise_romaine')) {
+    swap('back-ext', has('barre_sol') ? 'romanian-dl' : 'superman');
+    swap('leg-raise', has('ab_wheel') ? 'ab-wheel' : 'weighted-crunch');
+  }
+  if (!has('banc')) {
+    swap('db-press', 'incline-pushup');
+    swap('hip-thrust-db', 'glute-bridge');
+    swap('db-fly', 'incline-pushup');
+  }
+  if (!has('halteres') && !has('barre_sol')) {
+    // Poids du corps seul
+    swap('goblet-squat', 'wall-sit');
+    swap('romanian-dl', 'glute-bridge');
+    swap('db-row', has('elastiques') ? 'band-row' : 'inverted-row');
+    swap('db-curl', has('elastiques') ? 'band-curl' : 'inverted-row');
+    swap('shrugs', 'face-pull-band');
+  }
+  if (has('kettlebell') && !has('halteres')) {
+    // Si KB mais pas haltères, câbler le swing
+    swap('goblet-squat', 'kb-swing');
+  }
+  if (has('elastiques') && !has('barre')) {
+    swap('inverted-row', 'band-row');
+    swap('face-pull-band', 'face-pull-band'); // déjà correct
+  }
+
   return prog;
 }
-
-// ---------- Notifications / rappels ----------
-async function askNotifPermission() {
-  if (!('Notification' in window)) { toast('Notifications non supportées sur ce navigateur'); return false; }
-  const perm = await Notification.requestPermission();
-  if (perm !== 'granted') { toast('Permission refusée — active-la dans les réglages Android'); return false; }
-  return true;
+function allowedRecipes() {
+  const al = S.profile.anamnese?.allergies || [];
+  return window.RECIPES.filter(r => {
+    const ing = r.ing.map(i => i[0]).join(' ').toLowerCase();
+    if (al.includes('lactose') && /skyr|fromage blanc|lait|whey|yaourt|yaourt grec/i.test(ing)) return false;
+    if (al.includes('gluten') && /pâtes|tortilla|flocons|pain|granola/i.test(ing)) return false;
+    if (al.includes('fruits_de_mer') && /thon|sardine|saumon|crevette|poisson/i.test(ing)) return false;
+    if (al.includes('viande_rouge') && /bœuf|boeuf|steak|rumsteck/i.test(ing)) return false;
+    if (al.includes('volaille') && /poulet|dinde|volaille/i.test(ing)) return false;
+    if (al.includes('legumineuses') && /lentille|pois chiche|haricots? rouge/i.test(ing)) return false;
+    if (al.includes('noix') && /amande|noisette|cacahuète|noix/i.test(ing)) return false;
+    if (al.includes('soja') && /tofu|soja/i.test(ing)) return false;
+    if (al.includes('porc') && /porc|jambon|lard|bacon/i.test(ing)) return false;
+    if (al.includes('vegan') && /poulet|dinde|bœuf|boeuf|steak|saumon|thon|sardine|rumsteck|whey|skyr|fromage|lait|yaourt|caséine/i.test(ing)) return false;
+    if (al.includes('cafe') && /café|caféine/i.test(ing)) return false;
+    return true;
+  });
+}
+function generateDay(recipes, t) {
+  const by = m => recipes.filter(r => r.meal === m);
+  const [B, L, D, C] = [by('petit-déj'), by('déjeuner'), by('dîner'), by('collation')];
+  if (!B.length || !L.length || !D.length) return null;
+  let best = null, bestErr = Infinity;
+  for (const b of B) for (const l of L) for (const d of D) for (const c of [...C, null]) {
+    const combo = [b, l, d, c].filter(Boolean);
+    const kcal = combo.reduce((x, r) => x + r.kcal, 0), p = combo.reduce((x, r) => x + r.p, 0);
+    const err = Math.abs(kcal - (t.kcal || 2000)) + Math.abs(p - (t.p || 130)) * 3 + Math.random() * 12;
+    if (err < bestErr) { bestErr = err; best = combo; }
+  }
+  return best.map(r => r.id);
 }
 
+// ---------- Rappels ----------
+async function askNotifPermission() {
+  if (!('Notification' in window)) { toast('Notifications non supportées'); return false; }
+  const perm = await Notification.requestPermission();
+  if (perm !== 'granted') { toast('Permission refusée'); return false; }
+  return true;
+}
 async function fireNotif(title, body, tag) {
   try {
     const reg = await navigator.serviceWorker.getRegistration();
     if (reg) reg.showNotification(title, { body, icon: 'icons/icon-192.png', badge: 'icons/icon-192.png', tag, vibrate: [120, 60, 120] });
-  } catch { /* silencieux */ }
+  } catch { }
 }
-
 function checkReminders() {
   const r = S.profile?.settings?.reminders;
   if (!r || !r.enabled || Notification?.permission !== 'granted') return;
-  const now = new Date();
-  const hhmm = now.toTimeString().slice(0, 5);
-  const day = now.getDay(); // 0=dim
-  const t = todayStr();
-  const firedKey = lsKey('fired_' + t);
-  const fired = JSON.parse(localStorage.getItem(firedKey) || '{}');
-  const mark = (k) => { fired[k] = 1; localStorage.setItem(firedKey, JSON.stringify(fired)); };
-
-  if (r.workoutDays?.includes(day) && hhmm === r.workoutTime && !fired.workout) {
-    fireNotif('🏋️ C\'est l\'heure de ta séance', 'Ton programme t\'attend. 45 minutes pour toi.', 'workout'); mark('workout');
-  }
-  if (r.weighTime && hhmm === r.weighTime && !fired.weigh) {
-    fireNotif('⚖️ Pesée du matin', 'À jeun, mêmes conditions chaque jour. 10 secondes dans le Carnet.', 'weigh'); mark('weigh');
-  }
-  if (r.hydrate && ['10:00', '13:00', '16:00', '19:00'].includes(hhmm) && !fired['h' + hhmm]) {
-    fireNotif('💧 Hydratation', 'Un grand verre d\'eau maintenant.', 'hydrate'); mark('h' + hhmm);
-  }
+  const now = new Date(), hhmm = now.toTimeString().slice(0, 5), day = now.getDay(), t = todayStr();
+  const key = lsKey('fired_' + t);
+  const fired = JSON.parse(localStorage.getItem(key) || '{}');
+  const mark = k => { fired[k] = 1; localStorage.setItem(key, JSON.stringify(fired)); };
+  if (r.workoutDays?.includes(day) && hhmm === r.workoutTime && !fired.workout) { fireNotif('⚔ DONJON DU JOUR', 'Un portail est apparu. 45 minutes.', 'workout'); mark('workout'); }
+  if (r.weighTime && hhmm === r.weighTime && !fired.weigh) { fireNotif('⚖ PESÉE OFFICIELLE', 'À jeun, mêmes conditions.', 'weigh'); mark('weigh'); }
+  if (r.hydrate && ['10:00', '13:00', '16:00', '19:00'].includes(hhmm) && !fired['h' + hhmm]) { fireNotif('💧 HYDRATATION', "Un grand verre d'eau.", 'hyd'); mark('h' + hhmm); }
 }
 setInterval(checkReminders, 30000);
 
-// ---------- Mini-charts (canvas) ----------
-function drawLine(canvas, values, { color = '#0E8A5F' } = {}) {
-  const dpr = devicePixelRatio || 1;
-  const w = canvas.clientWidth, h = canvas.clientHeight;
-  canvas.width = w * dpr; canvas.height = h * dpr;
-  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, w, h);
-  const vals = values.filter(v => v != null);
-  if (vals.length < 2) { ctx.fillStyle = '#5B6E64'; ctx.font = '13px system-ui'; ctx.fillText('Pas encore assez de données', 10, h / 2); return; }
-  const min = Math.min(...vals), max = Math.max(...vals);
-  const pad = 8, span = (max - min) || 1;
-  const X = (i) => pad + (i / (values.length - 1)) * (w - 2 * pad);
-  const Y = (v) => h - pad - ((v - min) / span) * (h - 2 * pad);
-  ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.lineJoin = 'round'; ctx.beginPath();
-  let started = false;
-  values.forEach((v, i) => {
-    if (v == null) return;
-    if (!started) { ctx.moveTo(X(i), Y(v)); started = true; } else ctx.lineTo(X(i), Y(v));
-  });
-  ctx.stroke();
-  ctx.fillStyle = color;
-  values.forEach((v, i) => { if (v != null) { ctx.beginPath(); ctx.arc(X(i), Y(v), 3, 0, 7); ctx.fill(); } });
-  ctx.fillStyle = '#5B6E64'; ctx.font = '11px system-ui';
-  ctx.fillText(max.toFixed(1), 4, 12); ctx.fillText(min.toFixed(1), 4, h - 4);
-}
-
-function drawBars(canvas, labels, values, { color = '#0E8A5F', target = null } = {}) {
-  const dpr = devicePixelRatio || 1;
-  const w = canvas.clientWidth, h = canvas.clientHeight;
-  canvas.width = w * dpr; canvas.height = h * dpr;
-  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, w, h);
-  const max = Math.max(...values, target || 0, 1);
-  const bw = w / values.length;
-  values.forEach((v, i) => {
-    const bh = (v / max) * (h - 26);
-    ctx.fillStyle = color;
-    ctx.beginPath(); ctx.roundRect(i * bw + bw * 0.2, h - 18 - bh, bw * 0.6, bh, 4); ctx.fill();
-    ctx.fillStyle = '#5B6E64'; ctx.font = '10px system-ui'; ctx.textAlign = 'center';
-    ctx.fillText(labels[i], i * bw + bw / 2, h - 5);
-    if (v) ctx.fillText(v, i * bw + bw / 2, h - 22 - bh);
-  });
-  if (target) {
-    const ty = h - 18 - (target / max) * (h - 26);
-    ctx.strokeStyle = '#B97E04'; ctx.setLineDash([4, 4]); ctx.beginPath();
-    ctx.moveTo(0, ty); ctx.lineTo(w, ty); ctx.stroke(); ctx.setLineDash([]);
-  }
-}
-
 // ============================================================
-// ROUTEUR
+// SHELL : bandeau + deck à 5 panneaux
 // ============================================================
-const routes = {};
-function route(path, fn) { routes[path] = fn; }
+const PANELS = ['STATUT', 'DONJON', 'RATION', 'SYSTÈME', 'ARCHIVES'];
+let deck, strip;
 
-function navigate() {
-  const hash = location.hash.replace('#', '') || '/home';
-  const [path, arg] = hash.split('@');
-  if (!S.user) { renderAuth(); return; }
-  if (!S.profile?.anamnese?.done && path !== '/onboarding') { location.hash = '#/onboarding'; return; }
-  const fn = routes[path] || routes['/home'];
-  $('#tabs').hidden = path === '/onboarding';
-  $$('#tabs a').forEach(a => a.classList.toggle('on', path.startsWith('/' + a.dataset.tab)));
-  window.scrollTo(0, 0);
-  fn(arg);
-}
-window.addEventListener('hashchange', navigate);
-
-function pageHead(eyebrow, title, extra = '') {
-  return `<header class="page-head"><div class="eyebrow">${eyebrow}</div><div class="row between"><h1>${title}</h1>${extra}</div></header>`;
-}
-
-// ============================================================
-// AUTH
-// ============================================================
-function renderAuth() {
-  $('#tabs').hidden = true;
-  app.innerHTML = `
-  <div class="auth-wrap">
-    <div class="logo-block">
-      <img class="mark" src="icons/icon-192.png" alt="">
-      <h1>RECOMP</h1>
-      <p>Ton coach entraînement & nutrition.<br>${LOCAL_MODE ? '⚠️ Mode local (Supabase non configuré) — données sur cet appareil uniquement.' : 'Compte gratuit, données chiffrées au repos.'}</p>
-    </div>
-    <div class="card">
-      ${LOCAL_MODE ? `
-        <label class="field"><span>Ton prénom</span><input id="pseudo" placeholder="Axel"></label>
-        <button class="btn" id="local-go">Commencer en mode local</button>
-      ` : `
-        <label class="field"><span>E-mail</span><input id="email" type="email" autocomplete="email" placeholder="toi@mail.com"></label>
-        <label class="field"><span>Mot de passe</span><input id="pwd" type="password" autocomplete="current-password" placeholder="8 caractères min."></label>
-        <button class="btn" id="login">Se connecter</button>
-        <div style="height:8px"></div>
-        <button class="btn secondary" id="signup">Créer un compte</button>
-      `}
-      <p class="muted small" style="margin-top:12px">Tes données t'appartiennent : export complet possible dans Réglages.</p>
-    </div>
-  </div>`;
-
-  if (LOCAL_MODE) {
-    $('#local-go').onclick = async () => {
-      S.user = { id: 'local', email: 'local' };
-      await dbLoadProfile(); await dbLoadLogs();
-      if (!S.profile) await dbSaveProfile({ pseudo: $('#pseudo').value || 'Athlète', anamnese: {}, settings: {} });
-      location.hash = '#/onboarding'; navigate();
-    };
-    return;
-  }
-  const doAuth = async (mode) => {
-    const email = $('#email').value.trim(), password = $('#pwd').value;
-    if (!email || password.length < 8) { toast('E-mail valide et mot de passe ≥ 8 caractères'); return; }
-    const { data, error } = mode === 'in'
-      ? await sb.auth.signInWithPassword({ email, password })
-      : await sb.auth.signUp({ email, password });
-    if (error) { toast(error.message); return; }
-    if (mode === 'up' && !data.session) { toast('Compte créé ! Vérifie ta boîte mail pour confirmer.'); return; }
-    await onSignedIn(data.session.user);
+function mountShell() {
+  document.body.insertAdjacentHTML('afterbegin', `
+    <header class="strip" id="strip">
+      ${PANELS.map((p, i) => `<button class="strip-item ${i === 0 ? 'on' : ''}" data-i="${i}">${p}</button>`).join('')}
+    </header>
+    <div class="deck" id="deck">
+      ${PANELS.map((_, i) => `<section class="panel" data-p="${i}"><div class="inner" id="panel-${i}"></div></section>`).join('')}
+    </div>`);
+  deck = $('#deck'); strip = $('#strip');
+  strip.onclick = e => {
+    const b = e.target.closest('.strip-item'); if (!b) return;
+    deck.scrollTo({ left: +b.dataset.i * deck.clientWidth, behavior: 'smooth' });
   };
-  $('#login').onclick = () => doAuth('in');
-  $('#signup').onclick = () => doAuth('up');
-}
-
-async function onSignedIn(user) {
-  S.user = { id: user.id, email: user.email };
-  localStorage.setItem('rc_last_user', JSON.stringify(S.user));
-  await dbLoadProfile();
-  await dbLoadLogs();
-  flushOutbox();
-  if (!S.profile) await dbSaveProfile({ pseudo: user.email.split('@')[0], anamnese: {}, settings: {} });
-  navigate();
-}
-
-// ============================================================
-// ONBOARDING — Anamnèse en 4 étapes
-// ============================================================
-route('/onboarding', () => {
-  const a = { sex: 'H', activity: 'leger', goal: 'perte', injuries: [], allergies: [], equipment: ['halteres', 'barre', 'chaise_romaine'], days: 2 };
-  let step = 0;
-  const steps = [stepBio, stepSante, stepLogistique, stepNutrition];
-
-  function shell(inner, canNext = true) {
-    app.innerHTML = `
-      ${pageHead('Anamnèse', 'Faisons connaissance')}
-      <div class="steps">${steps.map((_, i) => `<i class="${i <= step ? 'on' : ''}"></i>`).join('')}</div>
-      <div class="card">${inner}</div>
-      <div class="row">
-        ${step > 0 ? '<button class="btn ghost" id="prev">Retour</button>' : ''}
-        <button class="btn grow" id="next" ${canNext ? '' : 'disabled'}>${step === steps.length - 1 ? 'Générer mon programme' : 'Continuer'}</button>
-      </div>`;
-    $('#prev') && ($('#prev').onclick = () => { step--; steps[step](); });
-    $('#next').onclick = onNext;
-  }
-
-  function chips(name, options, multi = false) {
-    return `<div class="choices" data-chips="${name}">${options.map(([v, l]) =>
-      `<button type="button" class="chip ${multi ? (a[name].includes(v) ? 'on' : '') : (a[name] === v ? 'on' : '')}" data-v="${v}">${l}</button>`).join('')}</div>`;
-  }
-  function bindChips(multi = []) {
-    $$('[data-chips]').forEach(box => {
-      const name = box.dataset.chips;
-      box.onclick = (e) => {
-        const b = e.target.closest('.chip'); if (!b) return;
-        if (multi.includes(name)) {
-          const i = a[name].indexOf(b.dataset.v);
-          i >= 0 ? a[name].splice(i, 1) : a[name].push(b.dataset.v);
-          b.classList.toggle('on');
-        } else {
-          a[name] = b.dataset.v;
-          $$('.chip', box).forEach(x => x.classList.toggle('on', x === b));
-        }
-      };
+  let raf = null;
+  deck.addEventListener('scroll', () => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = null;
+      const i = Math.round(deck.scrollLeft / deck.clientWidth);
+      $$('.strip-item').forEach((b, j) => b.classList.toggle('on', j === i));
+      $$('.strip-item')[i]?.scrollIntoView({ inline: 'center', block: 'nearest' });
     });
+  });
+  const seen = +localStorage.getItem('rc_hint') || 0;
+  if (seen < 2) {
+    document.body.insertAdjacentHTML('beforeend', `<div class="swipe-hint">&lt; GLISSE POUR NAVIGUER &gt;</div>`);
+    localStorage.setItem('rc_hint', seen + 1);
   }
+}
+const goPanel = i => deck?.scrollTo({ left: i * deck.clientWidth, behavior: 'smooth' });
 
-  function stepBio() {
-    shell(`
-      <h2>1 · Profil biométrique</h2>
-      <label class="field"><span>Sexe biologique (pour le calcul calorique)</span>${chips('sex', [['H', 'Homme'], ['F', 'Femme']])}</label>
-      <div class="row">
-        <label class="field grow"><span>Âge</span><input id="age" type="number" inputmode="numeric" value="${a.age || ''}" placeholder="28"></label>
-        <label class="field grow"><span>Taille (cm)</span><input id="height" type="number" inputmode="numeric" value="${a.height || ''}" placeholder="178"></label>
-        <label class="field grow"><span>Poids (kg)</span><input id="weight" type="number" inputmode="decimal" step="0.1" value="${a.weight || ''}" placeholder="80"></label>
-      </div>
-      <label class="field"><span>Activité quotidienne (hors sport)</span>
-        ${chips('activity', [['sedentaire', 'Sédentaire'], ['leger', 'Léger'], ['actif', 'Actif'], ['tres_actif', 'Très actif']])}
-      </label>
-      <label class="field"><span>Objectif</span>
-        ${chips('goal', [['perte', '🔥 Perte de gras'], ['maintien', '⚖️ Recomposition'], ['prise', '💪 Prise de muscle']])}
-      </label>`);
-    bindChips();
-  }
-
-  function stepSante() {
-    shell(`
-      <h2>2 · Santé & articulations</h2>
-      <p class="muted" style="margin-bottom:12px">Le programme s'adapte automatiquement : chaque zone cochée déclenche des remplacements d'exercices et des consignes de sécurité.</p>
-      <label class="field"><span>Antécédents / douleurs (plusieurs choix possibles)</span>
-        ${chips('injuries', [['epaule', 'Épaule / clavicule'], ['genou', 'Genou'], ['lombaires', 'Lombaires'], ['poignet', 'Poignet'], ['aucune', 'Aucune']], true)}
-      </label>
-      <label class="field"><span>Sommeil habituel (h/nuit)</span><input id="sleep" type="number" inputmode="decimal" step="0.5" value="${a.sleep || ''}" placeholder="7"></label>
-      <label class="field"><span>Stress quotidien (1 = zen, 10 = surchauffe)</span><input id="stress" type="number" inputmode="numeric" min="1" max="10" value="${a.stress || ''}" placeholder="5"></label>`);
-    bindChips(['injuries']);
-  }
-
-  function stepLogistique() {
-    shell(`
-      <h2>3 · Logistique & matériel</h2>
-      <label class="field"><span>Matériel disponible</span>
-        ${chips('equipment', [['halteres', 'Haltères'], ['barre', 'Barre de traction'], ['chaise_romaine', 'Chaise romaine'], ['banc', 'Banc'], ['elastiques', 'Élastiques']], true)}
-      </label>
-      <label class="field"><span>Charge d'haltères max (kg, par haltère)</span><input id="dbkg" type="number" inputmode="numeric" value="${a.dbkg || 16}"></label>
-      <label class="field"><span>Séances par semaine</span>
-        ${chips('days', [['2', '2'], ['3', '3'], ['4', '4']])}
-      </label>`);
-    bindChips(['equipment']);
-  }
-
-  function stepNutrition() {
-    shell(`
-      <h2>4 · Nutrition</h2>
-      <label class="field"><span>Allergies / exclusions alimentaires</span>
-        ${chips('allergies', [['oeufs', 'Œufs'], ['oignons', 'Oignons'], ['lactose', 'Lactose'], ['gluten', 'Gluten'], ['fruits_de_mer', 'Fruits de mer'], ['aucune', 'Aucune']], true)}
-      </label>
-      <label class="field"><span>Budget courses hebdo (€, approximatif)</span><input id="budget" type="number" inputmode="numeric" value="${a.budget || ''}" placeholder="50"></label>
-      <p class="muted small">Les recettes embarquées sont déjà sans œufs et sans oignons. Les exclusions cochées filtreront les suggestions.</p>`);
-    bindChips(['allergies']);
-  }
-
-  async function onNext() {
-    // collecte des champs de l'étape
-    ['age', 'height', 'weight', 'sleep', 'stress', 'dbkg', 'budget'].forEach(id => { const el = $('#' + id); if (el) a[id] = el.value; });
-    if (step === 0 && (!+a.age || !+a.height || !+a.weight)) { toast('Âge, taille et poids sont nécessaires au calcul calorique'); return; }
-    if (step < steps.length - 1) { step++; steps[step](); return; }
-    // Génération finale
-    a.days = +a.days || 2;
-    a.done = true;
-    const targets = computeTargets(a);
-    const program = buildProgram(a);
-    await dbSaveProfile({ anamnese: a, targets, program, settings: S.profile?.settings || {} });
-    await dbSaveLog('journal', todayStr(), { weight: +a.weight, sleep: +a.sleep || null, energy: null, notes: 'Point de départ' }, { unique: true });
-    toast('Programme généré ✅');
-    location.hash = '#/home';
-  }
-
-  stepBio();
-});
+function renderAll() {
+  renderVestiaire($('#panel-0'));
+  renderCombat($('#panel-1'));
+  renderCantine($('#panel-2'));
+  renderCoach($('#panel-3'));
+  renderPalmares($('#panel-4'));
+}
 
 // ============================================================
-// ACCUEIL
+// OVERLAYS (hash → fiches plein écran ; back Android = fermer)
 // ============================================================
-route('/home', () => {
-  const p = S.profile, t = p.targets || {};
-  const week = S.logs.filter(l => l.kind === 'workout' && daysSince(l.day) < 7).length;
-  const goalSessions = +p.anamnese?.days || 2;
-  const meals = S.logs.find(l => l.kind === 'meals' && l.day === todayStr());
-  const kcalDone = (meals?.payload.items || []).reduce((s, id) => s + (window.RECIPES.find(r => r.id === id)?.kcal || 0), 0);
-  const ringPct = Math.min(1, week / goalSessions);
+function closeSheets() { $$('.sheet, .levelup').forEach(x => x.remove()); stopTimer(); }
+function openSheet(html, { closable = true } = {}) {
+  const sh = document.createElement('div');
+  sh.className = 'sheet';
+  sh.innerHTML = `<div class="inner">${closable ? '<button class="sheet-close" data-close>✕</button>' : ''}${html}</div>`;
+  if (closable) sh.querySelector('[data-close]').onclick = () => { location.hash = ''; };
+  document.body.appendChild(sh);
+  return sh;
+}
+function handleHash() {
+  const h = location.hash.replace('#', '');
+  const [path, arg] = h.split('@');
+  closeSheets();
+  if (!S.user || !S.profile) return;
+  const map = { '/session': sheetSession, '/exo': sheetExo, '/recipe': sheetRecipe, '/shopping': sheetShopping, '/settings': sheetSettings, '/onboarding': sheetOnboarding };
+  if (map[path]) map[path](arg);
+}
+window.addEventListener('hashchange', handleHash);
+const go = h => { if (('#' + h) === location.hash) handleHash(); else location.hash = h; };
+
+// ============================================================
+// PANNEAU 0 — LE VESTIAIRE
+// ============================================================
+function renderVestiaire(el) { renderStatut(el); }
+function renderStatut(el) {
+  const p = S.profile;
+  const h = window.RPG.hunter(S.logs, p);
+  const dq = window.RPG.dailyQuests(S.logs, p);
+  const wq = window.RPG.weeklyQuests(S.logs, p);
   const advice = window.Coach.dailyAdvice(S.logs, p)[0];
-  const C = 2 * Math.PI * 50;
+  const next = nextSession();
+  const hpMax = h.hp, mpMax = h.mp;
+  const SK = window.RPG.STAT_KEYS, SL = window.RPG.STAT_LABEL;
 
-  app.innerHTML = `
-    ${pageHead(new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }), `Salut ${esc(p.pseudo || '')} 👋`)}
-    <div class="card">
-      <div class="hero-ring">
-        <div class="ring">
-          <svg width="116" height="116" viewBox="0 0 116 116">
-            <circle cx="58" cy="58" r="50" fill="none" stroke="#E0E8E3" stroke-width="10"/>
-            <circle cx="58" cy="58" r="50" fill="none" stroke="#0E8A5F" stroke-width="10" stroke-linecap="round"
-              stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - ringPct)}"/>
-          </svg>
-          <div class="val"><b class="num">${week}/${goalSessions}</b><span>séances</span></div>
+  el.innerHTML = `
+    <div class="label">[ SYSTÈME ] — FENÊTRE DE STATUT</div>
+    <h1 class="title-xl">${esc((p.pseudo || 'JOUEUR').toUpperCase())}</h1>
+    <p class="glow mono" style="margin-top:4px;letter-spacing:0.12em">${esc(h.job.toUpperCase())}${h.streak >= 2 ? ` · SÉRIE ${h.streak}J` : ''}</p>
+
+    <div class="win" style="margin-top:14px">
+      <div class="win-tag">STATUT</div>
+      <div class="status-id">
+        <div class="rank-badge" style="--rank:${h.rankColor}">
+          <span class="r">${h.rank}</span><span class="rl">RANG</span>
         </div>
-        <div class="grow">
-          <p class="muted small">Aujourd'hui</p>
-          <p style="font-size:1.05rem"><b class="num">${kcalDone}</b> / <span class="num">${t.kcal || '—'}</span> kcal</p>
-          <div class="mb" style="grid-template-columns:1fr; margin-top:6px">
-            <div class="track"><div class="fill ${kcalDone > t.kcal ? 'over' : ''}" style="width:${Math.min(100, t.kcal ? kcalDone / t.kcal * 100 : 0)}%"></div></div>
-          </div>
-          <button class="btn sm secondary" style="margin-top:10px" onclick="location.hash='#/food'">Composer mes repas</button>
+        <div class="id-lines">
+          <div class="id-row"><span>Niveau</span><b class="lvl glow">${h.lvl}</b></div>
+          <div class="id-row"><span>Classe</span><b>${esc(h.job)}</b></div>
+          <div class="id-row"><span>XP</span><b class="num">${h.into} / ${h.need}</b></div>
         </div>
       </div>
+
+      <div class="vital hp"><div class="lab"><span>PV</span><span class="num">${hpMax}</span></div><div class="track"><div class="fill" style="width:0%" data-w="100"></div></div></div>
+      <div class="vital mp"><div class="lab"><span>PM</span><span class="num">${mpMax}</span></div><div class="track"><div class="fill" style="width:0%" data-w="100"></div></div></div>
+
+      <hr class="divider">
+      <div class="row between" style="margin-bottom:4px">
+        <span class="label" style="margin:0">STATISTIQUES</span>
+        <span class="label" style="margin:0">ENDURANCE <b class="glow num">${h.stamina}</b></span>
+      </div>
+      ${SK.map(k => `
+        <div class="stat-line">
+          <span class="nm">${SL[k]}</span>
+          <span class="vals">
+            <b class="tv glow">${h.total[k]}</b>
+            ${(+(h.allocated[k]) || 0) > 0 ? `<span class="bonus">(+${h.allocated[k]})</span>` : ''}
+          </span>
+          <button class="stat-add" data-stat="${k}" ${h.pointsAvailable > 0 ? '' : 'disabled'}>+</button>
+        </div>`).join('')}
+      <div class="points-pill ${h.pointsAvailable > 0 ? '' : 'zero'}">◆ POINTS D'APTITUDE : ${h.pointsAvailable}</div>
+      <p class="mute small" style="margin-top:8px">Tes stats montent avec ce que tu fais réellement. À chaque niveau, 3 points libres à répartir.</p>
     </div>
 
-    ${advice ? `<div class="advice ${advice.level}"><span class="ico">${advice.icon}</span><div>${esc(advice.text)} <a href="#/coach" style="color:var(--accent-deep);font-weight:700">Voir le coach →</a></div></div>` : ''}
+    ${advice ? `<div class="advice-b ${advice.level === 'warn' ? 'warn' : ''}">${advice.icon} ${esc(advice.text)}</div>` : ''}
 
-    <div class="card">
-      <div class="row between"><h2>Séance du jour</h2><span class="tagmeal">${esc(p.program?.name || '')}</span></div>
-      ${nextSessionCard()}
+    <div class="win">
+      <div class="win-tag danger">QUÊTE JOURNALIÈRE</div>
+      <h2>DONJON DU JOUR</h2>
+      <p class="mute small" style="margin-bottom:4px">${esc(next.name)} — ${esc(next.sub || '')} · ${next.exercises.length} VAGUES</p>
+      <button class="btn solid" style="margin-top:8px" onclick="location.hash='#/session@${next.id}'">⊳ ENTRER DANS LE DONJON</button>
+      <hr class="divider">
+      ${dq.map(q => `<div class="quest ${q.done ? 'done' : ''}"><span class="box">${q.done ? '✓' : ''}</span><span class="t">${esc(q.t)}</span><span class="xp">+${q.xp}</span></div>`).join('')}
+      <p class="mute small" style="margin-top:8px">⚠ Quête non terminée = série remise à zéro. Le repos fait partie de la progression : un jour off est normal.</p>
     </div>
 
-    <div class="card">
-      <h2>💡 Tip du jour</h2>
-      <p style="font-size:0.92rem">${esc(window.Coach.tipOfDay())}</p>
+    <div class="win">
+      <div class="win-tag">QUÊTE HEBDOMADAIRE</div>
+      ${wq.map(q => `<div class="quest ${q.done ? 'done' : ''}"><span class="box">${q.done ? '✓' : ''}</span><span class="t">${esc(q.t)} <span class="mute num">${q.prog}</span></span><span class="xp">+${q.xp}</span></div>`).join('')}
     </div>
 
-    <button class="btn ghost" onclick="location.hash='#/settings'">⚙️ Réglages, rappels & export</button>`;
-});
+    <div class="win">
+      <h2>◆ MESSAGE DU SYSTÈME</h2>
+      <p style="font-size:0.92rem;font-weight:500;line-height:1.55">${esc(window.Coach.tipOfDay())}</p>
+    </div>
+    <button class="btn ghost" onclick="location.hash='#/settings'">⚙ PARAMÈTRES DU SYSTÈME</button>`;
 
-function daysSince(day) { return Math.round((Date.now() - new Date(day)) / 86400000); }
+  // Allocation de points d'aptitude
+  $$('.stat-add', el).forEach(btn => btn.onclick = async () => {
+    const cur = window.RPG.hunter(S.logs, S.profile);
+    if (cur.pointsAvailable <= 0) return;
+    const k = btn.dataset.stat;
+    const alloc = { ...(S.profile.allocated || {}) };
+    alloc[k] = (+alloc[k] || 0) + 1;
+    await dbSaveProfile({ allocated: alloc });
+    toast(`+1 ${window.RPG.STAT_LABEL[k]}`);
+    if (navigator.vibrate) navigator.vibrate(30);
+    renderStatut(el);
+  });
 
-function nextSessionCard() {
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    $$('.vital .fill', el).forEach(i => i.style.width = i.dataset.w + '%');
+  }));
+}
+function nextTitleLevel(lvl) {
+  return window.RPG.nextRankLevel(lvl) || 'MAX';
+}
+function nextSession() {
   const sessions = S.profile.program?.sessions || [];
-  if (!sessions.length) return '<p class="muted">Aucun programme.</p>';
   const lastW = S.logs.find(l => l.kind === 'workout');
-  const lastId = lastW?.payload.sessionId;
-  const idx = Math.max(0, sessions.findIndex(s => s.id === lastId) + 1) % sessions.length;
-  const next = sessions[idx];
-  return `
-    <p style="font-weight:700; margin-bottom:4px">${esc(next.name)}</p>
-    <p class="muted small">${next.exercises.length} exercices · ~45 min ${lastW ? `· dernière séance il y a ${daysSince(lastW.day)} j` : ''}</p>
-    <button class="btn" style="margin-top:10px" onclick="location.hash='#/session@${next.id}'">▶️ Lancer la séance</button>`;
+  const idx = Math.max(0, sessions.findIndex(s => s.id === lastW?.payload.sessionId) + 1) % (sessions.length || 1);
+  return sessions[idx] || { name: '—', exercises: [] };
 }
 
 // ============================================================
-// ENTRAÎNEMENT — liste + éditeur de programme
+// PANNEAU 1 — LE COMBAT (programme + arsenal)
 // ============================================================
-route('/train', () => {
+function renderCombat(el) {
   const prog = S.profile.program;
-  app.innerHTML = `
-    ${pageHead('Programme', esc(prog?.name || 'Entraînement'))}
-    <p class="muted" style="margin-bottom:12px">${esc(prog?.note || '')}</p>
+  el.innerHTML = `
+    <div class="label">[ SYSTÈME ] — PORTAILS</div>
+    <h1 class="title-xl">LE DONJON</h1>
+    <p class="mute" style="margin:6px 0 16px;font-weight:600">${esc(prog?.note || '')}</p>
+
     ${(prog?.sessions || []).map(s => `
-      <div class="card">
-        <div class="row between"><h2>${esc(s.name)}</h2></div>
-        ${s.exercises.map((ex, i) => exCard(s.id, ex, i, true)).join('')}
-        <button class="btn" onclick="location.hash='#/session@${s.id}'">▶️ Lancer</button>
+      <div class="brick" style="padding:0;overflow:hidden">
+        <div class="gate-head"><span class="n">${esc(s.id)}</span><span class="t">${esc(s.name)} · ${esc(s.sub || '')}</span></div>
+        <div style="padding:14px">
+        ${s.exercises.map((pe, i) => {
+          const ex = getExo(pe.exo) || { name: pe.exo };
+          const lp = lastPerf(pe.exo);
+          return `
+          <div style="padding:10px 0;border-bottom:2px dashed var(--mute)">
+            <div class="row between">
+              <button class="sys" style="text-align:left;font-size:0.95rem" onclick="go('/exo@${ex.id}')">V${i + 1} · ${esc(ex.name.toUpperCase())} +</button>
+              <span class="row">
+                <button class="btn sm ghost" data-act="swap" data-sid="${s.id}" data-i="${i}">↔</button>
+                <button class="btn sm ghost" data-act="minus" data-sid="${s.id}" data-i="${i}">−</button>
+                <button class="btn sm ghost" data-act="plus" data-sid="${s.id}" data-i="${i}">+</button>
+              </span>
+            </div>
+            <div class="specs num" style="margin-top:5px"><span><b>${pe.sets}</b>×${esc(pe.reps)}</span><span>TEMPO <b>${esc(pe.tempo)}</b></span><span>REPOS <b>${pe.rest}s</b></span><span>RPE <b>${esc(pe.rpe)}</b></span></div>
+            ${ex.flag ? `<div class="warn-note">⚠ CONTRAINTE ${esc(ex.flag.toUpperCase())} — AMPLITUDE PARTIELLE, STOP AU MOINDRE SIGNAL</div>` : ''}
+            ${pe.note ? `<div class="warn-note">${esc(pe.note)}</div>` : ''}
+            ${lp ? `<div class="prev">DERNIÈRE FOIS : ${fmtPR(lp)}</div>` : ''}
+          </div>`;
+        }).join('')}
+        <button class="btn" style="margin-top:14px" onclick="go('/session@${s.id}')">⊳ ENTRER · ${esc(s.name)}</button>
+        </div>
       </div>`).join('')}
-    <p class="muted small">↔ remplace un exercice par une variante · −/+ ajuste les séries. Tes modifications sont sauvegardées dans ton profil.</p>`;
 
-  bindProgramEditing();
-});
+    <hr class="divider">
+    <div class="label">ARSENAL — ${window.EXLIB.length} COMPÉTENCES</div>
+    <h2 class="sys" style="font-size:1.6rem;margin-bottom:10px">GRIMOIRE DE COMPÉTENCES</h2>
+    <label class="field"><input id="lib-q" placeholder="RECHERCHER UNE COMPÉTENCE, UN MUSCLE…"></label>
+    <div class="choices" id="lib-filters" style="margin-bottom:12px">
+      <button class="chip on" data-g="">TOUS</button>
+      ${window.EXLIB_GROUPS.map(g => `<button class="chip" data-g="${g}">${g.toUpperCase()}</button>`).join('')}
+    </div>
+    <div id="lib-list"></div>`;
 
-function exCard(sid, ex, i, editable) {
-  return `
-    <div class="ex ${ex.flag ? 'flagged' : ''}" data-sid="${sid}" data-i="${i}">
-      <div class="row between">
-        <span class="name">${i + 1}. ${esc(ex.name)}</span>
-        ${editable ? `<span class="row">
-          <button class="btn sm ghost act-swap" title="Variante">↔</button>
-          <button class="btn sm ghost act-minus">−</button>
-          <button class="btn sm ghost act-plus">+</button>
-        </span>` : ''}
-      </div>
-      <div class="meta num">
-        <span><b>${ex.sets}</b> × ${esc(ex.reps)}</span>
-        <span>tempo <b>${esc(ex.tempo)}</b></span>
-        <span>repos <b>${ex.rest}s</b></span>
-        <span>RPE <b>${esc(ex.rpe)}</b></span>
-      </div>
-      <div class="cue">${esc(ex.cue)}</div>
-    </div>`;
+  // édition du programme
+  el.onclick = async e => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const sess = S.profile.program.sessions.find(x => x.id === b.dataset.sid);
+    const pe = sess.exercises[+b.dataset.i];
+    if (b.dataset.act === 'plus') { pe.sets++; await dbSaveProfile({ program: S.profile.program }); renderCombat(el); }
+    if (b.dataset.act === 'minus' && pe.sets > 1) { pe.sets--; await dbSaveProfile({ program: S.profile.program }); renderCombat(el); }
+    if (b.dataset.act === 'swap') swapPicker(pe, () => renderCombat(el));
+  };
+  // bibliothèque
+  let q = '', grp = '';
+  const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const drawLib = () => {
+    const list = window.EXLIB.filter(x => (!grp || x.group === grp) && (!q || norm(x.name + ' ' + x.muscles.join(' ')).includes(norm(q))));
+    $('#lib-list', el).innerHTML = list.map(x => `
+      <button class="menu-item row" style="width:100%;text-align:left" onclick="go('/exo@${x.id}')">
+        <span class="grow"><span class="ttl">${esc(x.name.toUpperCase())}</span><br><span class="mute small up" style="font-weight:700">${x.muscles.join(' · ')} — ${esc(x.equip)}</span></span>
+        <span class="sys" style="color:var(--accent)">${'▮'.repeat(x.level)}${'▯'.repeat(3 - x.level)}</span>
+      </button>`).join('') || '<p class="mute">AUCUNE COMPÉTENCE À CE NOM.</p>';
+  };
+  $('#lib-q', el).oninput = e => { q = e.target.value; drawLib(); };
+  $('#lib-filters', el).addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    grp = b.dataset.g;
+    $$('#lib-filters .chip', el).forEach(x => x.classList.toggle('on', x === b));
+    drawLib();
+  });
+  drawLib();
 }
 
-function bindProgramEditing() {
-  $$('.ex').forEach(card => {
-    const sid = card.dataset.sid, i = +card.dataset.i;
-    const get = () => S.profile.program.sessions.find(s => s.id === sid).exercises[i];
-    const save = () => dbSaveProfile({ program: S.profile.program }).then(() => navigate());
-    $('.act-plus', card) && ($('.act-plus', card).onclick = () => { get().sets++; save(); });
-    $('.act-minus', card) && ($('.act-minus', card).onclick = () => { const e = get(); if (e.sets > 1) { e.sets--; save(); } });
-    $('.act-swap', card) && ($('.act-swap', card).onclick = () => {
-      const e = get();
-      const swaps = window.EXERCISE_SWAPS[e.id] || [];
-      if (!swaps.length) { toast('Pas de variante pour cet exercice'); return; }
-      const cur = swaps.indexOf(e.name);
-      const next = swaps[(cur + 1) % swaps.length];
-      if (!e._original) e._original = e.name;
-      e.name = (next === e._original) ? e._original : next;
-      // cycle : original → variantes → original
-      if (cur === swaps.length - 1) e.name = e._original;
-      save();
-      toast('Exercice remplacé : ' + e.name);
-    });
+function swapPicker(pe, after) {
+  const cur = getExo(pe.exo);
+  const variants = window.EXLIB.filter(e => e.group === cur?.group && e.id !== pe.exo);
+  const sh = openSheet(`
+    <div class="label">SUBSTITUTION DE COMPÉTENCE</div>
+    <h1 class="sys" style="font-size:1.6rem;margin-bottom:12px">REMPLACER<br>${esc((cur?.name || '').toUpperCase())}</h1>
+    ${variants.map(v => `
+      <button class="menu-item row" style="width:100%;text-align:left" data-pick="${v.id}">
+        <span class="grow"><span class="ttl">${esc(v.name.toUpperCase())}</span><br><span class="mute small up" style="font-weight:700">${v.muscles.join(' · ')}</span></span>
+        <span class="sys" style="color:var(--accent)">${'▮'.repeat(v.level)}${'▯'.repeat(3 - v.level)}</span>
+      </button>`).join('')}`);
+  sh.querySelector('[data-close]').onclick = () => sh.remove();
+  sh.querySelectorAll('[data-pick]').forEach(b => b.onclick = async () => {
+    pe.exo = b.dataset.pick;
+    await dbSaveProfile({ program: S.profile.program });
+    sh.remove(); toast('COMPÉTENCE REMPLACÉE');
+    after();
   });
 }
 
+// ---------- Fiche technique (exo) ----------
+function sheetExo(id) {
+  const e = getExo(id);
+  if (!e) return;
+  const pr = currentPRs().find(p => p.exo.id === id);
+  const history = [];
+  [...S.logs.filter(l => l.kind === 'workout')].sort((a, b) => a.day.localeCompare(b.day)).forEach(w => {
+    const sets = (w.payload.sets || []).filter(s => exoOf(s)?.id === id);
+    if (sets.length) history.push(Math.max(...sets.map(setScore)));
+  });
+  openSheet(`
+    <div class="label">${esc(e.group.toUpperCase())} · NIVEAU ${'▮'.repeat(e.level)}${'▯'.repeat(3 - e.level)}</div>
+    <h1 class="title-xl" style="font-size:2.2rem">${esc(e.name.toUpperCase())}</h1>
+    <p class="mute up small" style="font-weight:800;margin:6px 0 14px">${esc(e.equip)}</p>
+    ${e.flag ? `<div class="flag-strip"></div><div class="warn-note" style="margin:0 0 14px">⚠ PROTOCOLE ${esc(e.flag.toUpperCase())} ACTIF</div>` : ''}
+    <div class="brick">
+      <h2>CIBLES</h2>
+      <div class="row wrap">${e.muscles.map(m => `<span class="chip on">${esc(m.toUpperCase())}</span>`).join('')}${(e.secondary || []).map(m => `<span class="micro">${esc(m)}</span>`).join('')}</div>
+    </div>
+    <div class="brick">
+      <h2>EXÉCUTION</h2>
+      ${e.steps.map((s, i) => `
+        <div class="row" style="align-items:flex-start;padding:8px 0;border-bottom:2px dashed var(--mute)">
+          <span class="sys" style="font-size:1.4rem;color:var(--accent);width:34px;flex:none">${i + 1}</span>
+          <span style="font-weight:600;font-size:0.93rem;line-height:1.5">${esc(s)}</span>
+        </div>`).join('')}
+      <div class="warn-note" style="background:var(--panel);border-color:var(--line);color:var(--ink)">🎯 ${esc(e.cues)}</div>
+      <p class="mute small" style="margin-top:8px;font-weight:700">🫁 ${esc(e.breath)}</p>
+    </div>
+    <div class="brick">
+      <h2 style="color:var(--accent)">FAUTES TECHNIQUES</h2>
+      ${e.errors.map(x => `<p style="font-weight:700;font-size:0.9rem;padding:5px 0">✗ ${esc(x)}</p>`).join('')}
+    </div>
+    ${(e.easier || e.harder) ? `<div class="row" style="margin-bottom:18px">
+      ${e.easier ? `<button class="btn ghost grow" onclick="go('/exo@${e.easier}')">⬇ ${esc(getExo(e.easier)?.name.toUpperCase() || '')}</button>` : ''}
+      ${e.harder ? `<button class="btn solid grow" onclick="go('/exo@${e.harder}')">⬆ ${esc(getExo(e.harder)?.name.toUpperCase() || '')}</button>` : ''}
+    </div>` : ''}
+    ${pr ? `<div class="brick">
+      <div class="row between"><h2>🏆 TON RECORD</h2><b class="sys num">${fmtPR(pr.set)}</b></div>
+      ${history.length >= 2 ? '<canvas class="chart" id="exo-chart"></canvas>' : '<p class="mute small">ENCORE UN COMBAT ET LA COURBE APPARAÎT.</p>'}
+    </div>` : ''}`);
+  if (history.length >= 2) requestAnimationFrame(() => drawLine($('#exo-chart'), history));
+}
+
 // ============================================================
-// LECTEUR DE SÉANCE
+// SÉANCE = LE COMBAT (rounds)
 // ============================================================
-route('/session', (sid) => {
+function sheetSession(sid) {
   const base = S.profile.program.sessions.find(s => s.id === sid);
-  if (!base) { location.hash = '#/train'; return; }
+  if (!base) return;
   const adapted = window.Coach.adaptSession(base, S.logs, S.profile);
   const sess = adapted.session;
   const draftKey = 'draft_' + sid + '_' + todayStr();
   const draft = cacheGet(draftKey, {});
+  if (!draft.startedAt) { draft.startedAt = Date.now(); cacheSet(draftKey, draft); }
 
-  app.innerHTML = `
-    ${pageHead('Séance en cours', esc(sess.name))}
-    ${adapted.changed ? `<div class="advice warn"><span class="ico">🎚️</span><div>${esc(adapted.summary)}</div></div>`
-      : `<div class="advice good"><span class="ico">✅</span><div>${esc(adapted.summary)}</div></div>`}
-    ${sess.exercises.map((ex, ei) => `
-      <div class="ex ${ex.flag ? 'flagged' : ''}">
-        <span class="name">${ei + 1}. ${esc(ex.name)}</span>
-        <div class="meta num"><span>cible <b>${ex.sets} × ${esc(ex.reps)}</b></span><span>tempo <b>${esc(ex.tempo)}</b></span><span>RPE <b>${esc(ex.rpe)}</b></span></div>
-        <div class="cue">${esc(ex.cue)}</div>
-        <div class="setline" style="margin-top:10px; font-size:0.72rem; color:var(--ink-soft)">
-          <span></span><span style="text-align:center">KG</span><span style="text-align:center">REPS</span><span style="text-align:center">RPE</span><span></span>
+  const sh = openSheet(`
+    <div class="label danger">DONJON EN COURS</div>
+    <h1 class="title-xl" style="font-size:2.4rem">${esc(sess.name.toUpperCase())}</h1>
+    <p class="sys" style="color:var(--accent);margin:4px 0 14px">${esc((sess.sub || '').toUpperCase())} · ${sess.exercises.length} VAGUES</p>
+    <div class="advice-b ${adapted.changed ? 'warn' : 'good'}">${adapted.changed ? '🎚' : '✓'} ${esc(adapted.summary)}</div>
+    ${sess.exercises.map((pe, ei) => {
+      const ex = getExo(pe.exo) || { name: pe.exo };
+      const lp = lastPerf(pe.exo);
+      const best = bestBefore(pe.exo, todayStr());
+      return `
+      <div class="gate ${ex.flag ? 'flagged' : ''}">
+        ${ex.flag ? '<div class="flag-strip"></div>' : ''}
+        <div class="gate-head">
+          <span class="n num">V${ei + 1}</span>
+          <button class="t" style="text-align:left" onclick="go('/exo@${ex.id}')">${esc(ex.name.toUpperCase())} ＋</button>
         </div>
-        ${Array.from({ length: ex.sets }, (_, si) => {
-          const d = draft[`${ei}_${si}`] || {};
-          return `
-          <div class="setline" data-ei="${ei}" data-si="${si}">
-            <span class="n">${si + 1}</span>
-            <input inputmode="decimal" placeholder="kg" value="${d.weight ?? ''}" data-f="weight">
-            <input inputmode="numeric" placeholder="reps" value="${d.reps ?? ''}" data-f="reps">
-            <input inputmode="decimal" placeholder="RPE" value="${d.rpe ?? ''}" data-f="rpe">
-            <button class="ok ${d.done ? 'done' : ''}">✓</button>
-          </div>`;
-        }).join('')}
-      </div>`).join('')}
-    <button class="btn" id="finish">🏁 Terminer & enregistrer la séance</button>
-    <div style="height:70px"></div>`;
+        <div class="gate-body">
+          <div class="specs num"><span>CIBLE <b>${pe.sets}×${esc(pe.reps)}</b></span><span>TEMPO <b>${esc(pe.tempo)}</b></span><span>RPE <b>${esc(pe.rpe)}</b></span></div>
+          ${ex.flag ? `<div class="warn-note">⚠ ${esc(ex.cues)}</div>` : ''}
+          ${lp ? `<div class="prev">DERNIÈRE FOIS : ${fmtPR(lp)}${best ? ` · RECORD : ${fmtPR(best.set)}` : ''}</div>` : ''}
+          <div class="setrow" style="font-size:0.64rem;font-weight:800;color:var(--mute)">
+            <span></span><span style="text-align:center">KG</span><span style="text-align:center">REPS</span><span style="text-align:center">RPE</span><span></span>
+          </div>
+          ${Array.from({ length: pe.sets }, (_, si) => {
+            const d = draft[`${ei}_${si}`] || {};
+            return `
+            <div class="setrow" data-ei="${ei}" data-si="${si}" data-exo="${ex.id}">
+              <span class="n num">${si + 1}</span>
+              <input inputmode="decimal" placeholder="${lp?.weight || 'KG'}" value="${d.weight ?? ''}" data-f="weight">
+              <input inputmode="numeric" placeholder="${lp?.reps || 'REPS'}" value="${d.reps ?? ''}" data-f="reps">
+              <input inputmode="decimal" placeholder="RPE" value="${d.rpe ?? ''}" data-f="rpe">
+              <button class="ok ${d.done ? 'done' : ''}">✓</button>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }).join('')}
+    <button class="btn" id="finish">🏁 NETTOYER LE DONJON</button>
+    <div style="height:84px"></div>`);
 
   const saveDraft = () => cacheSet(draftKey, draft);
-
-  $$('.setline[data-ei]').forEach(line => {
+  $$('.setrow[data-ei]', sh).forEach(line => {
     const k = `${line.dataset.ei}_${line.dataset.si}`;
-    $$('input', line).forEach(inp => inp.oninput = () => {
-      draft[k] = draft[k] || {}; draft[k][inp.dataset.f] = inp.value; saveDraft();
-    });
-    $('.ok', line).onclick = (e) => {
+    $$('input', line).forEach(inp => inp.oninput = () => { draft[k] = draft[k] || {}; draft[k][inp.dataset.f] = inp.value; saveDraft(); });
+    $('.ok', line).onclick = ev => {
       draft[k] = draft[k] || {};
       draft[k].done = !draft[k].done;
-      e.target.classList.toggle('done', draft[k].done);
+      ev.target.classList.toggle('done', draft[k].done);
       saveDraft();
       if (draft[k].done) {
-        const ex = sess.exercises[+line.dataset.ei];
-        startTimer(ex.rest);
+        startTimer(sess.exercises[+line.dataset.ei].rest);
         if (navigator.vibrate) navigator.vibrate(40);
+        const s = { weight: +draft[k].weight || 0, reps: +draft[k].reps || 0 };
+        const b = bestBefore(line.dataset.exo, todayStr());
+        if (s.reps && b && setScore(s) > b.score) toast('🏆 RECORD EN VUE !');
       }
     };
   });
 
-  $('#finish').onclick = async () => {
+  $('#finish', sh).onclick = async () => {
     const sets = [];
     Object.entries(draft).forEach(([k, v]) => {
-      if (!v.done && !v.reps) return;
+      if (k === 'startedAt' || (!v.done && !v.reps)) return;
       const [ei, si] = k.split('_').map(Number);
-      sets.push({ ex: sess.exercises[ei].name, n: si + 1, weight: +v.weight || 0, reps: +v.reps || 0, rpe: +v.rpe || 0 });
+      const pe = sess.exercises[ei];
+      sets.push({ exoId: pe.exo, ex: getExo(pe.exo)?.name || pe.exo, n: si + 1, weight: +v.weight || 0, reps: +v.reps || 0, rpe: +v.rpe || 0 });
     });
-    if (!sets.length) { toast('Valide au moins une série (✓) avant de terminer'); return; }
-    await dbSaveLog('workout', todayStr(), { sessionId: sid, sessionName: sess.name, sets });
+    if (!sets.length) { toast('VALIDE AU MOINS UNE SÉRIE (✓)'); return; }
+    const prs = [], seen = new Set();
+    sets.forEach(s => {
+      if (seen.has(s.exoId) || !s.reps) return;
+      const b = bestBefore(s.exoId, todayStr());
+      const sc = setScore(s);
+      const top = Math.max(...sets.filter(x => x.exoId === s.exoId).map(setScore));
+      if (b && top > b.score && sc === top) { prs.push(s); seen.add(s.exoId); }
+    });
+    const durMin = Math.round((Date.now() - draft.startedAt) / 60000);
+    const xpBefore = window.RPG.computeXP(S.logs).xp;
+    const lvlBefore = window.RPG.hunter(S.logs, S.profile).lvl;
+    const beltsBefore = unlockedBadges().map(b => b.id);
+    await dbSaveLog('workout', todayStr(), { sessionId: sid, sessionName: sess.name, sets, durMin });
+    const xpGain = window.RPG.computeXP(S.logs).xp - xpBefore;
+    const hAfter = window.RPG.hunter(S.logs, S.profile);
+    const leveledTo = hAfter.lvl > lvlBefore ? hAfter.lvl : 0;
+    const newBelts = unlockedBadges().filter(b => !beltsBefore.includes(b.id));
     localStorage.removeItem(lsKey(draftKey));
     stopTimer();
-    toast('Séance enregistrée 💪');
-    location.hash = '#/journal';
+    history.replaceState(null, '', location.pathname); // hash vide sans nouvelle entrée
+    closeSheets();
+    showVictory({ sets, prs, durMin, xpGain, newBelts, leveledTo, rank: hAfter.rank });
+    renderAll();
   };
-});
+}
 
-// ---------- Minuteur de repos ----------
+function showVictory({ sets, prs, durMin, xpGain, newBelts, leveledTo, rank }) {
+  const vol = sets.reduce((x, s) => x + s.weight * s.reps, 0);
+  const ov = document.createElement('div');
+  ov.className = 'levelup';
+  ov.innerHTML = `
+    <div class="sys-line">[ NOTIFICATION DU SYSTÈME ]</div>
+    ${leveledTo ? `
+      <div class="big">NIVEAU ${leveledTo}</div>
+      <div class="sub glow">VOUS ÊTES MONTÉ DE NIVEAU</div>
+      <p class="pts">◆ +3 POINTS D'APTITUDE À RÉPARTIR</p>
+    ` : `
+      <div class="big">DONJON</div>
+      <div class="sub glow">${prs.length ? 'NETTOYÉ — RECORD ÉTABLI' : 'NETTOYÉ'}</div>
+    `}
+    <div class="vstats">
+      <div class="cell"><b class="num">${sets.length}</b><span>séries</span></div>
+      <div class="cell"><b class="num">${Math.round(vol).toLocaleString('fr-FR')}</b><span>kg volume</span></div>
+      <div class="cell"><b class="num">${durMin || '—'}</b><span>min</span></div>
+    </div>
+    <div class="notif"><b class="glow num">+${xpGain} XP</b> &nbsp;·&nbsp; +${window.RPG.XP.workout} donjon · +${window.RPG.XP.set}×${sets.length} séries${prs.length ? ` · +${window.RPG.XP.pr}×${prs.length} record${prs.length > 1 ? 's' : ''}` : ''}</div>
+    ${prs.map(s => `<div class="notif">🏆 RECORD — ${esc((getExo(s.exoId)?.name || s.ex))} : ${fmtPR(s)}</div>`).join('')}
+    ${newBelts.map(b => `<div class="notif gold">${b.icon} TITRE OBTENU : ${esc(b.name)}</div>`).join('')}
+    ${leveledTo ? `<div class="notif gold">⬆ RANG DE CHASSEUR : ${rank}</div>` : ''}
+    <button class="btn solid" style="max-width:380px;margin-top:18px" id="v-ok">${leveledTo ? '◆ RÉPARTIR MES POINTS' : 'RETOUR AU STATUT'}</button>`;
+  document.body.appendChild(ov);
+  confetti(leveledTo || prs.length || newBelts.length ? 2600 : 1600);
+  if (navigator.vibrate) navigator.vibrate(leveledTo ? [120, 60, 120, 60, 220] : [90, 50, 90]);
+  $('#v-ok', ov).onclick = () => { ov.remove(); goPanel(0); };
+}
+
+// ---------- Minuteur ----------
 function startTimer(seconds) {
   stopTimer();
   let left = seconds;
   const bar = document.createElement('div');
-  bar.className = 'timerbar';
-  bar.innerHTML = `<span>⏱️ Repos</span><b class="num grow" id="tval"></b><button class="btn sm secondary" id="tskip">Passer</button>`;
+  bar.className = 'timer-b';
+  bar.innerHTML = `<span class="lbl">REPOS<br>COIN DU RING</span><b class="t num" id="tval"></b><button class="btn sm" id="tskip">GO</button>`;
   document.body.appendChild(bar);
-  const render = () => { $('#tval').textContent = `${String(Math.floor(left / 60)).padStart(1, '0')}:${String(left % 60).padStart(2, '0')}`; };
+  const render = () => { const el = $('#tval'); if (el) el.textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`; };
   render();
   S.timer = setInterval(() => {
     left--;
     if (left <= 0) {
       stopTimer();
       if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-      fireNotif('⏱️ Repos terminé', 'Prochaine série !', 'rest');
+      fireNotif('🔔 DING ! REPOS TERMINÉ', 'Round suivant.', 'rest');
     } else render();
   }, 1000);
   $('#tskip').onclick = stopTimer;
 }
-function stopTimer() {
-  clearInterval(S.timer); S.timer = null;
-  $$('.timerbar').forEach(b => b.remove());
-}
+function stopTimer() { clearInterval(S.timer); S.timer = null; $$('.timer-b').forEach(b => b.remove()); }
 
 // ============================================================
-// REPAS — cibles, journée, recettes, courses
+// PANNEAU 2 — LA CANTINE
 // ============================================================
-route('/food', () => {
+function renderCantine(el) {
   const t = S.profile.targets || {};
-  const allerg = S.profile.anamnese?.allergies || [];
-  const recipes = window.RECIPES.filter(r => {
-    if (allerg.includes('lactose') && /skyr|fromage blanc|lait|whey/i.test(r.ing.map(i => i[0]).join(' '))) return false;
-    if (allerg.includes('gluten') && /pâtes|tortilla|flocons/i.test(r.ing.map(i => i[0]).join(' '))) return false;
-    if (allerg.includes('fruits_de_mer') && /thon|sardine|saumon/i.test(r.ing.map(i => i[0]).join(' '))) return false;
-    return true;
-  });
+  const recipes = allowedRecipes();
   const meals = S.logs.find(l => l.kind === 'meals' && l.day === todayStr());
   const items = meals?.payload.items || [];
   const tot = items.reduce((s, id) => {
@@ -694,378 +821,703 @@ route('/food', () => {
     if (r) { s.kcal += r.kcal; s.p += r.p; s.c += r.c; s.f += r.f; }
     return s;
   }, { kcal: 0, p: 0, c: 0, f: 0 });
+  let mealFilter = '';
 
   const bar = (label, val, max) => `
-    <div class="mb"><span>${label}</span>
-      <div class="track"><div class="fill ${val > max ? 'over' : ''}" style="width:${Math.min(100, max ? val / max * 100 : 0)}%"></div></div>
-      <span class="num" style="text-align:right">${val} / ${max || '—'} g</span>
+    <div class="mb-row"><span>${label}</span>
+      <span class="bar"><i class="${val > max ? 'over' : ''}" style="width:${Math.min(100, max ? val / max * 100 : 0)}%"></i></span>
+      <span class="num" style="text-align:right">${val}/${max || '—'} G</span>
     </div>`;
 
-  app.innerHTML = `
-    ${pageHead('Nutrition', 'Mes repas', `<button class="btn sm secondary" onclick="location.hash='#/shopping'">🛒 Courses</button>`)}
-    <div class="card">
-      <div class="row between"><h2>Aujourd'hui</h2><span class="num" style="font-family:Archivo;font-weight:800">${tot.kcal} / ${t.kcal || '—'} kcal</span></div>
-      <div class="macro-bars">
-        ${bar('Protéines', tot.p, t.p)}
-        ${bar('Glucides', tot.c, t.c)}
-        ${bar('Lipides', tot.f, t.f)}
+  el.innerHTML = `
+    <div class="label">[ SYSTÈME ] — INVENTAIRE</div>
+    <h1 class="title-xl">LA RATION</h1>
+    <div class="brick" style="margin-top:14px">
+      <div class="row between"><h2>AUJOURD'HUI</h2><b class="sys num" style="font-size:1.2rem">${tot.kcal}/${t.kcal || '—'} KCAL</b></div>
+      ${bar('PROTÉINES', tot.p, t.p)}${bar('GLUCIDES', tot.c, t.c)}${bar('LIPIDES', tot.f, t.f)}
+      <div class="row" style="margin-top:14px">
+        <button class="btn solid grow" id="gen-day">⚡ GÉNÉRER MA JOURNÉE</button>
+        ${items.length ? '<button class="btn sm ghost" id="clear-day">VIDER</button>' : ''}
       </div>
-      <p class="muted small" style="margin-top:10px">Cibles calculées par Mifflin-St Jeor (BMR ${t.bmr || '—'} · TDEE ${t.tdee || '—'} kcal). Ajustables dans Réglages.</p>
+      <button class="btn ghost" style="margin-top:8px" onclick="go('/shopping')">🛒 RÉAPPROVISIONNEMENT</button>
     </div>
+    <div class="choices" id="meal-filters" style="margin-bottom:12px">
+      ${['', 'petit-déj', 'déjeuner', 'dîner', 'collation', 'batch'].map(m =>
+        `<button class="chip ${m === '' ? 'on' : ''}" data-m="${m}">${m === '' ? 'TOUT' : m === 'batch' ? '🍲 BATCH' : m.toUpperCase()}</button>`).join('')}
+    </div>
+    <div id="rec-list"></div>`;
 
-    <h2 style="font-size:1rem; margin:14px 0 8px">Recettes — appuie pour ajouter à ta journée</h2>
-    ${recipes.map(r => {
+  const drawList = () => {
+    const list = recipes.filter(r => !mealFilter || (mealFilter === 'batch' ? r.batch : r.meal === mealFilter));
+    $('#rec-list', el).innerHTML = list.map(r => {
       const n = items.filter(i => i === r.id).length;
       return `
-      <div class="recipe">
-        <div class="row1">
-          <div>
-            <span class="tagmeal">${r.meal}</span>
-            <p style="font-weight:700; margin-top:5px">${esc(r.name)} ${n ? `<span style="color:var(--accent)">×${n}</span>` : ''}</p>
-            <p class="muted small num">P ${r.p} · G ${r.c} · L ${r.f}</p>
+      <div class="menu-item">
+        <div class="row between" style="align-items:flex-start">
+          <div class="grow">
+            <span class="row wrap" style="gap:5px"><span class="label" style="margin:0">${r.meal.toUpperCase()}</span>${r.batch ? '<span class="batch-b">🍲 BATCH</span>' : ''}</span>
+            <p class="ttl" style="margin-top:6px">${esc(r.name.toUpperCase())} ${n ? `<span style="color:var(--accent)">×${n}</span>` : ''}</p>
+            <p class="mute small num" style="font-weight:700">P${r.p} · G${r.c} · L${r.f} · ${r.time} MIN · ~${r.cost.toFixed(2).replace('.', ',')} €</p>
+            <div class="row wrap" style="gap:4px;margin-top:6px">${(r.micros || []).map(m => `<span class="micro">${esc(m)}</span>`).join('')}</div>
           </div>
-          <div style="text-align:right">
-            <p class="kcal num">${r.kcal}<span class="muted small"> kcal</span></p>
-            <div class="row" style="margin-top:6px; justify-content:flex-end">
-              ${n ? `<button class="btn sm ghost rm" data-id="${r.id}">−</button>` : ''}
-              <button class="btn sm secondary add" data-id="${r.id}">+ Ajouter</button>
+          <div style="text-align:right;flex:none">
+            <p class="kcal-big num">${r.kcal}</p>
+            <div class="row" style="margin-top:6px;justify-content:flex-end">
+              ${n ? `<button class="btn sm ghost" data-rm="${r.id}">−</button>` : ''}
+              <button class="btn sm solid" data-add="${r.id}">+</button>
             </div>
           </div>
         </div>
-        <button class="btn sm ghost" style="margin-top:8px" onclick="location.hash='#/recipe@${r.id}'">📖 Recette & ingrédients</button>
+        <button class="btn sm ghost" style="margin-top:9px" onclick="go('/recipe@${r.id}')">📖 LA RECETTE</button>
       </div>`;
-    }).join('')}`;
-
-  const saveMeals = async (newItems) => {
-    await dbSaveLog('meals', todayStr(), { items: newItems }, { unique: true });
-    navigate();
+    }).join('') || '<p class="mute">RIEN DANS CE FILTRE.</p>';
   };
-  $$('.add').forEach(b => b.onclick = () => saveMeals([...items, b.dataset.id]));
-  $$('.rm').forEach(b => b.onclick = () => {
-    const i = items.indexOf(b.dataset.id);
-    const copy = [...items]; if (i >= 0) copy.splice(i, 1);
-    saveMeals(copy);
-  });
-});
+  drawList();
 
-route('/recipe', (rid) => {
+  const saveMeals = async newItems => { await dbSaveLog('meals', todayStr(), { items: newItems }, { unique: true }); renderCantine(el); renderVestiaire($('#panel-0')); };
+  el.addEventListener('click', e => {
+    const add = e.target.closest('[data-add]'), rm = e.target.closest('[data-rm]'), f = e.target.closest('[data-m]');
+    if (add) saveMeals([...items, add.dataset.add]);
+    else if (rm) { const c = [...items]; const i = c.indexOf(rm.dataset.rm); if (i >= 0) c.splice(i, 1); saveMeals(c); }
+    else if (f) { mealFilter = f.dataset.m; $$('#meal-filters .chip', el).forEach(x => x.classList.toggle('on', x === f)); drawList(); }
+  });
+  $('#gen-day', el).onclick = () => {
+    const gen = generateDay(recipes, t);
+    if (!gen) { toast('PAS ASSEZ DE RECETTES COMPATIBLES'); return; }
+    saveMeals(gen); toast('⚡ JOURNÉE GÉNÉRÉE');
+  };
+  $('#clear-day', el) && ($('#clear-day', el).onclick = () => saveMeals([]));
+}
+
+function sheetRecipe(rid) {
   const r = window.RECIPES.find(x => x.id === rid);
-  if (!r) { location.hash = '#/food'; return; }
-  app.innerHTML = `
-    ${pageHead(r.meal, esc(r.name))}
-    <div class="card">
-      <div class="row" style="gap:16px">
-        <span class="num"><b style="font-family:Archivo;font-size:1.3rem">${r.kcal}</b> kcal</span>
-        <span class="muted num">P ${r.p} g · G ${r.c} g · L ${r.f} g</span>
+  if (!r) return;
+  openSheet(`
+    <div class="label">${r.meal.toUpperCase()}</div>
+    <h1 class="title-xl" style="font-size:2.1rem">${esc(r.name.toUpperCase())}</h1>
+    <div class="brick" style="margin-top:14px">
+      <div class="row wrap" style="gap:14px">
+        <b class="sys num" style="font-size:1.4rem">${r.kcal} KCAL</b>
+        <span class="mute num" style="font-weight:800">P${r.p} · G${r.c} · L${r.f}</span>
+        <span class="mute" style="font-weight:800">${r.time} MIN · ~${r.cost.toFixed(2).replace('.', ',')} €</span>
       </div>
+      <div class="row wrap" style="gap:5px;margin-top:10px">${(r.micros || []).map(m => `<span class="micro">${esc(m)}</span>`).join('')}</div>
     </div>
-    <div class="card">
-      <h2>Ingrédients (1 portion)</h2>
-      ${r.ing.map(([n, q]) => `<div class="checkline"><span class="grow">${esc(n)}</span><b class="num">${q} g</b></div>`).join('')}
+    ${r.batch ? `<div class="warn-note" style="margin-bottom:18px">🍲 BATCH : ${esc(r.batchNote || 'Multiplie les quantités.')}</div>` : ''}
+    <div class="brick">
+      <h2>INGRÉDIENTS (1 PORTION)</h2>
+      ${r.ing.map(([n, q]) => `<div class="checkline"><span class="grow">${esc(n)}</span><b class="sys num">${q} G</b></div>`).join('')}
     </div>
-    <div class="card">
-      <h2>Préparation</h2>
-      <p style="font-size:0.92rem; line-height:1.55">${esc(r.steps)}</p>
-    </div>
-    <button class="btn ghost" onclick="location.hash='#/food'">← Retour aux repas</button>`;
-});
+    <div class="brick"><h2>PRÉPARATION</h2><p style="font-weight:600;font-size:0.94rem;line-height:1.65">${esc(r.steps)}</p></div>`);
+}
 
-// ---------- Liste de courses ----------
-route('/shopping', () => {
-  const plan = cacheGet('weekplan', {});   // { recipeId: nbPortions }
+function sheetShopping() {
+  const plan = cacheGet('weekplan', {});
   const checks = cacheGet('shopchecks', {});
-  const agg = {};
-  Object.entries(plan).forEach(([rid, n]) => {
-    const r = window.RECIPES.find(x => x.id === rid);
-    if (!r || !n) return;
-    r.ing.forEach(([name, q, cat]) => {
-      const key = cat + '|' + name;
-      agg[key] = (agg[key] || 0) + q * n;
+  const render = () => {
+    const agg = {};
+    Object.entries(plan).forEach(([rid, n]) => {
+      const r = window.RECIPES.find(x => x.id === rid);
+      if (!r || !n) return;
+      r.ing.forEach(([name, q, cat]) => { const k = cat + '|' + name; agg[k] = (agg[k] || 0) + q * n; });
     });
-  });
-  const cats = {};
-  Object.entries(agg).forEach(([key, q]) => {
-    const [cat, name] = key.split('|');
-    (cats[cat] = cats[cat] || []).push([name, q]);
-  });
-
-  app.innerHTML = `
-    ${pageHead('Courses', 'Ma semaine')}
-    <div class="card">
-      <h2>1 · Compose ton menu de la semaine</h2>
-      <p class="muted small" style="margin-bottom:10px">Nombre de fois où tu prépares chaque recette. La liste de courses s'agrège automatiquement par rayon.</p>
-      ${window.RECIPES.map(r => `
+    const cats = {};
+    Object.entries(agg).forEach(([k, q]) => { const [cat, name] = k.split('|'); (cats[cat] = cats[cat] || []).push([name, q]); });
+    const cost = Object.entries(plan).reduce((x, [rid, n]) => x + (window.RECIPES.find(r => r.id === rid)?.cost || 0) * n, 0);
+    return { cats, cost };
+  };
+  const { cats, cost } = render();
+  const sh = openSheet(`
+    <div class="label">RAVITAILLEMENT</div>
+    <h1 class="title-xl" style="font-size:2.2rem">LES COURSES</h1>
+    ${cost ? `<p class="sys" style="color:var(--accent);margin:4px 0 12px">BUDGET ≈ ${cost.toFixed(0)} €</p>` : ''}
+    <div class="brick">
+      <h2>1 · MENU DE LA SEMAINE</h2>
+      ${allowedRecipes().map(r => `
         <div class="checkline">
-          <span class="grow">${esc(r.name)} <span class="muted small num">(${r.kcal} kcal)</span></span>
-          <button class="btn sm ghost wp-m" data-id="${r.id}">−</button>
-          <b class="num" style="width:22px;text-align:center">${plan[r.id] || 0}</b>
-          <button class="btn sm secondary wp-p" data-id="${r.id}">+</button>
+          <span class="grow">${esc(r.name)} ${r.batch ? '🍲' : ''}</span>
+          <button class="btn sm ghost" data-wm="${r.id}">−</button>
+          <b class="sys num" style="width:24px;text-align:center">${plan[r.id] || 0}</b>
+          <button class="btn sm solid" data-wp="${r.id}">+</button>
         </div>`).join('')}
     </div>
-    <div class="card">
-      <div class="row between"><h2>2 · Liste de courses</h2>
-        <button class="btn sm ghost" id="resetchecks">Décocher tout</button></div>
-      ${Object.keys(cats).length ? Object.entries(cats).map(([cat, items]) => `
-        <div class="shop-cat">${esc(cat)}</div>
-        ${items.map(([name, q]) => {
-          const ck = checks[name] ? 'checked' : '';
-          return `<label class="checkline ${ck ? 'done' : ''}"><input type="checkbox" data-n="${esc(name)}" ${ck}><span class="grow">${esc(name)}</span><b class="num">${q >= 1000 ? (q / 1000).toFixed(1) + ' kg' : q + ' g'}</b></label>`;
-        }).join('')}`).join('')
-      : '<p class="muted">Ajoute des recettes au menu ci-dessus : la liste apparaîtra ici, triée par rayon.</p>'}
-    </div>`;
-
-  const save = () => { cacheSet('weekplan', plan); navigate(); };
-  $$('.wp-p').forEach(b => b.onclick = () => { plan[b.dataset.id] = (plan[b.dataset.id] || 0) + 1; save(); });
-  $$('.wp-m').forEach(b => b.onclick = () => { plan[b.dataset.id] = Math.max(0, (plan[b.dataset.id] || 0) - 1); save(); });
-  $$('input[type=checkbox]', app).forEach(c => c.onchange = () => {
-    checks[c.dataset.n] = c.checked; cacheSet('shopchecks', checks);
-    c.closest('.checkline').classList.toggle('done', c.checked);
+    <div class="brick" id="shop-box">
+      <h2>2 · LISTE PAR RAYON</h2>
+      <div id="shop-list"></div>
+    </div>`);
+  const drawShop = () => {
+    const { cats } = render();
+    $('#shop-list', sh).innerHTML = Object.keys(cats).length ? Object.entries(cats).map(([cat, list]) => `
+      <div class="shop-cat">${esc(cat.toUpperCase())}</div>
+      ${list.map(([name, q]) => {
+        const ck = checks[name] ? 'checked' : '';
+        return `<label class="checkline ${ck ? 'done' : ''}"><input type="checkbox" data-n="${esc(name)}" ${ck}><span class="grow">${esc(name)}</span><b class="sys num">${q >= 1000 ? (q / 1000).toFixed(1) + ' KG' : q + ' G'}</b></label>`;
+      }).join('')}`).join('')
+      : '<p class="mute">AJOUTE DES RECETTES AU MENU CI-DESSUS.</p>';
+    $$('#shop-list input[type=checkbox]', sh).forEach(c => c.onchange = () => {
+      checks[c.dataset.n] = c.checked; cacheSet('shopchecks', checks);
+      c.closest('.checkline').classList.toggle('done', c.checked);
+    });
+  };
+  drawShop();
+  sh.addEventListener('click', e => {
+    const p = e.target.closest('[data-wp]'), m = e.target.closest('[data-wm]');
+    if (p) { plan[p.dataset.wp] = (plan[p.dataset.wp] || 0) + 1; }
+    else if (m) { plan[m.dataset.wm] = Math.max(0, (plan[m.dataset.wm] || 0) - 1); }
+    else return;
+    cacheSet('weekplan', plan);
+    const b = e.target.closest('.checkline').querySelector('b');
+    b.textContent = plan[(p || m).dataset.wp || (p || m).dataset.wm] || 0;
+    drawShop();
   });
-  $('#resetchecks').onclick = () => { cacheSet('shopchecks', {}); navigate(); };
-});
+}
 
 // ============================================================
-// COACH
+// PANNEAU 3 — LE COACH
 // ============================================================
-route('/coach', () => {
+function renderCoach(el) {
   const advice = window.Coach.dailyAdvice(S.logs, S.profile);
-  app.innerHTML = `
-    ${pageHead('Coach', 'Ton plan du jour')}
-    ${advice.map(a => `<div class="advice ${a.level}"><span class="ico">${a.icon}</span><div>${esc(a.text)}</div></div>`).join('')}
-    <div class="card">
-      <h2>Discuter avec le coach</h2>
-      <div class="chat" id="chat">
-        <div class="bubble coach">Je m'appuie sur ton carnet (RPE, sommeil, poids, régularité) pour ajuster ton plan. Que veux-tu faire ?</div>
+  const f = window.RPG.fighter(S.logs, S.profile);
+  el.innerHTML = `
+    <div class="label">[ SYSTÈME ] — INTELLIGENCE</div>
+    <h1 class="title-xl">LE SYSTÈME</h1>
+    <p class="mute" style="margin:6px 0 14px;font-weight:700">${window.KB.length} FICHES TECHNIQUES · ANALYSES SUR TES ${f.workouts} COMBATS</p>
+    ${advice.map(a => `<div class="advice-b ${a.level === 'warn' ? 'warn' : 'good'}">${a.icon} ${esc(a.text)}</div>`).join('')}
+    <div class="brick">
+      <div class="row between"><h2>🔬 ANALYSE HEBDOMADAIRE</h2><button class="btn sm solid" id="show-analysis">LANCER</button></div>
+      <div id="analysis"></div>
+    </div>
+    <div class="brick">
+      <h2>INTERROGER LE SYSTÈME</h2>
+      <div class="chat-b" id="chat">
+        <div class="bub coach">Je connais ton palmarès (${f.workouts} combats, ${f.prCount} records, niveau ${f.lvl}). Pose ta question ou tape un thème 👇</div>
       </div>
-      <div class="quick" id="quick">
-        ${window.Coach.INTENTS.map(i => `<button class="chip" data-i="${i.id}">${i.label}</button>`).join('')}
+      <div class="choices" id="kb-zone" style="margin-bottom:10px">
+        <button class="chip" data-act="adapt">🎚 ADAPTER MON DONJON</button>
+        ${window.KB_CATS.map(c => `<button class="chip" data-cat="${c}">${c.toUpperCase()}</button>`).join('')}
+      </div>
+      <div class="row">
+        <input id="chat-q" class="grow" placeholder="EX : COMBIEN DE PROTÉINES PAR JOUR ?">
+        <button class="btn sm" id="chat-send" style="height:48px">➤</button>
       </div>
     </div>`;
 
-  const chat = $('#chat');
+  const chat = $('#chat', el);
   const push = (cls, text) => {
     const d = document.createElement('div');
-    d.className = 'bubble ' + cls;
-    d.textContent = text;
-    chat.appendChild(d);
-    d.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    d.className = 'bub ' + cls; d.textContent = text;
+    chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
   };
+  const pushRelated = entry => {
+    const rel = window.Coach.related(entry);
+    if (!rel.length) return;
+    const d = document.createElement('div');
+    d.className = 'choices'; d.style.alignSelf = 'flex-start';
+    d.innerHTML = rel.map(k => `<button class="chip" data-kb="${k.id}">${esc(k.q)}</button>`).join('');
+    chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
+  };
+  const answer = entry => { push('me', entry.q); setTimeout(() => { push('coach', entry.a); pushRelated(entry); }, 160); };
 
-  $('#quick').onclick = (e) => {
-    const b = e.target.closest('.chip'); if (!b) return;
-    const intent = window.Coach.INTENTS.find(i => i.id === b.dataset.i);
-    push('me', intent.label.replace(/^\S+\s/, ''));
-    if (intent.id === 'adapt') {
-      const sessions = S.profile.program.sessions;
-      const lastId = S.logs.find(l => l.kind === 'workout')?.payload.sessionId;
-      const next = sessions[Math.max(0, sessions.findIndex(s => s.id === lastId) + 1) % sessions.length];
+  $('#show-analysis', el).onclick = () => {
+    const sections = window.Coach.analyze(S.logs, S.profile);
+    $('#analysis', el).innerHTML = sections.map(s => `
+      <div style="margin-top:12px"><b class="sys" style="font-size:0.95rem">${esc(s.title)}</b>
+      ${s.lines.map(l => `<p style="font-size:0.88rem;font-weight:600;margin-top:5px;line-height:1.5">${esc(l)}</p>`).join('')}</div>`).join('');
+  };
+  el.addEventListener('click', e => {
+    const cat = e.target.closest('[data-cat]'), kb = e.target.closest('[data-kb]'), act = e.target.closest('[data-act]');
+    if (cat) {
+      push('me', cat.dataset.cat);
+      const d = document.createElement('div');
+      d.className = 'choices'; d.style.alignSelf = 'flex-start';
+      d.innerHTML = window.KB.filter(k => k.cat === cat.dataset.cat).slice(0, 8).map(k => `<button class="chip" data-kb="${k.id}">${esc(k.q)}</button>`).join('');
+      chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
+    } else if (kb) {
+      const entry = window.KB.find(k => k.id === kb.dataset.kb);
+      if (entry) answer(entry);
+    } else if (act?.dataset.act === 'adapt') {
+      const next = nextSession();
       const a = window.Coach.adaptSession(next, S.logs, S.profile);
-      push('coach', `${a.summary}\n\n${a.session.name} :\n` + a.session.exercises.map((x, i) => `${i + 1}. ${x.name} — ${x.sets}×${x.reps} (RPE ${x.rpe})`).join('\n') + `\n\nLance-la depuis l'onglet Entraîner : l'adaptation y est appliquée automatiquement.`);
-    } else {
-      push('coach', window.Coach.reply(intent.id, S.logs, S.profile));
+      push('me', 'Adapter mon combat du jour');
+      push('coach', `${a.summary}\n\n${a.session.name} :\n` + a.session.exercises.map((x, i) => `R${i + 1}. ${getExo(x.exo)?.name || x.exo} — ${x.sets}×${x.reps} (RPE ${x.rpe})`).join('\n') + `\n\nLance-le depuis LE COMBAT : l'adaptation y est appliquée.`);
     }
+  });
+  const send = () => {
+    const q = $('#chat-q', el).value.trim();
+    if (!q) return;
+    $('#chat-q', el).value = '';
+    push('me', q);
+    const hit = window.Coach.ask(q);
+    setTimeout(() => {
+      if (hit) { push('coach', hit.a); pushRelated(hit); }
+      else push('coach', "Pas de fiche précise là-dessus. Tape un thème ci-dessous ou reformule (ex : « plateau », « créatine », « douleur épaule »).");
+    }, 180);
   };
-});
+  $('#chat-send', el).onclick = send;
+  $('#chat-q', el).onkeydown = e => { if (e.key === 'Enter') send(); };
+}
 
 // ============================================================
-// CARNET
+// PANNEAU 4 — LE PALMARÈS
 // ============================================================
-route('/journal', () => {
+function renderPalmares(el) {
   const t = todayStr();
   const entry = S.logs.find(l => l.kind === 'journal' && l.day === t)?.payload || {};
-  // séries pour graphes
+  const fight = window.RPG.weeklyFight(S.logs, S.profile);
   const days30 = Array.from({ length: 30 }, (_, i) => new Date(Date.now() - (29 - i) * 86400000).toISOString().slice(0, 10));
-  const weights = days30.map(d => { const j = S.logs.find(l => l.kind === 'journal' && l.day === d); return +j?.payload.weight || null; });
+  const weights = days30.map(d => +S.logs.find(l => l.kind === 'journal' && l.day === d)?.payload.weight || null);
   const weekLabels = [], weekVals = [];
   for (let w = 5; w >= 0; w--) {
     const start = Date.now() - (w + 1) * 7 * 86400000, end = Date.now() - w * 7 * 86400000;
-    weekLabels.push(w === 0 ? 'sem.' : `S-${w}`);
+    weekLabels.push(w === 0 ? 'SEM' : `S-${w}`);
     weekVals.push(S.logs.filter(l => l.kind === 'workout' && +new Date(l.day) > start && +new Date(l.day) <= end).length);
   }
-  const history = S.logs.filter(l => l.kind === 'workout').slice(0, 6);
+  const prs = currentPRs();
+  const unlocked = unlockedBadges().map(b => b.id);
+  const skills = window.RPG.hunter(S.logs, S.profile).skills;
+  const vd = fight.verdict;
 
-  app.innerHTML = `
-    ${pageHead('Carnet', 'Suivi quotidien')}
-    <div class="card">
-      <h2>Aujourd'hui</h2>
-      <div class="row">
-        <label class="field grow"><span>Poids (kg, à jeun)</span><input id="j-weight" type="number" inputmode="decimal" step="0.1" value="${entry.weight ?? ''}"></label>
-        <label class="field grow"><span>Sommeil (h)</span><input id="j-sleep" type="number" inputmode="decimal" step="0.5" value="${entry.sleep ?? ''}"></label>
+  el.innerHTML = `
+    <div class="label">[ SYSTÈME ] — JOURNAL</div>
+    <h1 class="title-xl">ARCHIVES</h1>
+
+    <div class="win" style="margin-top:14px">
+      <div class="win-tag danger">DUEL D'OMBRE</div>
+      <p class="mute small" style="margin-bottom:6px">TOI (cette semaine) affrontes TON OMBRE (toi, il y a 7 jours).</p>
+      <div class="vs-grid">
+        <div class="vs-side"><h3>TOI</h3><span class="mono small">CETTE SEMAINE</span></div>
+        <div class="vs-x">VS</div>
+        <div class="vs-side shadow"><h3>OMBRE</h3><span class="mono small">IL Y A 7 J</span></div>
       </div>
-      <label class="field"><span>Énergie / motivation</span>
-        <div class="scale5" id="j-energy">
-          ${['😫', '😕', '😐', '🙂', '🔥'].map((e, i) => `<button data-v="${i + 1}" class="${entry.energy == i + 1 ? 'on' : ''}">${e}</button>`).join('')}
-        </div>
-      </label>
-      <label class="field"><span>Notes (douleurs, ressenti, écarts…)</span><textarea id="j-notes" rows="2">${esc(entry.notes || '')}</textarea></label>
-      <button class="btn" id="j-save">Enregistrer la journée</button>
+      <table class="tale num">
+        <tr><td class="${fight.cur.vol > fight.old.vol ? 'win' : ''}">${Math.round(fight.cur.vol).toLocaleString('fr-FR')}</td><td class="mid">volume kg</td><td class="${fight.old.vol > fight.cur.vol ? 'win-s' : ''}">${Math.round(fight.old.vol).toLocaleString('fr-FR')}</td></tr>
+        <tr><td class="${fight.cur.sessions > fight.old.sessions ? 'win' : ''}">${fight.cur.sessions}</td><td class="mid">donjons</td><td class="${fight.old.sessions > fight.cur.sessions ? 'win-s' : ''}">${fight.old.sessions}</td></tr>
+        <tr><td class="${fight.cur.sets > fight.old.sets ? 'win' : ''}">${fight.cur.sets}</td><td class="mid">séries</td><td class="${fight.old.sets > fight.cur.sets ? 'win-s' : ''}">${fight.old.sets}</td></tr>
+        ${fight.wNow != null && fight.wOld != null ? `<tr><td>${fight.wNow.toFixed(1)}</td><td class="mid">poids moy.</td><td>${fight.wOld.toFixed(1)}</td></tr>` : ''}
+      </table>
+      <div class="verdict ${vd.code === 'win' || vd.code === 'first' ? '' : 'lose'}">${vd.txt}</div>
     </div>
 
-    <div class="card">
-      <h2>Poids — 30 jours</h2>
-      <canvas class="chart" id="c-weight"></canvas>
+    <div class="brick">
+      <h2>CARNET DU CHASSEUR — AUJOURD'HUI</h2>
+      <div class="row">
+        <label class="field grow"><span>POIDS (KG)</span><input id="j-weight" type="number" inputmode="decimal" step="0.1" value="${entry.weight ?? ''}"></label>
+        <label class="field grow"><span>SOMMEIL (H)</span><input id="j-sleep" type="number" inputmode="decimal" step="0.5" value="${entry.sleep ?? ''}"></label>
+      </div>
+      <label class="field"><span>ÉNERGIE</span>
+        <div class="scale5" id="j-energy">${['😫', '😕', '😐', '🙂', '🔥'].map((e2, i) => `<button data-v="${i + 1}" class="${entry.energy == i + 1 ? 'on' : ''}">${e2}</button>`).join('')}</div>
+      </label>
+      <label class="field"><span>NOTES</span><textarea id="j-notes" rows="2">${esc(entry.notes || '')}</textarea></label>
+      <button class="btn" id="j-save">ENREGISTRER (+${window.RPG.XP.journal} XP)</button>
     </div>
-    <div class="card">
-      <h2>Séances par semaine</h2>
-      <canvas class="chart" id="c-sessions"></canvas>
+
+    <div class="brick"><h2>PESÉE — 30 JOURS</h2><canvas class="chart" id="c-weight"></canvas></div>
+    <div class="brick"><h2>DONJONS / SEMAINE</h2><canvas class="chart" id="c-sessions"></canvas></div>
+
+    <div class="brick">
+      <h2>🏆 RECORDS (1RM ESTIMÉ — EPLEY)</h2>
+      ${prs.length ? `
+        <label class="field"><span>TECHNIQUE</span><select id="exo-sel">${prs.map(p => `<option value="${p.exo.id}">${esc(p.exo.name)}</option>`).join('')}</select></label>
+        <canvas class="chart" id="c-prog"></canvas>
+        <hr class="divider">
+        ${prs.slice(0, 10).map(p => `<div class="pr-line"><span style="font-weight:700">${esc(p.exo.name.toUpperCase())}<br><span class="mute small">${p.day}</span></span><b class="v num">${fmtPR(p.set)}</b></div>`).join('')}`
+      : '<p class="mute">TES RECORDS APPARAÎTRONT APRÈS TON PREMIER DONJON.</p>'}
     </div>
-    <div class="card">
-      <h2>Dernières séances</h2>
-      ${history.length ? history.map(h => {
-        const vol = h.payload.sets.reduce((s, x) => s + (x.weight * x.reps), 0);
-        const rpes = h.payload.sets.map(s => +s.rpe).filter(Boolean);
-        const avg = rpes.length ? (rpes.reduce((a, b) => a + b) / rpes.length).toFixed(1) : '—';
-        return `<div class="checkline"><span class="grow">${esc(h.payload.sessionName)}<br><span class="muted small">${h.day}</span></span><span class="num small" style="text-align:right">${h.payload.sets.length} séries · ${vol} kg vol.<br>RPE moy. ${avg}</span></div>`;
-      }).join('') : '<p class="muted">Lance ta première séance depuis l\'onglet Entraîner : son résumé apparaîtra ici.</p>'}
+
+    <div class="win">
+      <h2>🎖 TITRES OBTENUS — ${unlocked.length}/${window.BADGES.length}</h2>
+      <div class="belt-grid" style="margin-top:10px">
+        ${window.BADGES.map(b => `<div class="belt ${unlocked.includes(b.id) ? '' : 'locked'}" title="${esc(b.desc)}"><span class="i">${b.icon}</span><b>${esc(b.name)}</b></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="win">
+      <div class="win-tag">COMPÉTENCES</div>
+      <h2 style="margin-bottom:10px">GRIMOIRE DU CHASSEUR — ${skills.filter(s => s.unlocked).length}/${skills.length}</h2>
+      <div class="skill-grid">
+        ${skills.map(s => `<div class="skill ${s.unlocked ? '' : 'locked'}"><div class="sn">${s.unlocked ? '◆' : '🔒'} ${esc(s.name)}</div><div class="sd">${esc(s.desc)}</div></div>`).join('')}
+      </div>
     </div>`;
 
   let energy = entry.energy || null;
-  $('#j-energy').onclick = (e) => {
+  $('#j-energy', el).onclick = e => {
     const b = e.target.closest('button'); if (!b) return;
     energy = +b.dataset.v;
-    $$('#j-energy button').forEach(x => x.classList.toggle('on', x === b));
+    $$('#j-energy button', el).forEach(x => x.classList.toggle('on', x === b));
   };
-  $('#j-save').onclick = async () => {
-    await dbSaveLog('journal', t, {
-      weight: +$('#j-weight').value || null,
-      sleep: +$('#j-sleep').value || null,
-      energy,
-      notes: $('#j-notes').value
-    }, { unique: true });
-    toast('Journée enregistrée 📓');
-    navigate();
+  $('#j-save', el).onclick = async () => {
+    await dbSaveLog('journal', t, { weight: +$('#j-weight', el).value || null, sleep: +$('#j-sleep', el).value || null, energy, notes: $('#j-notes', el).value }, { unique: true });
+    toast('CARNET SIGNÉ ✍'); confetti(900);
+    renderAll();
   };
-
+  const drawProg = () => {
+    const sel = $('#exo-sel', el); if (!sel) return;
+    const hist = [];
+    [...S.logs.filter(l => l.kind === 'workout')].sort((a, b) => a.day.localeCompare(b.day)).forEach(w => {
+      const sets = (w.payload.sets || []).filter(s => exoOf(s)?.id === sel.value);
+      if (sets.length) hist.push(Math.max(...sets.map(setScore)));
+    });
+    const c = $('#c-prog', el); if (c) drawLine(c, hist);
+  };
+  $('#exo-sel', el) && ($('#exo-sel', el).onchange = drawProg);
   requestAnimationFrame(() => {
-    drawLine($('#c-weight'), weights);
-    drawBars($('#c-sessions'), weekLabels, weekVals, { target: +S.profile.anamnese?.days || 2 });
+    drawLine($('#c-weight', el), weights);
+    drawBars($('#c-sessions', el), weekLabels, weekVals, { target: +S.profile.anamnese?.days || 2 });
+    drawProg();
   });
-});
+}
 
 // ============================================================
-// RÉGLAGES
+// RÉGLAGES (sheet)
 // ============================================================
-route('/settings', () => {
+function sheetSettings() {
   const set = S.profile.settings || {};
   const r = set.reminders || { enabled: false, workoutDays: [1, 4], workoutTime: '18:00', weighTime: '07:30', hydrate: true };
   const t = S.profile.targets || {};
-  const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+  const theme = set.theme || localStorage.getItem('rc_theme') || 'auto';
+  const curAccent = set.accent || localStorage.getItem('rc_accent') || '#2BD9FE';
+  const curFs = set.fontSize || localStorage.getItem('rc_fontsize') || '16';
+  const dayNames = ['DIM', 'LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM'];
+  // Bloc thèmes enrichi injecté via buildSettingsHTML
+  
+  const sh = openSheet(`
+    <div class="label">[ SYSTÈME ] — PARAMÈTRES</div>
+    <h1 class="title-xl" style="font-size:2.2rem">RÉGLAGES</h1>
 
-  app.innerHTML = `
-    ${pageHead('Réglages', 'Mon compte')}
-    <div class="card">
-      <h2>🔔 Rappels</h2>
-      <p class="muted small" style="margin-bottom:10px">Les rappels se déclenchent quand l'app est installée/ouverte en arrière-plan récent. Android peut les retarder si l'app n'a pas été ouverte depuis longtemps.</p>
-      <label class="checkline"><input type="checkbox" id="r-on" ${r.enabled ? 'checked' : ''}><span class="grow">Activer les rappels</span></label>
-      <label class="field" style="margin-top:10px"><span>Jours de séance</span>
-        <div class="choices" id="r-days">${dayNames.map((d, i) => `<button type="button" class="chip ${r.workoutDays.includes(i) ? 'on' : ''}" data-d="${i}">${d}</button>`).join('')}</div>
+    <div class="brick" style="margin-top:14px">
+      <h2>🎨 THÈME</h2>
+      <div class="choices" id="theme-pick">
+        ${[['auto', '🌗 AUTO'], ['light', '☀ PAPIER'], ['dark', '🌙 NUIT']].map(([v, l]) => '<button class="chip ' + (theme === v ? 'on' : '') + '" data-t="' + v + '">' + l + '</button>').join('')}
+      </div>
+    </div>
+
+    <div class="brick">
+      <h2>🎨 COULEUR DU SYSTÈME</h2>
+      <div class="accent-grid" id="accent-grid">
+        ${window.ACCENT_PRESETS.map(p => '<div class="accent-btn ' + (curAccent === p.value ? 'on' : '') + '" data-ac="' + (p.value||'') + '"><div class="swatch" style="background:' + (p.value||curAccent) + '"></div>' + p.label + '</div>').join('')}
+      </div>
+      <label class="field" style="margin-top:10px" id="custom-color-wrap">
+        <span>COULEUR LIBRE</span>
+        <input type="color" id="custom-color" value="${curAccent}">
+      </label>
+    </div>
+
+    <div class="brick">
+      <h2>🔡 TAILLE DU TEXTE</h2>
+      <div class="font-size-row">
+        <button class="btn sm ghost" id="fs-minus">A−</button>
+        <span class="val" id="fs-val">${curFs}</span>
+        <button class="btn sm solid" id="fs-plus">A+</button>
+      </div>
+      <p class="mute small" style="margin-top:8px;font-weight:600">Plage : 14 px (compact) → 20 px (grand). Par défaut : 16 px.</p>
+    </div>
+
+    <div class="brick">
+      <h2>🔔 RAPPELS</h2>
+      <label class="checkline"><input type="checkbox" id="r-on" ${r.enabled ? 'checked' : ''}><span class="grow">ACTIVER LES RAPPELS</span></label>
+      <label class="field" style="margin-top:10px"><span>JOURS DE COMBAT</span>
+        <div class="choices" id="r-days">${dayNames.map((d, i) => '<button type="button" class="chip ' + (r.workoutDays.includes(i) ? 'on' : '') + '" data-d="' + i + '">' + d + '</button>').join('')}</div>
       </label>
       <div class="row">
-        <label class="field grow"><span>Heure de séance</span><input id="r-time" type="time" value="${r.workoutTime}"></label>
-        <label class="field grow"><span>Rappel pesée</span><input id="r-weigh" type="time" value="${r.weighTime}"></label>
+        <label class="field grow"><span>HEURE DU COMBAT</span><input id="r-time" type="time" value="${r.workoutTime}"></label>
+        <label class="field grow"><span>PESÉE</span><input id="r-weigh" type="time" value="${r.weighTime}"></label>
       </div>
-      <label class="checkline"><input type="checkbox" id="r-hyd" ${r.hydrate ? 'checked' : ''}><span class="grow">Rappels hydratation (10h, 13h, 16h, 19h)</span></label>
-      <button class="btn" id="r-save" style="margin-top:10px">Enregistrer les rappels</button>
+      <label class="checkline"><input type="checkbox" id="r-hyd" ${r.hydrate ? 'checked' : ''}><span class="grow">HYDRATATION (10/13/16/19 H)</span></label>
+      <button class="btn" id="r-save" style="margin-top:10px">ENREGISTRER LES RAPPELS</button>
+      <p class="mute small" style="margin-top:8px;font-weight:600">Notifications locales : déclenchées si l'app est installée/récemment ouverte.</p>
     </div>
 
-    <div class="card">
-      <h2>🎯 Cibles nutritionnelles</h2>
+    <div class="brick">
+      <h2>🎯 CIBLES NUTRITION</h2>
       <div class="row">
-        <label class="field grow"><span>kcal/jour</span><input id="t-kcal" type="number" value="${t.kcal || ''}"></label>
-        <label class="field grow"><span>Prot. (g)</span><input id="t-p" type="number" value="${t.p || ''}"></label>
+        <label class="field grow"><span>KCAL</span><input id="t-kcal" type="number" value="${t.kcal || ''}"></label>
+        <label class="field grow"><span>PROT (G)</span><input id="t-p" type="number" value="${t.p || ''}"></label>
       </div>
       <div class="row">
-        <label class="field grow"><span>Gluc. (g)</span><input id="t-c" type="number" value="${t.c || ''}"></label>
-        <label class="field grow"><span>Lip. (g)</span><input id="t-f" type="number" value="${t.f || ''}"></label>
+        <label class="field grow"><span>GLUC (G)</span><input id="t-c" type="number" value="${t.c || ''}"></label>
+        <label class="field grow"><span>LIP (G)</span><input id="t-f" type="number" value="${t.f || ''}"></label>
       </div>
-      <button class="btn secondary" id="t-save">Mettre à jour les cibles</button>
+      <button class="btn solid" id="t-save">METTRE À JOUR LES CIBLES</button>
     </div>
 
-    <div class="card">
-      <h2>👤 Profil</h2>
-      <p class="muted small" style="margin-bottom:10px">${LOCAL_MODE ? 'Mode local : données sur cet appareil.' : 'Connecté : ' + esc(S.user.email) + ' — données chiffrées au repos, isolées par compte (RLS).'}</p>
-      <button class="btn ghost" id="redo">Refaire l'anamnèse (régénère le programme)</button>
+    <div class="brick">
+      <h2>👤 CHASSEUR</h2>
+      <p class="mute small" style="margin-bottom:10px;font-weight:600">${LOCAL_MODE ? 'MODE LOCAL : données sur cet appareil.' : 'CONNECTÉ : ' + esc(S.user.email) + ' · RLS + chiffrement au repos.'}</p>
+      <button class="btn ghost" id="redo">REFAIRE L'ÉVEIL (RÉGÉNÈRE LE DONJON)</button>
       <div style="height:8px"></div>
-      <button class="btn ghost" id="export">⬇️ Exporter toutes mes données (JSON)</button>
-      <div style="height:8px"></div>
-      ${LOCAL_MODE ? '' : '<button class="btn danger" id="logout">Se déconnecter</button>'}
-    </div>`;
+      <button class="btn ghost" id="export">⬇ EXPORTER MES DONNÉES (JSON)</button>
+      ${LOCAL_MODE ? '' : '<div style="height:8px"></div><button class="btn" id="logout" style="background:var(--ink);color:var(--paper)">SE DÉCONNECTER</button>'}
+    </div>`);
 
-  $('#r-days').onclick = (e) => { const b = e.target.closest('.chip'); if (b) b.classList.toggle('on'); };
-  $('#r-save').onclick = async () => {
-    const enabled = $('#r-on').checked;
+  // Thème clair/sombre
+  $('#theme-pick', sh).onclick = async e => {
+    const b = e.target.closest('[data-t]'); if (!b) return;
+    $$('#theme-pick .chip', sh).forEach(x => x.classList.toggle('on', x === b));
+    localStorage.setItem('rc_theme', b.dataset.t);
+    await dbSaveProfile({ settings: { ...S.profile.settings, theme: b.dataset.t } });
+    applyTheme();
+  };
+  // Accent couleur
+  $('#accent-grid', sh).onclick = async e => {
+    const b = e.target.closest('.accent-btn'); if (!b) return;
+    $$('.accent-btn', sh).forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    const color = b.dataset.ac || $('#custom-color', sh).value;
+    applyAccent(color);
+    await dbSaveProfile({ settings: { ...S.profile.settings, accent: color } });
+  };
+  $('#custom-color', sh).oninput = async e => {
+    applyAccent(e.target.value);
+    await dbSaveProfile({ settings: { ...S.profile.settings, accent: e.target.value } });
+  };
+  // Taille de police
+  let curFsNum = +curFs;
+  const updateFs = async (n) => {
+    curFsNum = Math.max(14, Math.min(20, n));
+    $('#fs-val', sh).textContent = curFsNum;
+    localStorage.setItem('rc_fontsize', curFsNum);
+    document.documentElement.style.fontSize = curFsNum + 'px';
+    await dbSaveProfile({ settings: { ...S.profile.settings, fontSize: String(curFsNum) } });
+  };
+  $('#fs-minus', sh).onclick = () => updateFs(curFsNum - 1);
+  $('#fs-plus', sh).onclick = () => updateFs(curFsNum + 1);
+  // Jours de rappel
+  $('#r-days', sh).onclick = e => { const b = e.target.closest('.chip'); if (b) b.classList.toggle('on'); };
+  $('#r-save', sh).onclick = async () => {
+    const enabled = $('#r-on', sh).checked;
     if (enabled && !(await askNotifPermission())) return;
-    const reminders = {
-      enabled,
-      workoutDays: $$('#r-days .chip.on').map(b => +b.dataset.d),
-      workoutTime: $('#r-time').value,
-      weighTime: $('#r-weigh').value,
-      hydrate: $('#r-hyd').checked
-    };
-    await dbSaveProfile({ settings: { ...set, reminders } });
-    toast('Rappels enregistrés 🔔');
+    const reminders = { enabled, workoutDays: $$('#r-days .chip.on', sh).map(b => +b.dataset.d), workoutTime: $('#r-time', sh).value, weighTime: $('#r-weigh', sh).value, hydrate: $('#r-hyd', sh).checked };
+    await dbSaveProfile({ settings: { ...S.profile.settings, reminders } });
+    toast('RAPPELS ENREGISTRÉS 🔔');
   };
-  $('#t-save').onclick = async () => {
-    await dbSaveProfile({ targets: { ...t, kcal: +$('#t-kcal').value, p: +$('#t-p').value, c: +$('#t-c').value, f: +$('#t-f').value } });
-    toast('Cibles mises à jour');
+  $('#t-save', sh).onclick = async () => {
+    await dbSaveProfile({ targets: { ...t, kcal: +$('#t-kcal', sh).value, p: +$('#t-p', sh).value, c: +$('#t-c', sh).value, f: +$('#t-f', sh).value } });
+    toast('CIBLES MISES À JOUR'); renderAll();
   };
-  $('#redo').onclick = async () => {
-    const a = { ...S.profile.anamnese, done: false };
-    await dbSaveProfile({ anamnese: a });
-    location.hash = '#/onboarding';
-  };
-  $('#export').onclick = () => {
+  $('#redo', sh).onclick = async () => { await dbSaveProfile({ anamnese: { ...S.profile.anamnese, done: false } }); go('/onboarding'); };
+  $('#export', sh).onclick = () => {
     const blob = new Blob([JSON.stringify({ profile: S.profile, logs: S.logs }, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `recomp-export-${todayStr()}.json`;
-    a.click();
+    a.href = URL.createObjectURL(blob); a.download = `recomp-export-${todayStr()}.json`; a.click();
   };
-  $('#logout') && ($('#logout').onclick = async () => { await sb.auth.signOut(); S.user = null; S.profile = null; renderAuth(); });
-});
+  $('#logout', sh) && ($('#logout', sh).onclick = async () => { await sb.auth.signOut(); localStorage.removeItem('rc_last_user'); location.hash = ''; location.reload(); });
+}
+
+// ============================================================
+// AUTH + ONBOARDING
+// ============================================================
+function renderAuth() {
+  const w = document.createElement('div');
+  w.className = 'auth-wrap';
+  w.innerHTML = `
+    <div class="inner">
+      <div class="label">[ SYSTÈME ] — ACCÈS CHASSEUR</div>
+      <h1 class="title-xl" style="font-size:3.4rem">RECOMP<br>SYSTEM</h1>
+      <p class="mute" style="margin:8px 0 18px;font-weight:700">${LOCAL_MODE ? '⚠ MODE LOCAL (SUPABASE NON CONFIGURÉ) — DONNÉES SUR CET APPAREIL.' : 'DEVIENS PLUS FORT. MONTE EN NIVEAU. DOMINE TON OMBRE.'}</p>
+      <div class="brick">
+        ${LOCAL_MODE ? `
+          <label class="field"><span>TON NOM DE CHASSEUR</span><input id="pseudo" placeholder="AXEL"></label>
+          <button class="btn" id="local-go">S'ÉVEILLER</button>
+        ` : `
+          <label class="field"><span>E-MAIL</span><input id="email" type="email" autocomplete="email"></label>
+          <label class="field"><span>MOT DE PASSE</span><input id="pwd" type="password" autocomplete="current-password" placeholder="8 CARACTÈRES MIN."></label>
+          <button class="btn" id="login">S'ÉVEILLER</button>
+          <div style="height:8px"></div>
+          <button class="btn solid" id="signup">CRÉER MON CHASSEUR</button>
+        `}
+      </div>
+    </div>`;
+  document.body.appendChild(w);
+  if (LOCAL_MODE) {
+    $('#local-go', w).onclick = async () => {
+      localStorage.setItem('rc_local_started', '1');
+      S.user = { id: 'local', email: 'local' };
+      await dbLoadProfile(); await dbLoadLogs();
+      if (!S.profile) await dbSaveProfile({ pseudo: $('#pseudo', w).value || 'FIGHTER', anamnese: {}, settings: {} });
+      w.remove(); enterApp();
+    };
+    return;
+  }
+  const doAuth = async mode => {
+    const email = $('#email', w).value.trim(), password = $('#pwd', w).value;
+    if (!email || password.length < 8) { toast('E-MAIL + MOT DE PASSE ≥ 8 CARACTÈRES'); return; }
+    const { data, error } = mode === 'in' ? await sb.auth.signInWithPassword({ email, password }) : await sb.auth.signUp({ email, password });
+    if (error) { toast(error.message); return; }
+    if (mode === 'up' && !data.session) { toast('COMPTE CRÉÉ — VÉRIFIE TA BOÎTE MAIL'); return; }
+    w.remove(); await onSignedIn(data.session.user);
+  };
+  $('#login', w).onclick = () => doAuth('in');
+  $('#signup', w).onclick = () => doAuth('up');
+}
+async function onSignedIn(user) {
+  S.user = { id: user.id, email: user.email };
+  localStorage.setItem('rc_last_user', JSON.stringify(S.user));
+  await dbLoadProfile(); await dbLoadLogs(); flushOutbox(); applyTheme();
+  if (!S.profile) await dbSaveProfile({ pseudo: user.email.split('@')[0].toUpperCase(), anamnese: {}, settings: {} });
+  enterApp();
+}
+function enterApp() {
+  if (!$('#deck')) mountShell();
+  if (!S.profile?.anamnese?.done) { go('/onboarding'); return; }
+  renderAll();
+  handleHash();
+}
+
+function sheetOnboarding() {
+  const prev = S.profile?.anamnese || {};
+  const a = { sex: 'H', activity: 'leger', goal: 'perte', injuries: [], allergies: [], equipment: ['halteres', 'barre', 'chaise_romaine'], days: '2', ...prev, done: false };
+  let step = 0;
+  const sh = openSheet('<div id="ob"></div>', { closable: false });
+  const ob = $('#ob', sh);
+  const steps = [stepBio, stepSante, stepLogistique, stepNutrition];
+
+  function shell(inner) {
+    ob.innerHTML = `
+      <div class="label">[ SYSTÈME ] — ÉVEIL DU JOUEUR</div>
+      <h1 class="title-xl" style="font-size:2.2rem">CRÉATION DU CHASSEUR</h1>
+      <div class="steps-b" style="margin-top:12px">${steps.map((_, i) => `<i class="${i <= step ? 'on' : ''}"></i>`).join('')}</div>
+      <div class="brick">${inner}</div>
+      <div class="row">
+        ${step > 0 ? '<button class="btn ghost" id="prev" style="width:auto">RETOUR</button>' : ''}
+        <button class="btn grow" id="next">${step === steps.length - 1 ? "⚡ S'ÉVEILLER" : 'CONTINUER'}</button>
+      </div>`;
+    $('#prev', ob) && ($('#prev', ob).onclick = () => { collect(); step--; steps[step](); });
+    $('#next', ob).onclick = onNext;
+  }
+  const chips = (name, opts, multi = false) => `<div class="choices" data-chips="${name}">${opts.map(([v, l]) =>
+    `<button type="button" class="chip ${multi ? (a[name].includes(v) ? 'on' : '') : (String(a[name]) === v ? 'on' : '')}" data-v="${v}">${l}</button>`).join('')}</div>`;
+  function bindChips(multi = []) {
+    $$('[data-chips]', ob).forEach(box => {
+      const name = box.dataset.chips;
+      box.onclick = e => {
+        const b = e.target.closest('.chip'); if (!b) return;
+        if (multi.includes(name)) {
+          const i = a[name].indexOf(b.dataset.v);
+          i >= 0 ? a[name].splice(i, 1) : a[name].push(b.dataset.v);
+          b.classList.toggle('on');
+        } else { a[name] = b.dataset.v; $$('.chip', box).forEach(x => x.classList.toggle('on', x === b)); }
+      };
+    });
+  }
+  const collect = () => ['age', 'height', 'weight', 'sleep', 'stress', 'dbkg', 'budget'].forEach(id => { const el = $('#' + id, ob); if (el) a[id] = el.value; });
+
+  function stepBio() {
+    shell(`
+      <h2>1 · BIOMÉTRIE</h2>
+      <label class="field"><span>SEXE (CALCUL CALORIQUE)</span>${chips('sex', [['H', 'HOMME'], ['F', 'FEMME']])}</label>
+      <div class="row">
+        <label class="field grow"><span>ÂGE</span><input id="age" type="number" inputmode="numeric" value="${a.age || ''}"></label>
+        <label class="field grow"><span>TAILLE CM</span><input id="height" type="number" inputmode="numeric" value="${a.height || ''}"></label>
+        <label class="field grow"><span>POIDS KG</span><input id="weight" type="number" inputmode="decimal" step="0.1" value="${a.weight || ''}"></label>
+      </div>
+      <label class="field"><span>ACTIVITÉ HORS SPORT</span>${chips('activity', [['sedentaire', 'SÉDENTAIRE'], ['leger', 'LÉGER'], ['actif', 'ACTIF'], ['tres_actif', 'TRÈS ACTIF']])}</label>
+      <label class="field"><span>OBJECTIF</span>${chips('goal', [['perte', '🔥 PERTE DE GRAS'], ['maintien', '⚖ RECOMP'], ['prise', '💪 MASSE']])}</label>`);
+    bindChips();
+  }
+  function stepSante() {
+    shell(`
+      <h2>2 · BLESSURES & ARTICULATIONS</h2>
+      <p class="mute small" style="margin-bottom:12px;font-weight:600">Chaque zone cochée remplace automatiquement les techniques à risque.</p>
+      <label class="field"><span>ANTÉCÉDENTS</span>${chips('injuries', [['epaule', 'ÉPAULE / CLAVICULE'], ['genou', 'GENOU'], ['lombaires', 'LOMBAIRES'], ['poignet', 'POIGNET']], true)}</label>
+      <label class="field"><span>SOMMEIL (H/NUIT)</span><input id="sleep" type="number" inputmode="decimal" step="0.5" value="${a.sleep || ''}"></label>
+      <label class="field"><span>STRESS (1–10)</span><input id="stress" type="number" inputmode="numeric" min="1" max="10" value="${a.stress || ''}"></label>`);
+    bindChips(['injuries']);
+  }
+  function stepLogistique() {
+    // Grille dynamique depuis le catalogue EQUIPMENT_OPTIONS
+    const eqHtml = window.EQUIPMENT_OPTIONS.map(eq =>
+      `<div class="eq-item ${a.equipment.includes(eq.id) ? 'on' : ''}" data-eq="${eq.id}"><span class="ico">${eq.icon}</span>${eq.label.toUpperCase()}</div>`
+    ).join('');
+    shell(`
+      <h2>3 · ÉQUIPEMENT DISPONIBLE</h2>
+      <p class="mute small" style="margin-bottom:12px;font-weight:600">Coche tout ce que tu as. Les exercices inadaptés seront remplacés automatiquement.</p>
+      <div class="eq-grid" id="eq-grid">${eqHtml}</div>
+      <label class="field" style="margin-top:14px"><span>CHARGE MAX / HALTÈRE (KG)</span><input id="dbkg" type="number" inputmode="numeric" value="${a.dbkg || 16}"></label>
+      <label class="field"><span>DONJONS / SEMAINE</span>${chips('days', [['2', '2'], ['3', '3'], ['4', '4']])}</label>`);
+    bindChips([]);
+    // Gestion grille équipement (toggle custom)
+    ob.querySelector('#eq-grid').onclick = e => {
+      const item = e.target.closest('.eq-item'); if (!item) return;
+      const id = item.dataset.eq;
+      const idx = a.equipment.indexOf(id);
+      idx >= 0 ? a.equipment.splice(idx, 1) : a.equipment.push(id);
+      item.classList.toggle('on', a.equipment.includes(id));
+    };
+  }
+  function stepNutrition() {
+    // Grille dynamique depuis le catalogue EXCLUSION_OPTIONS
+    const exHtml = window.EXCLUSION_OPTIONS.map(ex =>
+      `<div class="eq-item ${a.allergies.includes(ex.id) ? 'on' : ''}" data-ex="${ex.id}"><span class="ico">${ex.icon}</span>${ex.label.slice(0,22).toUpperCase()}</div>`
+    ).join('');
+    shell(`
+      <h2>4 · LA CANTINE</h2>
+      <p class="mute small" style="margin-bottom:12px;font-weight:600">Coche ce que tu ne manges pas. Les recettes incompatibles seront masquées.</p>
+      <div class="eq-grid" id="ex-grid">${exHtml}</div>
+      <label class="field" style="margin-top:14px"><span>BUDGET COURSES / SEM (€)</span><input id="budget" type="number" inputmode="numeric" value="${a.budget || ''}"></label>
+      <p class="mute small" style="font-weight:600">Les ${window.RECIPES.length} recettes du camp sont déjà sans œufs ni oignons.</p>`);
+    bindChips([]);
+    ob.querySelector('#ex-grid').onclick = e => {
+      const item = e.target.closest('[data-ex]'); if (!item) return;
+      const id = item.dataset.ex;
+      const idx = a.allergies.indexOf(id);
+      idx >= 0 ? a.allergies.splice(idx, 1) : a.allergies.push(id);
+      item.classList.toggle('on', a.allergies.includes(id));
+    };
+  }
+  async function onNext() {
+    collect();
+    if (step === 0 && (!+a.age || !+a.height || !+a.weight)) { toast('ÂGE, TAILLE ET POIDS REQUIS'); return; }
+    if (step < steps.length - 1) { step++; steps[step](); return; }
+    a.days = +a.days || 2; a.done = true;
+    await dbSaveProfile({ anamnese: a, targets: computeTargets(a), program: buildProgram(a), settings: S.profile?.settings || {} });
+    await dbSaveLog('journal', todayStr(), { weight: +a.weight, sleep: +a.sleep || null, energy: null, notes: 'Éveil du joueur — point de départ' }, { unique: true });
+    history.replaceState(null, '', location.pathname);
+    closeSheets();
+    confetti(1600);
+    toast('⚡ ÉVEIL TERMINÉ');
+    renderAll();
+    goPanel(0);
+  }
+  stepBio();
+}
 
 // ============================================================
 // DÉMARRAGE
 // ============================================================
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { });
+window.go = go; window.goPanel = goPanel;
 
 (async function boot() {
+  applyTheme();
   offlinePill();
+  if (location.hash) history.replaceState(null, '', location.pathname);
   if (LOCAL_MODE) {
     if (localStorage.getItem('rc_local_started')) {
       S.user = { id: 'local', email: 'local' };
-      await dbLoadProfile(); await dbLoadLogs();
-      if (S.profile) { navigate(); return; }
+      await dbLoadProfile(); await dbLoadLogs(); applyTheme();
+      if (S.profile) { enterApp(); return; }
     }
     renderAuth();
-    const btn = $('#local-go');
-    if (btn) {
-      const prev = btn.onclick;
-      btn.onclick = async () => { localStorage.setItem('rc_local_started', '1'); await prev(); };
-    }
     return;
   }
   await initSupabase();
   if (!sb) {
-    // CDN/réseau indisponible : reprise sur cache local si une session a déjà existé
     const cachedUser = JSON.parse(localStorage.getItem('rc_last_user') || 'null');
     if (cachedUser) {
       S.user = cachedUser;
-      await dbLoadProfile(); await dbLoadLogs();
-      if (S.profile) { toast('Mode hors-ligne — synchronisation à la reconnexion'); navigate(); return; }
+      await dbLoadProfile(); await dbLoadLogs(); applyTheme();
+      if (S.profile) { toast('HORS-LIGNE — SYNC AU RETOUR'); enterApp(); return; }
     }
-    app.innerHTML = `
-      <div class="auth-wrap"><div class="card" style="text-align:center">
-        <h2 style="margin-bottom:8px">Connexion impossible</h2>
-        <p class="muted" style="margin-bottom:14px">Le serveur est injoignable (réseau ou CDN). Réessaie une fois connecté.</p>
-        <button class="btn" onclick="location.reload()">Réessayer</button>
-      </div></div>`;
+    document.body.insertAdjacentHTML('beforeend', `
+      <div class="auth-wrap"><div class="inner"><div class="brick" style="text-align:center">
+        <h2>SERVEUR INJOIGNABLE</h2>
+        <p class="mute" style="margin:10px 0;font-weight:600">Réseau ou CDN indisponible. Réessaie une fois connecté.</p>
+        <button class="btn" onclick="location.reload()">RÉESSAYER</button>
+      </div></div></div>`);
     return;
   }
   const { data } = await sb.auth.getSession();
   if (data?.session) await onSignedIn(data.session.user);
   else renderAuth();
-  sb.auth.onAuthStateChange((_e, session) => {
-    if (session && !S.user) onSignedIn(session.user);
-  });
+  sb.auth.onAuthStateChange((_e, session) => { if (session && !S.user) onSignedIn(session.user); });
 })();
