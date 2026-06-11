@@ -1,5 +1,5 @@
 /* RECOMP FIGHT CAMP — Service Worker v3 */
-const CACHE = 'recomp-v8';
+const CACHE = 'recomp-v9';
 const SHELL = [
   './', './index.html', './css/style.css',
   './js/config.js', './js/exercises.js', './js/knowledge.js',
@@ -17,7 +17,11 @@ self.addEventListener('fetch', e => {
   if (url.hostname.includes('supabase')) return;
   if (url.origin !== location.origin) {
     if (e.request.method === 'GET' && (url.hostname.includes('fonts.g') || url.hostname.includes('esm.sh'))) {
-      e.respondWith(caches.match(e.request).then(hit => hit || fetch(e.request).then(res => { caches.open(CACHE).then(c => c.put(e.request, res.clone())); return res; }).catch(() => hit)));
+      e.respondWith(caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
+        const clone = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, clone));
+        return res;
+      }).catch(() => hit)));
     }
     return;
   }
