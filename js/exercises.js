@@ -172,7 +172,7 @@ window.EXLIB = [
     errors: ["S'aider de l'épaule", "Aller trop lourd"],
     breath: "Expire en montée.",
     easier: 'db-curl', harder: null },
-  { id: 'kickback', name: 'Kickback triceps', group: 'Bras', muscles: ['Triceps'], secondary: ['Arrière d\\'épaule'], level: 1, equip: 'Haltère + appui',
+  { id: 'kickback', name: 'Kickback triceps', group: 'Bras', muscles: ['Triceps'], secondary: ["Arrière d'épaule"], level: 1, equip: 'Haltère + appui',
     steps: ["Buste penché, main en appui, coude levé collé au buste, bras parallèle au sol.", "Tends le coude vers l'arrière jusqu'au bras tendu.", "Serre 1 s, reviens contrôlé sans bouger le coude."],
     cues: "Mouvement de triceps sans aucune contrainte sur l'épaule/clavicule : idéal pour ton profil.",
     errors: ["Coude qui descend", "Élan du bras entier"],

@@ -214,30 +214,7 @@ function computeTargets(a) {
   const p = Math.round(1.8 * w), f = Math.round(0.9 * w);
   return { bmr, tdee, kcal, p, c: Math.max(0, Math.round((kcal - p * 4 - f * 9) / 4)), f };
 }
-  if (!has('banc')) {
-    swap('db-press', 'incline-pushup');
-    swap('hip-thrust-db', 'glute-bridge');
-    swap('db-fly', 'incline-pushup');
-  }
-  if (!has('halteres') && !has('barre_sol')) {
-    // Poids du corps seul
-    swap('goblet-squat', 'wall-sit');
-    swap('romanian-dl', 'glute-bridge');
-    swap('db-row', has('elastiques') ? 'band-row' : 'inverted-row');
-    swap('db-curl', has('elastiques') ? 'band-curl' : 'inverted-row');
-    swap('shrugs', 'face-pull-band');
-  }
-  if (has('kettlebell') && !has('halteres')) {
-    // Si KB mais pas haltères, câbler le swing
-    swap('goblet-squat', 'kb-swing');
-  }
-  if (has('elastiques') && !has('barre')) {
-    swap('inverted-row', 'band-row');
-    swap('face-pull-band', 'face-pull-band'); // déjà correct
-  }
 
-  return prog;
-}
 function allowedRecipes() {
   const al = S.profile.anamnese?.allergies || [];
   return window.RECIPES.filter(r => {
@@ -379,7 +356,6 @@ function renderStatut(el) {
   const dq = window.RPG.dailyQuests(S.logs, p);
   const wq = window.RPG.weeklyQuests(S.logs, p);
   const advice = window.Coach.dailyAdvice(S.logs, p)[0];
-  const advice = window.Coach.dailyAdvice(S.logs, S.profile)[0];
   const hpMax = h.hp, mpMax = h.mp;
   const SK = window.RPG.STAT_KEYS, SL = window.RPG.STAT_LABEL;
 
@@ -712,9 +688,9 @@ function sheetExo(id) {
 // ============================================================
 function sheetSession(sid) {
   if (sid !== 'custom') { toast('SÉANCE INVALIDE'); return; }
-  const draft = cacheGet('session_draft', { exercises: [] });
-  if (!draft.exercises.length) { toast('AJOUTE DES EXERCICES'); return; }
-  const base = { id: 'custom', name: 'SÉANCE LIBRE', sub: `${draft.exercises.length} exercices · ${new Set(draft.exercises.map(e => getExo(e.exo)?.group)).size} zones`, exercises: draft.exercises };
+  const sessionDraft = cacheGet('session_draft', { exercises: [] });
+  if (!sessionDraft.exercises.length) { toast('AJOUTE DES EXERCICES'); return; }
+  const base = { id: 'custom', name: 'SÉANCE LIBRE', sub: `${sessionDraft.exercises.length} exercices · ${new Set(sessionDraft.exercises.map(e => getExo(e.exo)?.group)).size} zones`, exercises: sessionDraft.exercises };
   const adapted = window.Coach.adaptSession(base, S.logs, S.profile);
   const sess = adapted.session;
   const draftKey = 'draft_' + sid + '_' + todayStr();

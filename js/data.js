@@ -87,7 +87,7 @@ window.RECIPES = [
     steps: "Riz refroidi + thon + maïs + tomate en dés. Vinaigrette légère. Le riz refroidi forme de l'amidon résistant : meilleur pour la satiété." },
   { id: 'r-tartines', name: 'Tartines complètes thon-avocat', meal: 'déjeuner', kcal: 470, p: 30, c: 42, f: 19, time: 8, cost: 2.6,
     micros: ['Oméga-3', 'Vitamine E', 'Fibres'],
-    ing: [['Pain complet', 90, 'Boulangerie'], ['Thon au naturel', 100, 'Conserves'], ['Avocat', 80, 'Fruits'], ['Citron', 15, 'Fruits'], ['Poivre', 1, 'Épicerie'], ['Piment d\\'Espelette', 1, 'Épicerie']],
+    ing: [['Pain complet', 90, 'Boulangerie'], ['Thon au naturel', 100, 'Conserves'], ['Avocat', 80, 'Fruits'], ['Citron', 15, 'Fruits'], ['Poivre', 1, 'Épicerie'], ["Piment d'Espelette", 1, 'Épicerie']],
     steps: "Écrase l'avocat au citron, étale, ajoute le thon émietté. Poivre, piment d'Espelette. Déjeuner express." },
   // ---------- DÎNER ----------
   { id: 'r-boeuf-patate', name: 'Bœuf 5 %, patate douce & haricots', meal: 'dîner', kcal: 540, p: 42, c: 50, f: 14, time: 30, cost: 3.0, batch: true,
