@@ -214,48 +214,6 @@ function computeTargets(a) {
   const p = Math.round(1.8 * w), f = Math.round(0.9 * w);
   return { bmr, tdee, kcal, p, c: Math.max(0, Math.round((kcal - p * 4 - f * 9) / 4)), f };
 }
-function buildProgram(a) {
-  const prog = JSON.parse(JSON.stringify(window.DEFAULT_PROGRAM));
-  const inj = (a.injuries || []).join(' ');
-  const eq = a.equipment || [];
-  const has = id => eq.includes(id);
-  const swap = (from, to) => prog.sessions.forEach(s => s.exercises.forEach(e => { if (e.exo === from) e.exo = to; }));
-
-  // ── Blessures / contraintes articulaires ─────────────────────
-  if (/epaule|clavicule/.test(inj)) {
-    swap('dips-partial', 'incline-pushup');
-    swap('db-shoulder-press', 'pike-pushup'); // shoulder press → pike si clavicule
-  }
-  if (/poignet/.test(inj)) {
-    swap('plank', 'dead-bug'); // planche poignets → dead bug
-    swap('incline-pushup', 'band-row'); // pompes → rowing élastique
-  }
-  if (/genou/.test(inj)) {
-    prog.sessions.forEach(s => s.exercises.forEach(e => {
-      if (['goblet-squat', 'rear-lunge', 'bulgarian-split', 'walking-lunge', 'step-up', 'lateral-lunge'].includes(e.exo))
-        e.note = '⚠ GENOU : AMPLITUDE SANS DOULEUR · STOP À 3/10';
-    }));
-  }
-  if (/lombaire/.test(inj)) {
-    swap('romanian-dl', 'glute-bridge');
-    swap('back-ext', 'dead-bug');
-    prog.sessions.forEach(s => s.exercises.forEach(e => {
-      if (['kb-swing', 'hip-thrust-db'].includes(e.exo)) e.note = '⚠ LOMBAIRES : GAINAGE MAXIMAL · STOP SI IRRADIATION';
-    }));
-  }
-
-  // ── Matériel manquant ─────────────────────────────────────────
-  if (!has('barre')) {
-    swap('pullup-neutral', has('anneaux') ? 'ring-row' : 'inverted-row');
-    swap('pullup-supine', has('elastiques') ? 'band-row' : 'inverted-row');
-    swap('pullup-weighted', has('anneaux') ? 'ring-row' : 'inverted-row');
-    swap('hanging-knee-raise', 'leg-raise');
-    swap('toes-to-bar', 'hollow-hold');
-  }
-  if (!has('chaise_romaine')) {
-    swap('back-ext', has('barre_sol') ? 'romanian-dl' : 'superman');
-    swap('leg-raise', has('ab_wheel') ? 'ab-wheel' : 'weighted-crunch');
-  }
   if (!has('banc')) {
     swap('db-press', 'incline-pushup');
     swap('hip-thrust-db', 'glute-bridge');
@@ -421,7 +379,7 @@ function renderStatut(el) {
   const dq = window.RPG.dailyQuests(S.logs, p);
   const wq = window.RPG.weeklyQuests(S.logs, p);
   const advice = window.Coach.dailyAdvice(S.logs, p)[0];
-  const next = nextSession();
+  const advice = window.Coach.dailyAdvice(S.logs, S.profile)[0];
   const hpMax = h.hp, mpMax = h.mp;
   const SK = window.RPG.STAT_KEYS, SL = window.RPG.STAT_LABEL;
 
@@ -468,9 +426,9 @@ function renderStatut(el) {
 
     <div class="win">
       <div class="win-tag danger">QUÊTE JOURNALIÈRE</div>
-      <h2>DONJON DU JOUR</h2>
-      <p class="mute small" style="margin-bottom:4px">${esc(next.name)} — ${esc(next.sub || '')} · ${next.exercises.length} VAGUES</p>
-      <button class="btn solid" style="margin-top:8px" onclick="location.hash='#/session@${next.id}'">⊳ ENTRER DANS LE DONJON</button>
+      <h2>LE DONJON</h2>
+      <p class="mute small" style="margin-bottom:4px">Construis ta séance librement via les portails.</p>
+      <button class="btn solid" style="margin-top:8px" onclick="goPanel(1)">⊳ ALLER FORGER UNE SÉANCE</button>
       <hr class="divider">
       ${dq.map(q => `<div class="quest ${q.done ? 'done' : ''}"><span class="box">${q.done ? '✓' : ''}</span><span class="t">${esc(q.t)}</span><span class="xp">+${q.xp}</span></div>`).join('')}
       <p class="mute small" style="margin-top:8px">⚠ Quête non terminée = série remise à zéro. Le repos fait partie de la progression : un jour off est normal.</p>
@@ -503,15 +461,6 @@ function renderStatut(el) {
   requestAnimationFrame(() => requestAnimationFrame(() => {
     $$('.vital .fill', el).forEach(i => i.style.width = i.dataset.w + '%');
   }));
-}
-function nextTitleLevel(lvl) {
-  return window.RPG.nextRankLevel(lvl) || 'MAX';
-}
-function nextSession() {
-  const sessions = S.profile.program?.sessions || [];
-  const lastW = S.logs.find(l => l.kind === 'workout');
-  const idx = Math.max(0, sessions.findIndex(s => s.id === lastW?.payload.sessionId) + 1) % (sessions.length || 1);
-  return sessions[idx] || { name: '—', exercises: [] };
 }
 
 // ============================================================
@@ -762,15 +711,10 @@ function sheetExo(id) {
 // SÉANCE = LE COMBAT (rounds)
 // ============================================================
 function sheetSession(sid) {
-  let base;
-  if (sid === 'custom') {
-    const draft = cacheGet('session_draft', { exercises: [] });
-    if (!draft.exercises.length) { toast('AJOUTE DES EXERCICES'); return; }
-    base = { id: 'custom', name: 'SÉANCE LIBRE', sub: `${draft.exercises.length} exercices · ${new Set(draft.exercises.map(e => getExo(e.exo)?.group)).size} zones`, exercises: draft.exercises };
-  } else {
-    base = S.profile.program.sessions.find(s => s.id === sid);
-  }
-  if (!base) return;
+  if (sid !== 'custom') { toast('SÉANCE INVALIDE'); return; }
+  const draft = cacheGet('session_draft', { exercises: [] });
+  if (!draft.exercises.length) { toast('AJOUTE DES EXERCICES'); return; }
+  const base = { id: 'custom', name: 'SÉANCE LIBRE', sub: `${draft.exercises.length} exercices · ${new Set(draft.exercises.map(e => getExo(e.exo)?.group)).size} zones`, exercises: draft.exercises };
   const adapted = window.Coach.adaptSession(base, S.logs, S.profile);
   const sess = adapted.session;
   const draftKey = 'draft_' + sid + '_' + todayStr();
@@ -1386,7 +1330,7 @@ function sheetSettings() {
     <div class="brick">
       <h2>👤 CHASSEUR</h2>
       <p class="mute small" style="margin-bottom:10px;font-weight:600">${LOCAL_MODE ? 'MODE LOCAL : données sur cet appareil.' : 'CONNECTÉ : ' + esc(S.user.email) + ' · RLS + chiffrement au repos.'}</p>
-      <button class="btn ghost" id="redo">REFAIRE L'ÉVEIL (RÉGÉNÈRE LE DONJON)</button>
+      <button class="btn ghost" id="redo">REFAIRE L'ÉVEIL</button>
       <div style="height:8px"></div>
       <button class="btn ghost" id="export">⬇ EXPORTER MES DONNÉES (JSON)</button>
       ${LOCAL_MODE ? '' : '<div style="height:8px"></div><button class="btn" id="logout" style="background:var(--ink);color:var(--paper)">SE DÉCONNECTER</button>'}
@@ -1612,7 +1556,7 @@ function sheetOnboarding() {
     if (step === 0 && (!+a.age || !+a.height || !+a.weight)) { toast('ÂGE, TAILLE ET POIDS REQUIS'); return; }
     if (step < steps.length - 1) { step++; steps[step](); return; }
     a.days = +a.days || 2; a.done = true;
-    await dbSaveProfile({ anamnese: a, targets: computeTargets(a), program: buildProgram(a), settings: S.profile?.settings || {} });
+    await dbSaveProfile({ anamnese: a, targets: computeTargets(a), settings: S.profile?.settings || {} });
     await dbSaveLog('journal', todayStr(), { weight: +a.weight, sleep: +a.sleep || null, energy: null, notes: 'Éveil du joueur — point de départ' }, { unique: true });
     history.replaceState(null, '', location.pathname);
     closeSheets();
@@ -1650,7 +1594,7 @@ function renderMusicMini(st) {
   mini.innerHTML = `
     <div class="track-info">
       <div class="track-title">${cur ? esc(cur.title) : 'AUCUNE PISTE'}</div>
-      <div class="track-type">${cur ? (cur.type === 'youtube' ? '▶ YOUTUBE' : '♪ AUDIO') : '—'} · ${st.count} PISTE${st.count > 1 ? 'S' : ''}</div>
+      <div class="track-type">${cur ? (cur.type === 'youtube' ? '▶ YOUTUBE' : cur.type === 'youtube-playlist' ? '▶ PLAYLIST' : '♪ AUDIO') : '—'} · ${st.count} PISTE${st.count > 1 ? 'S' : ''}</div>
     </div>
     <button data-act="prev" title="Précédent">⏮</button>
     <button class="play-btn ${st.isPlaying ? 'playing' : ''}" data-act="toggle">${st.isPlaying ? '⏸' : '▶'}</button>
