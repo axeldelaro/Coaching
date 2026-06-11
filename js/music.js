@@ -26,6 +26,12 @@ window.MusicPlayer = (() => {
     return m ? m[1] : null;
   }
 
+  function extractPlaylistId(url) {
+    if (!url) return null;
+    const m = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+    return m ? m[1] : null;
+  }
+
   function ensureYTAPI() {
     return new Promise(resolve => {
       if (window.YT && window.YT.Player) { resolve(); return; }
@@ -75,6 +81,29 @@ window.MusicPlayer = (() => {
     }
   }
 
+  async function playYTPlaylist(listId) {
+    await ensureYTAPI();
+    const el = getOrCreateContainer();
+    if (ytPlayer) { ytPlayer.destroy(); ytPlayer = null; }
+    ytPlayer = new YT.Player(el.id, {
+      height: '1', width: '1',
+      playerVars: { autoplay: 1, controls: 0, listType: 'playlist', list: listId },
+      events: {
+        onReady: e => { e.target.playVideo(); isPlaying = true; notify(); },
+        onStateChange: e => {
+          if (e.data === YT.PlayerState.ENDED) next();
+          isPlaying = e.data === YT.PlayerState.PLAYING;
+          notify();
+        },
+        onError: () => { next(); }
+      }
+    });
+    const wrap = document.getElementById('yt-player-wrap');
+    if (wrap && !document.getElementById('yt-player')) {
+      const d = document.createElement('div'); d.id = 'yt-player'; wrap.appendChild(d);
+    }
+  }
+
   // --- HTML5 Audio ---
   function playAudio(url) {
     if (!audioEl) {
@@ -93,6 +122,7 @@ window.MusicPlayer = (() => {
     currentIndex = index;
     const track = playlist[index];
     if (track.type === 'youtube') playYT(track.videoId);
+    else if (track.type === 'youtube-playlist') playYTPlaylist(track.playlistId);
     else playAudio(track.url);
   }
 
@@ -145,6 +175,17 @@ window.MusicPlayer = (() => {
     save(); notify();
   }
 
+  async function addPlaylist(url) {
+    const listId = extractPlaylistId(url);
+    if (!listId) return 0;
+    // Use YouTube oEmbed to get playlist info, then add as single entry
+    // Since we can't enumerate playlist items without API key,
+    // we add the playlist as a playable item via YT API loadPlaylist
+    playlist.push({ type: 'youtube-playlist', playlistId: listId, title: 'Playlist YouTube — ' + listId, url });
+    save(); notify();
+    return 1;
+  }
+
   function removeTrack(index) {
     if (index === currentIndex) stopAll();
     playlist.splice(index, 1);
@@ -171,8 +212,8 @@ window.MusicPlayer = (() => {
 
   load();
   return {
-    addTrack, removeTrack, moveTrack,
+    addTrack, addPlaylist, removeTrack, moveTrack,
     playTrack, toggle, next, prev, toggleShuffle, stopAll,
-    getState, setOnStateChange, extractYTId
+    getState, setOnStateChange, extractYTId, extractPlaylistId
   };
 })();

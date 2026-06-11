@@ -515,41 +515,86 @@ function nextSession() {
 }
 
 // ============================================================
-// PANNEAU 1 — LE COMBAT (programme + arsenal)
+// PANNEAU 1 — LE COMBAT (constructeur de séance)
 // ============================================================
 function renderCombat(el) {
-  const prog = S.profile.program;
-  el.innerHTML = `
-    <div class="label">[ SYSTÈME ] — PORTAILS</div>
-    <h1 class="title-xl">LE DONJON</h1>
-    <p class="mute" style="margin:6px 0 16px;font-weight:600">${esc(prog?.note || '')}</p>
+  const draft = cacheGet('session_draft', { exercises: [] });
+  const saveDraft = () => cacheSet('session_draft', draft);
+  const groups = window.EXLIB_GROUPS;
+  const MAX_SETS_PER_EXO = 5;
+  const MAX_SETS_PER_GROUP = 15;
+  const BONUS_GROUPS = 3; // min groups for variety bonus
 
-    ${(prog?.sessions || []).map(s => `
-      <div class="brick" style="padding:0;overflow:hidden">
-        <div class="gate-head"><span class="n">${esc(s.id)}</span><span class="t">${esc(s.name)} · ${esc(s.sub || '')}</span></div>
-        <div style="padding:14px">
-        ${s.exercises.map((pe, i) => {
-          const ex = getExo(pe.exo) || { name: pe.exo };
+  // Count sets per group
+  const groupSets = {};
+  groups.forEach(g => { groupSets[g] = 0; });
+  draft.exercises.forEach(pe => {
+    const ex = getExo(pe.exo);
+    if (ex) groupSets[ex.group] = (groupSets[ex.group] || 0) + pe.sets;
+  });
+  const totalSets = draft.exercises.reduce((s, e) => s + e.sets, 0);
+  const activeGroups = Object.values(groupSets).filter(v => v > 0).length;
+  const varietyBonus = activeGroups >= 5 ? 50 : activeGroups >= BONUS_GROUPS ? 20 : 0;
+
+  const groupIcons = { 'Jambes': '🦵', 'Dos': '🔙', 'Poussée': '💪', 'Épaules': '🎯', 'Bras': '💎', 'Abdos': '🛡️', 'Cardio': '❤️🔥' };
+  const effBar = (val, max) => `<div class="bar" style="flex:1;height:6px;border:1px solid var(--line);background:rgba(0,0,0,0.3)"><i style="display:block;height:100%;width:${Math.min(100, max ? val/max*100 : 0)}%;background:${val > max ? 'var(--danger)' : 'var(--accent)'};box-shadow:0 0 6px ${val > max ? 'var(--danger)' : 'var(--accent)'};transition:width 0.3s"></i></div>`;
+
+  el.innerHTML = `
+    <div class="label">[ SYSTÈME ] — FORGE DU COMBATTANT</div>
+    <h1 class="title-xl">LE DONJON</h1>
+    <p class="mute" style="margin:6px 0 14px;font-weight:700">Construis ta séance : choisis tes exercices par zone. L'équilibre est la clé.</p>
+
+    ${varietyBonus ? `<div class="advice-b good">🎯 BONUS VARIÉTÉ +${varietyBonus}% XP — ${activeGroups} zones travaillées</div>` : 
+      totalSets ? `<div class="advice-b warn">⚠ TRAVAILLE ${BONUS_GROUPS}+ ZONES POUR UN BONUS XP</div>` : ''}
+
+    <div class="brick">
+      <div class="row between"><h2>ZONES DE COMBAT</h2><span class="sys num" style="color:var(--accent)">${totalSets} SÉRIES</span></div>
+      <div class="eq-grid" id="group-grid">
+        ${groups.map(g => `
+          <div class="eq-item ${groupSets[g] ? 'on' : ''}" data-grp="${g}" style="flex-direction:column;align-items:center;text-align:center;padding:14px 8px">
+            <span class="ico" style="font-size:1.6rem">${groupIcons[g] || '⚔️'}</span>
+            <span style="margin-top:4px">${g.toUpperCase()}</span>
+            <span class="mono small" style="color:${groupSets[g] ? 'var(--accent)' : 'var(--mute)'}">${groupSets[g] || 0}/${MAX_SETS_PER_GROUP}</span>
+            ${effBar(groupSets[g], MAX_SETS_PER_GROUP)}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    ${draft.exercises.length ? `
+    <div class="brick">
+      <h2>SÉANCE DU JOUR — ${draft.exercises.length} EXERCICES</h2>
+      <div id="draft-list">
+        ${draft.exercises.map((pe, i) => {
+          const ex = getExo(pe.exo) || { name: pe.exo, group: '?' };
           const lp = lastPerf(pe.exo);
+          const eff = pe.sets <= 3 ? '100%' : pe.sets <= 5 ? '80%' : '50%';
           return `
-          <div style="padding:10px 0;border-bottom:2px dashed var(--mute)">
-            <div class="row between">
-              <button class="sys" style="text-align:left;font-size:0.95rem" onclick="go('/exo@${ex.id}')">V${i + 1} · ${esc(ex.name.toUpperCase())} +</button>
-              <span class="row">
-                <button class="btn sm ghost" data-act="swap" data-sid="${s.id}" data-i="${i}">↔</button>
-                <button class="btn sm ghost" data-act="minus" data-sid="${s.id}" data-i="${i}">−</button>
-                <button class="btn sm ghost" data-act="plus" data-sid="${s.id}" data-i="${i}">+</button>
-              </span>
+          <div class="gate" style="margin-bottom:10px">
+            <div class="gate-head">
+              <span class="n num">V${i+1}</span>
+              <button class="t" style="text-align:left" onclick="go('/exo@${ex.id}')">${esc(ex.name.toUpperCase())} ＋</button>
             </div>
-            <div class="specs num" style="margin-top:5px"><span><b>${pe.sets}</b>×${esc(pe.reps)}</span><span>TEMPO <b>${esc(pe.tempo)}</b></span><span>REPOS <b>${pe.rest}s</b></span><span>RPE <b>${esc(pe.rpe)}</b></span></div>
-            ${ex.flag ? `<div class="warn-note">⚠ CONTRAINTE ${esc(ex.flag.toUpperCase())} — AMPLITUDE PARTIELLE, STOP AU MOINDRE SIGNAL</div>` : ''}
-            ${pe.note ? `<div class="warn-note">${esc(pe.note)}</div>` : ''}
-            ${lp ? `<div class="prev">DERNIÈRE FOIS : ${fmtPR(lp)}</div>` : ''}
+            <div class="gate-body">
+              <div class="specs num">
+                <span>ZONE <b>${ex.group.toUpperCase()}</b></span>
+                <span>EFFICACITÉ <b>${eff}</b></span>
+                ${lp ? `<span>RECORD <b>${fmtPR(lp)}</b></span>` : ''}
+              </div>
+              <div class="row" style="margin-top:10px;gap:6px">
+                <button class="btn sm ghost" data-draft-minus="${i}" ${pe.sets <= 1 ? 'disabled' : ''}>−</button>
+                <span class="sys num" style="font-size:1.1rem;min-width:80px;text-align:center">${pe.sets} × ${esc(pe.reps)}</span>
+                <button class="btn sm ghost" data-draft-plus="${i}" ${pe.sets >= MAX_SETS_PER_EXO ? 'disabled' : ''}>+</button>
+                <button class="btn sm ghost" data-draft-del="${i}" style="margin-left:auto;color:var(--danger)">✕</button>
+              </div>
+              ${pe.sets > 3 ? '<p class="mute small" style="margin-top:6px;font-weight:700">⚠ Au-delà de 3 séries, les rendements décroissent. Diversifie tes zones !</p>' : ''}
+            </div>
           </div>`;
         }).join('')}
-        <button class="btn" style="margin-top:14px" onclick="go('/session@${s.id}')">⊳ ENTRER · ${esc(s.name)}</button>
-        </div>
-      </div>`).join('')}
+      </div>
+      <button class="btn solid" id="launch-session" style="margin-top:10px">⊳ LANCER LE DONJON · ${draft.exercises.length} VAGUES</button>
+      <button class="btn ghost" id="clear-draft" style="margin-top:8px">VIDER LA SÉANCE</button>
+    </div>` : ''}
 
     <hr class="divider">
     <div class="label">ARSENAL — ${window.EXLIB.length} COMPÉTENCES</div>
@@ -561,16 +606,40 @@ function renderCombat(el) {
     </div>
     <div id="lib-list"></div>`;
 
-  // édition du programme
-  el.onclick = async e => {
-    const b = e.target.closest('[data-act]'); if (!b) return;
-    const sess = S.profile.program.sessions.find(x => x.id === b.dataset.sid);
-    const pe = sess.exercises[+b.dataset.i];
-    if (b.dataset.act === 'plus') { pe.sets++; await dbSaveProfile({ program: S.profile.program }); renderCombat(el); }
-    if (b.dataset.act === 'minus' && pe.sets > 1) { pe.sets--; await dbSaveProfile({ program: S.profile.program }); renderCombat(el); }
-    if (b.dataset.act === 'swap') swapPicker(pe, () => renderCombat(el));
+  // Group grid click → add exercise picker
+  $('#group-grid', el).onclick = e => {
+    const item = e.target.closest('[data-grp]');
+    if (!item) return;
+    openExercisePicker(item.dataset.grp, draft, saveDraft, () => renderCombat(el));
   };
-  // bibliothèque
+
+  // Draft controls
+  el.onclick = async e => {
+    const plus = e.target.closest('[data-draft-plus]');
+    const minus = e.target.closest('[data-draft-minus]');
+    const del = e.target.closest('[data-draft-del]');
+    if (plus) {
+      const pe = draft.exercises[+plus.dataset.draftPlus];
+      const ex = getExo(pe.exo);
+      if (pe.sets < MAX_SETS_PER_EXO && groupSets[ex?.group] < MAX_SETS_PER_GROUP) { pe.sets++; saveDraft(); renderCombat(el); }
+      else toast('LIMITE ATTEINTE');
+    } else if (minus) {
+      const pe = draft.exercises[+minus.dataset.draftMinus];
+      if (pe.sets > 1) { pe.sets--; saveDraft(); renderCombat(el); }
+    } else if (del) {
+      draft.exercises.splice(+del.dataset.draftDel, 1); saveDraft(); renderCombat(el);
+    }
+  };
+
+  $('#launch-session', el)?.addEventListener('click', () => {
+    if (!draft.exercises.length) { toast('AJOUTE DES EXERCICES'); return; }
+    go('/session@custom');
+  });
+  $('#clear-draft', el)?.addEventListener('click', () => {
+    draft.exercises = []; saveDraft(); renderCombat(el); toast('SÉANCE VIDÉE');
+  });
+
+  // Bibliothèque (grimoire)
   let q = '', grp = '';
   const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   const drawLib = () => {
@@ -589,6 +658,40 @@ function renderCombat(el) {
     drawLib();
   });
   drawLib();
+}
+
+function openExercisePicker(group, draft, saveDraft, afterAdd) {
+  const MAX_SETS_PER_EXO = 5;
+  const exos = window.EXLIB.filter(e => e.group === group);
+  const sh = openSheet(`
+    <div class="label">ZONE : ${group.toUpperCase()}</div>
+    <h1 class="sys" style="font-size:1.6rem;margin-bottom:12px">CHOISIR UN EXERCICE</h1>
+    <p class="mute small" style="margin-bottom:14px;font-weight:700">Tape pour ajouter. Max ${MAX_SETS_PER_EXO} séries par exercice, diversifie pour un meilleur XP.</p>
+    ${exos.map(x => {
+      const already = draft.exercises.find(e => e.exo === x.id);
+      return `
+      <button class="menu-item row" style="width:100%;text-align:left;${already ? 'border-color:var(--accent)' : ''}" data-pick="${x.id}">
+        <span class="grow">
+          <span class="ttl">${esc(x.name.toUpperCase())}${already ? ' <span style="color:var(--accent)">✓ AJOUTÉ</span>' : ''}</span><br>
+          <span class="mute small up" style="font-weight:700">${x.muscles.join(' · ')} — ${esc(x.equip)} — NIV.${'▮'.repeat(x.level)}${'▯'.repeat(3-x.level)}</span>
+        </span>
+      </button>`;
+    }).join('')}`);
+  sh.addEventListener('click', e => {
+    const pick = e.target.closest('[data-pick]');
+    if (!pick) return;
+    const exId = pick.dataset.pick;
+    const existing = draft.exercises.find(e => e.exo === exId);
+    if (existing) {
+      if (existing.sets < MAX_SETS_PER_EXO) { existing.sets++; } else { toast('MAX 5 SÉRIES PAR EXERCICE'); return; }
+    } else {
+      draft.exercises.push({ exo: exId, sets: 3, reps: '8-12', tempo: '2010', rest: 90, rpe: '7-8' });
+    }
+    saveDraft();
+    sh.remove(); location.hash = '';
+    toast(`${esc(getExo(exId)?.name.toUpperCase())} AJOUTÉ ⚔️`);
+    afterAdd();
+  });
 }
 
 function swapPicker(pe, after) {
@@ -659,7 +762,14 @@ function sheetExo(id) {
 // SÉANCE = LE COMBAT (rounds)
 // ============================================================
 function sheetSession(sid) {
-  const base = S.profile.program.sessions.find(s => s.id === sid);
+  let base;
+  if (sid === 'custom') {
+    const draft = cacheGet('session_draft', { exercises: [] });
+    if (!draft.exercises.length) { toast('AJOUTE DES EXERCICES'); return; }
+    base = { id: 'custom', name: 'SÉANCE LIBRE', sub: `${draft.exercises.length} exercices · ${new Set(draft.exercises.map(e => getExo(e.exo)?.group)).size} zones`, exercises: draft.exercises };
+  } else {
+    base = S.profile.program.sessions.find(s => s.id === sid);
+  }
   if (!base) return;
   const adapted = window.Coach.adaptSession(base, S.logs, S.profile);
   const sess = adapted.session;
@@ -748,6 +858,7 @@ function sheetSession(sid) {
     const lvlBefore = window.RPG.hunter(S.logs, S.profile).lvl;
     const beltsBefore = unlockedBadges().map(b => b.id);
     await dbSaveLog('workout', todayStr(), { sessionId: sid, sessionName: sess.name, sets, durMin });
+    if (sid === 'custom') localStorage.removeItem(lsKey('session_draft'));
     const xpGain = window.RPG.computeXP(S.logs).xp - xpBefore;
     const hAfter = window.RPG.hunter(S.logs, S.profile);
     const leveledTo = hAfter.lvl > lvlBefore ? hAfter.lvl : 0;
@@ -763,6 +874,9 @@ function sheetSession(sid) {
 
 function showVictory({ sets, prs, durMin, xpGain, newBelts, leveledTo, rank }) {
   const vol = sets.reduce((x, s) => x + s.weight * s.reps, 0);
+  // Variety bonus
+  const exoGroups = new Set(sets.map(s => getExo(s.exoId)?.group).filter(Boolean));
+  const varietyPct = exoGroups.size >= 5 ? 50 : exoGroups.size >= 3 ? 20 : 0;
   const ov = document.createElement('div');
   ov.className = 'levelup';
   ov.innerHTML = `
@@ -781,6 +895,7 @@ function showVictory({ sets, prs, durMin, xpGain, newBelts, leveledTo, rank }) {
       <div class="cell"><b class="num">${durMin || '—'}</b><span>min</span></div>
     </div>
     <div class="notif"><b class="glow num">+${xpGain} XP</b> &nbsp;·&nbsp; +${window.RPG.XP.workout} donjon · +${window.RPG.XP.set}×${sets.length} séries${prs.length ? ` · +${window.RPG.XP.pr}×${prs.length} record${prs.length > 1 ? 's' : ''}` : ''}</div>
+    ${varietyPct ? `<div class="notif gold">🎯 BONUS VARIÉTÉ +${varietyPct}% — ${exoGroups.size} zones travaillées</div>` : ''}
     ${prs.map(s => `<div class="notif">🏆 RECORD — ${esc((getExo(s.exoId)?.name || s.ex))} : ${fmtPR(s)}</div>`).join('')}
     ${newBelts.map(b => `<div class="notif gold">${b.icon} TITRE OBTENU : ${esc(b.name)}</div>`).join('')}
     ${leveledTo ? `<div class="notif gold">⬆ RANG DE CHASSEUR : ${rank}</div>` : ''}
@@ -1555,11 +1670,14 @@ function sheetMusic() {
     <div class="label">[ SYSTÈME ] — AUDIO</div>
     <h1 class="title-xl" style="font-size:2.2rem">MUSIQUE</h1>
     <div class="brick" style="margin-top:14px">
-      <h2>AJOUTER UNE PISTE</h2>
-      <p class="mute small" style="margin-bottom:10px;font-weight:600">Colle un lien YouTube ou un lien audio direct (MP3, etc.).</p>
-      <label class="field"><span>URL</span><input id="m-url" placeholder="https://youtube.com/watch?v=..."></label>
+      <h2>AJOUTER DE LA MUSIQUE</h2>
+      <p class="mute small" style="margin-bottom:10px;font-weight:600">Colle un lien YouTube (vidéo ou playlist) ou tape un nom pour chercher.</p>
+      <label class="field"><span>LIEN OU NOM</span><input id="m-url" placeholder="Lien YouTube, playlist, ou nom de musique..."></label>
       <label class="field"><span>TITRE (OPTIONNEL)</span><input id="m-title" placeholder="Ma musique"></label>
-      <button class="btn solid" id="m-add">＋ AJOUTER</button>
+      <div class="row" style="gap:8px">
+        <button class="btn solid grow" id="m-add">＋ AJOUTER</button>
+        <button class="btn ghost" id="m-search" style="width:auto">🔍 CHERCHER</button>
+      </div>
     </div>
     <div class="brick">
       <div class="row between"><h2>PLAYLIST — ${st.count} PISTE${st.count > 1 ? 'S' : ''}</h2>
@@ -1572,18 +1690,36 @@ function sheetMusic() {
     $('#pl-list', sh).innerHTML = s.playlist.length ? s.playlist.map((t, i) => `
       <div class="playlist-item ${i === s.currentIndex && s.isPlaying ? 'active' : ''}" data-i="${i}">
         <span class="pi-num">${String(i + 1).padStart(2, '0')}</span>
-        <div class="pi-info"><div class="pi-title">${esc(t.title)}</div><div class="pi-type">${t.type === 'youtube' ? '▶ YOUTUBE' : '♪ AUDIO'}</div></div>
+        <div class="pi-info"><div class="pi-title">${esc(t.title)}</div><div class="pi-type">${t.type === 'youtube' ? '▶ YOUTUBE' : t.type === 'youtube-playlist' ? '▶ PLAYLIST' : '♪ AUDIO'}</div></div>
         <button class="pi-del" data-del="${i}" title="Supprimer">✕</button>
       </div>`).join('') : '<p class="mute">AUCUNE PISTE. AJOUTE UN LIEN CI-DESSUS.</p>';
   };
   drawList();
   MP.setOnStateChange(s => { drawList(); renderMusicMini(s); });
-  $('#m-add', sh).onclick = () => {
+  $('#m-add', sh).onclick = async () => {
     const url = $('#m-url', sh).value.trim();
-    if (!url) { toast('COLLE UN LIEN'); return; }
-    MP.addTrack(url, $('#m-title', sh).value.trim());
+    if (!url) { toast('COLLE UN LIEN OU UN NOM'); return; }
+    // Check if it's a playlist URL
+    if (MP.extractPlaylistId && MP.extractPlaylistId(url)) {
+      await MP.addPlaylist(url);
+      toast('PLAYLIST AJOUTÉE 🎵');
+    } else if (MP.extractYTId(url) || url.startsWith('http')) {
+      MP.addTrack(url, $('#m-title', sh).value.trim());
+      toast('PISTE AJOUTÉE 🎵');
+    } else {
+      // Treat as search query - open YouTube search
+      window.open('https://www.youtube.com/results?search_query=' + encodeURIComponent(url), '_blank');
+      toast('CHERCHE SUR YOUTUBE, COPIE LE LIEN');
+      return;
+    }
     $('#m-url', sh).value = ''; $('#m-title', sh).value = '';
-    drawList(); toast('PISTE AJOUTÉE 🎵');
+    drawList();
+  };
+  $('#m-search', sh).onclick = () => {
+    const q = $('#m-url', sh).value.trim();
+    if (!q) { toast('TAPE UN NOM DE MUSIQUE'); return; }
+    window.open('https://www.youtube.com/results?search_query=' + encodeURIComponent(q), '_blank');
+    toast('COPIE LE LIEN DEPUIS YOUTUBE');
   };
   $('#m-shuffle', sh).onclick = () => { MP.toggleShuffle(); const s = MP.getState(); $('#m-shuffle', sh).textContent = `🔀 ${s.shuffle ? 'ON' : 'OFF'}`; $('#m-shuffle', sh).className = `btn sm ${s.shuffle ? 'solid' : 'ghost'}`; };
   sh.addEventListener('click', e => {
