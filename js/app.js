@@ -351,7 +351,9 @@ function mountShell() {
     </header>
     <div class="deck" id="deck">
       ${PANELS.map((_, i) => `<section class="panel" data-p="${i}"><div class="inner" id="panel-${i}"></div></section>`).join('')}
-    </div>`);
+    </div>
+    <div class="landscape-block"><span class="icon">📱</span><h2>TOURNE TON APPAREIL</h2><p>L'application est conçue pour le mode portrait.</p></div>
+    <button class="fab-music" id="fab-music" title="Musique">🎵</button>`);
   deck = $('#deck'); strip = $('#strip');
   strip.onclick = e => {
     const b = e.target.closest('.strip-item'); if (!b) return;
@@ -372,6 +374,9 @@ function mountShell() {
     document.body.insertAdjacentHTML('beforeend', `<div class="swipe-hint">&lt; GLISSE POUR NAVIGUER &gt;</div>`);
     localStorage.setItem('rc_hint', seen + 1);
   }
+  // Music FAB
+  $('#fab-music').onclick = () => go('/music');
+  initMusicUI();
 }
 const goPanel = i => deck?.scrollTo({ left: i * deck.clientWidth, behavior: 'smooth' });
 
@@ -400,7 +405,7 @@ function handleHash() {
   const [path, arg] = h.split('@');
   closeSheets();
   if (!S.user || !S.profile) return;
-  const map = { '/session': sheetSession, '/exo': sheetExo, '/recipe': sheetRecipe, '/shopping': sheetShopping, '/settings': sheetSettings, '/onboarding': sheetOnboarding };
+  const map = { '/session': sheetSession, '/exo': sheetExo, '/recipe': sheetRecipe, '/shopping': sheetShopping, '/settings': sheetSettings, '/onboarding': sheetOnboarding, '/music': sheetMusic };
   if (map[path]) map[path](arg);
 }
 window.addEventListener('hashchange', handleHash);
@@ -786,15 +791,32 @@ function showVictory({ sets, prs, durMin, xpGain, newBelts, leveledTo, rank }) {
   $('#v-ok', ov).onclick = () => { ov.remove(); goPanel(0); };
 }
 
-// ---------- Minuteur ----------
+// ---------- Minuteur circulaire ----------
 function startTimer(seconds) {
   stopTimer();
-  let left = seconds;
-  const bar = document.createElement('div');
-  bar.className = 'timer-b';
-  bar.innerHTML = `<span class="lbl">REPOS<br>COIN DU RING</span><b class="t num" id="tval"></b><button class="btn sm" id="tskip">GO</button>`;
-  document.body.appendChild(bar);
-  const render = () => { const el = $('#tval'); if (el) el.textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`; };
+  let total = seconds, left = seconds;
+  const C = 2 * Math.PI * 100;
+  const ov = document.createElement('div');
+  ov.className = 'timer-overlay';
+  ov.innerHTML = `
+    <div class="timer-ring">
+      <svg viewBox="0 0 220 220"><circle class="bg" cx="110" cy="110" r="100"/><circle class="fg" cx="110" cy="110" r="100" stroke-dasharray="${C}" stroke-dashoffset="0"/></svg>
+      <div class="time-text"><span class="time-val" id="tval"></span><span class="time-label">REPOS</span></div>
+    </div>
+    <div class="timer-presets">
+      ${[30,60,90,120].map(s => `<button class="${s === total ? 'on' : ''}" data-ts="${s}">${s}s</button>`).join('')}
+    </div>
+    <div class="timer-actions">
+      <button class="btn ghost" id="tskip">PASSER</button>
+      <button class="btn solid" id="tadd">+15s</button>
+    </div>`;
+  document.body.appendChild(ov);
+  const fg = ov.querySelector('.fg');
+  const render = () => {
+    const el = $('#tval', ov);
+    if (el) el.textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+    fg.style.strokeDashoffset = C * (1 - left / total);
+  };
   render();
   S.timer = setInterval(() => {
     left--;
@@ -804,9 +826,15 @@ function startTimer(seconds) {
       fireNotif('🔔 DING ! REPOS TERMINÉ', 'Round suivant.', 'rest');
     } else render();
   }, 1000);
-  $('#tskip').onclick = stopTimer;
+  ov.querySelector('#tskip').onclick = stopTimer;
+  ov.querySelector('#tadd').onclick = () => { left += 15; total += 15; render(); };
+  ov.querySelectorAll('[data-ts]').forEach(b => b.onclick = () => {
+    left = +b.dataset.ts; total = +b.dataset.ts;
+    ov.querySelectorAll('[data-ts]').forEach(x => x.classList.toggle('on', x === b));
+    render();
+  });
 }
-function stopTimer() { clearInterval(S.timer); S.timer = null; $$('.timer-b').forEach(b => b.remove()); }
+function stopTimer() { clearInterval(S.timer); S.timer = null; $$('.timer-overlay, .timer-b').forEach(b => b.remove()); }
 
 // ============================================================
 // PANNEAU 2 — LA CANTINE
@@ -1482,10 +1510,98 @@ function sheetOnboarding() {
 }
 
 // ============================================================
+// MUSIQUE — UI
+// ============================================================
+function initMusicUI() {
+  if (!window.MusicPlayer) return;
+  window.MusicPlayer.setOnStateChange(st => {
+    renderMusicMini(st);
+    document.body.classList.toggle('music-on', st.isPlaying || st.count > 0);
+    const fab = $('#fab-music');
+    if (fab) fab.classList.toggle('has-mini', st.isPlaying);
+  });
+  const st = window.MusicPlayer.getState();
+  if (st.count > 0) renderMusicMini(st);
+}
+function renderMusicMini(st) {
+  let mini = $('.music-mini');
+  if (!st || (!st.isPlaying && !st.count)) { if (mini) mini.remove(); return; }
+  if (!mini) {
+    mini = document.createElement('div');
+    mini.className = 'music-mini';
+    document.body.appendChild(mini);
+  }
+  const cur = st.current;
+  mini.innerHTML = `
+    <div class="track-info">
+      <div class="track-title">${cur ? esc(cur.title) : 'AUCUNE PISTE'}</div>
+      <div class="track-type">${cur ? (cur.type === 'youtube' ? '▶ YOUTUBE' : '♪ AUDIO') : '—'} · ${st.count} PISTE${st.count > 1 ? 'S' : ''}</div>
+    </div>
+    <button data-act="prev" title="Précédent">⏮</button>
+    <button class="play-btn ${st.isPlaying ? 'playing' : ''}" data-act="toggle">${st.isPlaying ? '⏸' : '▶'}</button>
+    <button data-act="next" title="Suivant">⏭</button>`;
+  mini.onclick = e => {
+    const a = e.target.closest('[data-act]')?.dataset.act;
+    if (a === 'toggle') window.MusicPlayer.toggle();
+    else if (a === 'next') window.MusicPlayer.next();
+    else if (a === 'prev') window.MusicPlayer.prev();
+  };
+}
+function sheetMusic() {
+  const MP = window.MusicPlayer;
+  if (!MP) { toast('MODULE MUSIQUE NON DISPONIBLE'); return; }
+  const st = MP.getState();
+  const sh = openSheet(`
+    <div class="label">[ SYSTÈME ] — AUDIO</div>
+    <h1 class="title-xl" style="font-size:2.2rem">MUSIQUE</h1>
+    <div class="brick" style="margin-top:14px">
+      <h2>AJOUTER UNE PISTE</h2>
+      <p class="mute small" style="margin-bottom:10px;font-weight:600">Colle un lien YouTube ou un lien audio direct (MP3, etc.).</p>
+      <label class="field"><span>URL</span><input id="m-url" placeholder="https://youtube.com/watch?v=..."></label>
+      <label class="field"><span>TITRE (OPTIONNEL)</span><input id="m-title" placeholder="Ma musique"></label>
+      <button class="btn solid" id="m-add">＋ AJOUTER</button>
+    </div>
+    <div class="brick">
+      <div class="row between"><h2>PLAYLIST — ${st.count} PISTE${st.count > 1 ? 'S' : ''}</h2>
+        <button class="btn sm ${st.shuffle ? 'solid' : 'ghost'}" id="m-shuffle">🔀 ${st.shuffle ? 'ON' : 'OFF'}</button>
+      </div>
+      <div class="playlist-grid" id="pl-list"></div>
+    </div>`);
+  const drawList = () => {
+    const s = MP.getState();
+    $('#pl-list', sh).innerHTML = s.playlist.length ? s.playlist.map((t, i) => `
+      <div class="playlist-item ${i === s.currentIndex && s.isPlaying ? 'active' : ''}" data-i="${i}">
+        <span class="pi-num">${String(i + 1).padStart(2, '0')}</span>
+        <div class="pi-info"><div class="pi-title">${esc(t.title)}</div><div class="pi-type">${t.type === 'youtube' ? '▶ YOUTUBE' : '♪ AUDIO'}</div></div>
+        <button class="pi-del" data-del="${i}" title="Supprimer">✕</button>
+      </div>`).join('') : '<p class="mute">AUCUNE PISTE. AJOUTE UN LIEN CI-DESSUS.</p>';
+  };
+  drawList();
+  MP.setOnStateChange(s => { drawList(); renderMusicMini(s); });
+  $('#m-add', sh).onclick = () => {
+    const url = $('#m-url', sh).value.trim();
+    if (!url) { toast('COLLE UN LIEN'); return; }
+    MP.addTrack(url, $('#m-title', sh).value.trim());
+    $('#m-url', sh).value = ''; $('#m-title', sh).value = '';
+    drawList(); toast('PISTE AJOUTÉE 🎵');
+  };
+  $('#m-shuffle', sh).onclick = () => { MP.toggleShuffle(); const s = MP.getState(); $('#m-shuffle', sh).textContent = `🔀 ${s.shuffle ? 'ON' : 'OFF'}`; $('#m-shuffle', sh).className = `btn sm ${s.shuffle ? 'solid' : 'ghost'}`; };
+  sh.addEventListener('click', e => {
+    const del = e.target.closest('[data-del]');
+    if (del) { MP.removeTrack(+del.dataset.del); drawList(); return; }
+    const item = e.target.closest('.playlist-item');
+    if (item && !e.target.closest('.pi-del')) { MP.playTrack(+item.dataset.i); drawList(); }
+  });
+}
+
+// ============================================================
 // DÉMARRAGE
 // ============================================================
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { });
 window.go = go; window.goPanel = goPanel;
+
+// Portrait lock
+try { screen.orientation?.lock?.('portrait-primary').catch(() => {}); } catch {}
 
 (async function boot() {
   applyTheme();

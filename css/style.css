@@ -566,6 +566,173 @@ input, select, textarea {
   .deck { top: 40px; }
 }
 
+/* ============ PORTRAIT LOCK ============ */
+.landscape-block {
+  display: none; position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg); color: var(--accent);
+  flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center;
+}
+.landscape-block .icon { font-size: 4rem; animation: rotatePhone 2s ease-in-out infinite; }
+@keyframes rotatePhone { 0%,100% { transform: rotate(90deg); } 50% { transform: rotate(0deg); } }
+.landscape-block h2 { font-family: "Orbitron", sans-serif; font-size: 1.3rem; letter-spacing: 0.1em; }
+.landscape-block p { color: var(--mute); font-size: 0.9rem; max-width: 280px; }
+@media (orientation: landscape) and (max-height: 500px) {
+  .landscape-block { display: flex; }
+  header.strip, .deck, .sheet, .levelup, .timer-b, .music-mini { display: none !important; }
+}
+
+/* ============ TIMER CIRCULAIRE ============ */
+.timer-overlay {
+  position: fixed; inset: 0; z-index: 250;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: rgba(2, 4, 10, 0.92); backdrop-filter: blur(12px);
+  animation: sheetIn 0.2s ease;
+}
+.timer-ring {
+  position: relative; width: 220px; height: 220px;
+}
+.timer-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.timer-ring .bg { fill: none; stroke: var(--line); stroke-width: 6; }
+.timer-ring .fg {
+  fill: none; stroke: var(--accent); stroke-width: 6;
+  stroke-linecap: square; transition: stroke-dashoffset 1s linear;
+  filter: drop-shadow(0 0 8px var(--accent));
+}
+.timer-ring .time-text {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.timer-ring .time-val {
+  font-family: "Orbitron", sans-serif; font-weight: 900; font-size: 3.2rem;
+  color: var(--accent); text-shadow: 0 0 20px var(--accent);
+  line-height: 1;
+}
+.timer-ring .time-label {
+  font-family: "Share Tech Mono", monospace; font-size: 0.72rem;
+  letter-spacing: 0.14em; color: var(--mute); margin-top: 6px;
+}
+.timer-presets { display: flex; gap: 10px; margin-top: 24px; }
+.timer-presets button {
+  font-family: "Orbitron", sans-serif; font-weight: 700; font-size: 0.82rem;
+  color: var(--ink-2); border: 1px solid var(--line); padding: 10px 16px;
+  background: var(--panel); min-width: 56px;
+}
+.timer-presets button.on { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 12px -4px var(--accent); }
+.timer-actions { display: flex; gap: 14px; margin-top: 20px; }
+.timer-actions .btn { width: auto; min-width: 120px; }
+
+/* ============ MINI LECTEUR MUSICAL ============ */
+.music-mini {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(4, 8, 20, 0.95); backdrop-filter: blur(10px);
+  border-top: 1px solid var(--line); box-shadow: 0 -4px 20px -8px var(--accent);
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: none; } }
+.music-mini .track-info {
+  flex: 1; overflow: hidden;
+}
+.music-mini .track-title {
+  font-family: "Rajdhani", sans-serif; font-weight: 700; font-size: 0.88rem;
+  color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.music-mini .track-type {
+  font-family: "Share Tech Mono", monospace; font-size: 0.58rem;
+  letter-spacing: 0.1em; color: var(--mute); text-transform: uppercase;
+}
+.music-mini button {
+  flex: none; width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; color: var(--accent); border: 1px solid var(--line);
+  background: rgba(43, 217, 254, 0.06);
+}
+.music-mini button:active { transform: scale(0.9); }
+.music-mini .play-btn {
+  width: 48px; height: 48px; font-size: 1.4rem;
+  border-color: var(--accent); box-shadow: 0 0 14px -5px var(--accent);
+}
+.music-mini .play-btn.playing { background: var(--accent); color: var(--bg); }
+
+/* Playlist sheet */
+.playlist-grid { display: flex; flex-direction: column; gap: 2px; }
+.playlist-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px; border: 1px solid var(--line); background: var(--panel);
+  cursor: pointer; transition: border-color 0.15s;
+}
+.playlist-item.active { border-color: var(--accent); box-shadow: 0 0 14px -8px var(--accent); }
+.playlist-item .pi-num {
+  font-family: "Orbitron", sans-serif; font-weight: 700; font-size: 0.82rem;
+  color: var(--mute); width: 26px; text-align: center; flex: none;
+}
+.playlist-item.active .pi-num { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
+.playlist-item .pi-info { flex: 1; overflow: hidden; }
+.playlist-item .pi-title {
+  font-weight: 700; font-size: 0.9rem; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.playlist-item .pi-type {
+  font-family: "Share Tech Mono", monospace; font-size: 0.58rem;
+  color: var(--mute); letter-spacing: 0.08em; text-transform: uppercase;
+}
+.playlist-item .pi-del {
+  color: var(--danger); font-size: 1rem; flex: none;
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+}
+
+/* ============ UI POLISH ============ */
+/* Animated XP bar */
+.xp-bar { height: 8px; border: 1px solid var(--line); background: rgba(0,0,0,0.3); margin-top: 8px; overflow: hidden; position: relative; }
+.xp-bar .fill {
+  height: 100%; background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  box-shadow: 0 0 10px var(--accent); transition: width 1.2s cubic-bezier(0.3,0.9,0.3,1);
+}
+.xp-bar .fill::after {
+  content: ''; position: absolute; top: 0; right: 0; width: 40px; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3)); animation: xpShine 2s linear infinite;
+}
+@keyframes xpShine { 0% { transform: translateX(-60px); } 100% { transform: translateX(200px); } }
+
+/* Pulse animation for live elements */
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+.live-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 8px var(--accent);
+  animation: pulse 1.5s ease infinite; margin-right: 6px;
+}
+
+/* Floating music button */
+.fab-music {
+  position: fixed; bottom: 80px; right: 16px; z-index: 90;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-2), var(--accent));
+  color: var(--bg); font-size: 1.4rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px -4px var(--accent);
+  border: none; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.fab-music:active { transform: scale(0.9); }
+.fab-music.has-mini { display: none; }
+
+/* Better card hover */
+.menu-item { transition: border-color 0.15s, box-shadow 0.15s; }
+.menu-item:active { border-color: var(--accent); box-shadow: 0 0 20px -8px var(--accent); transform: scale(0.99); }
+
+/* Smooth panel transitions */
+.panel { scroll-behavior: smooth; }
+
+/* Improved gate styling */
+.gate { transition: border-color 0.2s; }
+.gate:hover { border-color: var(--accent); }
+
+/* Adjust panels bottom padding when music player is visible */
+body.music-on .panel { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+body.music-on .timer-b { bottom: 70px; }
+body.music-on .toast { bottom: 78px; }
+
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
   .deck { scroll-behavior: auto; }

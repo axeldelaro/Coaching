@@ -1,9 +1,9 @@
 /* RECOMP FIGHT CAMP — Service Worker v3 */
-const CACHE = 'recomp-v5';
+const CACHE = 'recomp-v6';
 const SHELL = [
   './', './index.html', './css/style.css',
   './js/config.js', './js/exercises.js', './js/knowledge.js',
-  './js/data.js', './js/coach.js', './js/rpg.js', './js/app.js',
+  './js/data.js', './js/coach.js', './js/rpg.js', './js/music.js', './js/app.js',
   './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'
 ];
 self.addEventListener('install', e => {
