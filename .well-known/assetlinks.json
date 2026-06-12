@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.axeldelaro.twa",
+        "sha256_cert_fingerprints": ["EB:BB:07:35:73:79:0C:1E:C9:BC:E9:D8:69:BA:E9:09:C5:47:A3:E1:9D:29:BB:DF:1B:72:EA:B3:64:E8:43:E0"]
+      }
+    }]
