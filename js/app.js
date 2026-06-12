@@ -477,9 +477,10 @@ function renderStatut(el) {
 // PANNEAU 1 — LE COMBAT (constructeur de séance)
 // ============================================================
 function renderCombat(el) {
-  const draft = cacheGet('session_draft', { exercises: [] });
+  let draft = cacheGet('session_draft', { exercises: [] });
+  if (!draft || !draft.exercises) draft = { exercises: [] };
   const saveDraft = () => cacheSet('session_draft', draft);
-  const groups = window.EXLIB_GROUPS;
+  const groups = window.EXLIB_GROUPS || ['Jambes', 'Dos', 'Poussée', 'Épaules', 'Bras', 'Abdos', 'Cardio'];
   const MAX_SETS_PER_EXO = 5;
   const MAX_SETS_PER_GROUP = 15;
   const BONUS_GROUPS = 3; // min groups for variety bonus

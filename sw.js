@@ -1,5 +1,5 @@
 /* RECOMP — Service Worker */
-const CACHE = 'recomp-v14';
+const CACHE = 'recomp-v15';
 const SHELL = [
   './', './index.html', './css/style.css',
   './js/config.js', './js/exercises.js', './js/knowledge.js',
