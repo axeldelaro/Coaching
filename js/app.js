@@ -683,10 +683,18 @@ function sheetExo(id) {
     const sets = (w.payload.sets || []).filter(s => exoOf(s)?.id === id);
     if (sets.length) history.push(Math.max(...sets.map(setScore)));
   });
+  const mediaHtml = e.img ? `
+    <div class="exo-media">
+      <img src="${e.img}">
+      ${e.img !== e.img_end ? `<img src="${e.img_end}">` : ''}
+    </div>
+  ` : '';
+
   openSheet(`
     <div class="label">${esc(e.group.toUpperCase())} · NIVEAU ${'▮'.repeat(e.level)}${'▯'.repeat(3 - e.level)}</div>
     <h1 class="title-xl" style="font-size:2.2rem">${esc(e.name.toUpperCase())}</h1>
     <p class="mute up small" style="font-weight:800;margin:6px 0 14px">${esc(e.equip)}</p>
+    ${mediaHtml}
     ${e.flag ? `<div class="flag-strip"></div><div class="warn-note" style="margin:0 0 14px">⚠ PROTOCOLE ${esc(e.flag.toUpperCase())} ACTIF</div>` : ''}
     <div class="brick">
       <h2>CIBLES</h2>
@@ -695,16 +703,22 @@ function sheetExo(id) {
     <div class="brick">
       <h2>EXÉCUTION</h2>
       ${e.steps.map((s, i) => `
-        <div class="row" style="align-items:flex-start;padding:8px 0;border-bottom:2px dashed var(--mute)">
-          <span class="sys" style="font-size:1.4rem;color:var(--accent);width:34px;flex:none">${i + 1}</span>
-          <span style="font-weight:600;font-size:0.93rem;line-height:1.5">${esc(s)}</span>
+        <div class="row" style="align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)">
+          <div style="background:var(--accent);color:var(--accent-ink);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;flex:none;margin-right:12px;margin-top:2px;box-shadow:var(--shadow-sm);">${i + 1}</div>
+          <span style="font-weight:500;font-size:0.95rem;line-height:1.5">${esc(s)}</span>
         </div>`).join('')}
-      <div class="warn-note" style="background:var(--panel);border-color:var(--line);color:var(--ink)">🎯 ${esc(e.cues)}</div>
-      <p class="mute small" style="margin-top:8px;font-weight:700">🫁 ${esc(e.breath)}</p>
+      <div class="warn-note" style="margin-top:14px;background:var(--win-bg);border:1px solid var(--accent);color:var(--ink)">🎯 <b style="color:var(--accent)">FOCUS :</b> ${esc(e.cues)}</div>
+      <div class="row" style="margin-top:10px;padding:10px;background:var(--surface);border-radius:var(--radius-sm)">
+        <span style="font-size:1.2rem;margin-right:10px">🫁</span><span class="small" style="font-weight:600;line-height:1.4">${esc(e.breath)}</span>
+      </div>
     </div>
     <div class="brick">
       <h2 style="color:var(--accent)">FAUTES TECHNIQUES</h2>
-      ${e.errors.map(x => `<p style="font-weight:700;font-size:0.9rem;padding:5px 0">✗ ${esc(x)}</p>`).join('')}
+      ${e.errors.map(x => `
+        <div class="row" style="align-items:flex-start;padding:6px 0">
+          <span style="color:var(--accent);font-weight:900;margin-right:10px;margin-top:1px">✗</span>
+          <span style="font-weight:500;font-size:0.9rem;line-height:1.4">${esc(x)}</span>
+        </div>`).join('')}
     </div>
     ${(e.easier || e.harder) ? `<div class="row" style="margin-bottom:18px">
       ${e.easier ? `<button class="btn ghost grow" onclick="go('/exo@${e.easier}')">⬇ ${esc(getExo(e.easier)?.name.toUpperCase() || '')}</button>` : ''}
