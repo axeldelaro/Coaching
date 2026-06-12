@@ -95,12 +95,12 @@ async function dbSaveLog(kind, day, payload, { unique = false } = {}) {
 }
 async function updateLeaderboard() {
   if (LOCAL_MODE || !sb || !S.profile) return;
-  const f = window.RPG?.fighter(S.logs, S.profile) || { lvl: 1, into: 0, workouts: 0 };
+  const f = window.RPG?.fighter(S.logs, S.profile) || { lvl: 1, xp: 0, workouts: 0 };
   await sb.from('leaderboard').upsert({
     id: S.user.id,
     pseudo: S.profile.pseudo || 'FIGHTER',
     level: f.lvl,
-    xp: f.into,
+    xp: f.xp,
     workouts: f.workouts,
     updated_at: new Date().toISOString()
   });
