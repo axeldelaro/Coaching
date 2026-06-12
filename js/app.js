@@ -90,7 +90,20 @@ async function dbSaveLog(kind, day, payload, { unique = false } = {}) {
   if (!sb) { queueOp({ t: 'log', row }); return row; }
   const { error } = await sb.from('logs').upsert(row);
   if (error) queueOp({ t: 'log', row });
+  else updateLeaderboard();
   return row;
+}
+async function updateLeaderboard() {
+  if (LOCAL_MODE || !sb || !S.profile) return;
+  const f = window.RPG?.fighter(S.logs, S.profile) || { lvl: 1, into: 0, workouts: 0 };
+  await sb.from('leaderboard').upsert({
+    id: S.user.id,
+    pseudo: S.profile.pseudo || 'FIGHTER',
+    level: f.lvl,
+    xp: f.into,
+    workouts: f.workouts,
+    updated_at: new Date().toISOString()
+  });
 }
 function queueOp(op) { S.outbox.push(op); localStorage.setItem('rc_outbox', JSON.stringify(S.outbox)); }
 async function flushOutbox() {
@@ -426,6 +439,11 @@ function renderStatut(el) {
       <hr class="divider">
       <div class="label" style="margin:0">SEMAINE</div>
       ${wq.map(q => `<div class="quest ${q.done ? 'done' : ''}"><span class="box">${q.done ? '✓' : ''}</span><span class="t">${esc(q.t)} <span class="mute num">${q.prog}</span></span><span class="xp">+${q.xp}</span></div>`).join('')}
+    </div>
+
+    <div class="brick" id="lb-container" style="display:none">
+      <h2>🏆 CLASSEMENT MONDIAL</h2>
+      <div id="lb-list">Chargement...</div>
     </div>
 
     <div class="win">
@@ -1188,6 +1206,16 @@ function renderSuivi(el) {
       <button class="btn ghost" style="margin-top:8px" onclick="go('/shopping')">🛒 RÉAPPROVISIONNEMENT</button>
     </div>
 
+    <div class="brick" id="gal-container" style="display:none">
+      <div class="row between"><h2>📸 MA GALERIE</h2>
+        <label class="btn sm ghost" style="cursor:pointer">
+          AJOUTER
+          <input type="file" id="gal-upload" accept="image/*" style="display:none">
+        </label>
+      </div>
+      <div id="gal-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;"></div>
+    </div>
+
     <div class="brick">
       <h2>📓 JOURNAL — AUJOURD'HUI</h2>
       <div class="row">
@@ -1323,6 +1351,35 @@ function renderSuivi(el) {
     const c = $('#c-prog', el); if (c) drawLine(c, hist);
   };
   $('#exo-sel', el) && ($('#exo-sel', el).onchange = drawProg);
+
+  // Gallery interactions
+  if (!LOCAL_MODE && sb) {
+    const galContainer = $('#gal-container', el);
+    const galGrid = $('#gal-grid', el);
+    galContainer.style.display = 'block';
+
+    const loadGallery = async () => {
+      galGrid.innerHTML = '<span class="mute small">Chargement...</span>';
+      const { data, error } = await sb.storage.from('photos').list(S.user.id);
+      if (error || !data || !data.length) { galGrid.innerHTML = '<span class="mute small">Aucune photo.</span>'; return; }
+      galGrid.innerHTML = data.sort((a,b)=> new Date(b.created_at)-new Date(a.created_at)).map(f => {
+        const url = sb.storage.from('photos').getPublicUrl(S.user.id + '/' + f.name).data.publicUrl;
+        return `<div style="aspect-ratio:1;background:url('${url}') center/cover;border-radius:var(--radius-sm)"></div>`;
+      }).join('');
+    };
+    loadGallery();
+
+    $('#gal-upload', el).onchange = async e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      toast('Upload en cours...');
+      const ext = file.name.split('.').pop();
+      const path = `${S.user.id}/${Date.now()}.${ext}`;
+      const { error } = await sb.storage.from('photos').upload(path, file);
+      if (error) toast('Erreur upload'); else { toast('Photo ajoutée !'); loadGallery(); }
+    };
+  }
+
   requestAnimationFrame(() => {
     drawLine($('#c-weight', el), weights);
     drawBars($('#c-sessions', el), weekLabels, weekVals, { target: +S.profile.anamnese?.days || 2 });
@@ -1388,8 +1445,9 @@ function sheetSettings() {
     </div>
 
     <div class="brick">
-      <h2>🔔 RAPPELS</h2>
-      <label class="checkline"><input type="checkbox" id="r-on" ${r.enabled ? 'checked' : ''}><span class="grow">ACTIVER LES RAPPELS</span></label>
+      <h2>🔔 NOTIFICATIONS & RAPPELS</h2>
+      ${!LOCAL_MODE ? `<button class="btn solid grow" id="push-sub" style="margin-bottom:10px">ACTIVER LES NOTIFS PUSH CLOUD</button>` : ''}
+      <label class="checkline"><input type="checkbox" id="r-on" ${r.enabled ? 'checked' : ''}><span class="grow">ACTIVER LES RAPPELS (LOCAUX)</span></label>
       <label class="field" style="margin-top:10px"><span>JOURS D'ENTRAÎNEMENT</span>
         <div class="choices" id="r-days">${dayNames.map((d, i) => '<button type="button" class="chip ' + (r.workoutDays.includes(i) ? 'on' : '') + '" data-d="' + i + '">' + d + '</button>').join('')}</div>
       </label>
@@ -1415,8 +1473,9 @@ function sheetSettings() {
     </div>
 
     <div class="brick">
-      <h2>👤 MON COMPTE</h2>
+      <h2>👤 MON COMPTE & SYNCHRO</h2>
       <p class="mute small" style="margin-bottom:10px;font-weight:600">${LOCAL_MODE ? 'MODE LOCAL : données sur cet appareil.' : 'CONNECTÉ : ' + esc(S.user.email)}</p>
+      ${!LOCAL_MODE ? `<button class="btn solid" id="sync-cat" style="margin-bottom:8px">⬆️ PUSHER LE CATALOGUE VERS SUPABASE</button>` : ''}
       <button class="btn ghost" id="redo">REFAIRE L'INTRO</button>
       <div style="height:8px"></div>
       <button class="btn ghost" id="export">⬇ EXPORTER MES DONNÉES (JSON)</button>
@@ -1478,6 +1537,38 @@ function sheetSettings() {
     toast('CIBLES MISES À JOUR'); renderAll();
   };
   $('#redo', sh).onclick = async () => { await dbSaveProfile({ anamnese: { ...S.profile.anamnese, done: false } }); go('/onboarding'); };
+  
+  if (!LOCAL_MODE) {
+    const pushSubBtn = $('#push-sub', sh);
+    if (pushSubBtn) pushSubBtn.onclick = async () => {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) { toast('Push non supporté'); return; }
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') { toast('Permission refusée'); return; }
+      const reg = await navigator.serviceWorker.ready;
+      toast('Abonnement en cours...');
+      try {
+        // En vrai il faut une clé VAPID valide. On met un dummy pour le test :
+        const dummyVapid = new Uint8Array(65);
+        const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: dummyVapid });
+        await sb.from('push_subscriptions').insert({ user_id: S.user.id, subscription: JSON.parse(JSON.stringify(sub)) });
+        toast('Push activé !');
+      } catch (e) { toast('Erreur : nécessite clé VAPID valide côté Edge'); console.error(e); }
+    };
+
+    const syncCatBtn = $('#sync-cat', sh);
+    if (syncCatBtn) syncCatBtn.onclick = async () => {
+      toast('Upload Exercices...');
+      for (const e of window.EXLIB) {
+        await sb.from('global_exercises').upsert({ id: e.id, data: e, updated_by: S.user.id });
+      }
+      toast('Upload Recettes...');
+      for (const r of window.RECIPES) {
+        await sb.from('global_recipes').upsert({ id: r.id, data: r, updated_by: S.user.id });
+      }
+      toast('Catalogue synchronisé !');
+    };
+  }
+
   $('#export', sh).onclick = () => {
     const blob = new Blob([JSON.stringify({ profile: S.profile, logs: S.logs }, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
