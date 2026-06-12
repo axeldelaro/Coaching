@@ -1,13 +1,13 @@
 {
-  "name": "RECOMP — Le Système",
+  "name": "RECOMP — Coach de remise en forme",
   "short_name": "RECOMP",
-  "description": "Un vrai jeu de progression lié à tes entraînements. Monte en niveau, répartis tes points, domine ton ombre.",
+  "description": "Ton compagnon de remise en forme : entraînements guidés, nutrition et suivi de progression. 100 % hors-ligne.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#04060E",
-  "theme_color": "#04060E",
+  "background_color": "#F4F6FA",
+  "theme_color": "#F4F6FA",
   "categories": ["health", "fitness", "lifestyle"],
   "lang": "fr",
   "icons": [

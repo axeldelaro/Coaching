@@ -201,10 +201,10 @@ window.RPG = (() => {
     const kcal = (m?.payload.items || []).reduce((s, id) => s + (window.RECIPES.find(r => r.id === id)?.kcal || 0), 0);
     const target = profile?.targets?.kcal || 0;
     return [
-      { id: 'q-train', t: 'Nettoyer le donjon du jour', xp: XP.workout, done: !!w },
-      { id: 'q-journal', t: 'Consigner ton état (carnet)', xp: XP.journal, done: !!j && (j.payload.weight || j.payload.sleep || j.payload.energy) },
-      { id: 'q-meals', t: 'Ravitaillement : ≥ 2 repas', xp: XP.meals, done: (m?.payload.items || []).length >= 2 },
-      { id: 'q-kcal', t: 'Rester dans la zone énergétique (±10 %)', xp: 25, done: target > 0 && kcal > 0 && Math.abs(kcal - target) <= target * 0.1 }
+      { id: 'q-train', t: 'Faire ta séance du jour', xp: XP.workout, done: !!w },
+      { id: 'q-journal', t: 'Remplir ton journal du jour', xp: XP.journal, done: !!j && (j.payload.weight || j.payload.sleep || j.payload.energy) },
+      { id: 'q-meals', t: 'Enregistrer ≥ 2 repas', xp: XP.meals, done: (m?.payload.items || []).length >= 2 },
+      { id: 'q-kcal', t: 'Rester proche de ta cible calorique (±10 %)', xp: 25, done: target > 0 && kcal > 0 && Math.abs(kcal - target) <= target * 0.1 }
     ];
   }
 
@@ -214,7 +214,7 @@ window.RPG = (() => {
     const weigh = logs.filter(l => l.kind === 'journal' && +l.payload.weight > 0 && since(l.day) < 7).length;
     const { prCount } = computeXP(logs.filter(l => since(l.day) < 7));
     return [
-      { id: 'w-sessions', t: `${goal} donjons cette semaine`, xp: 150, done: w7 >= goal, prog: `${w7}/${goal}` },
+      { id: 'w-sessions', t: `${goal} séances cette semaine`, xp: 150, done: w7 >= goal, prog: `${w7}/${goal}` },
       { id: 'w-weigh', t: '4 pesées cette semaine', xp: 60, done: weigh >= 4, prog: `${Math.min(weigh, 4)}/4` },
       { id: 'w-pr', t: 'Battre 1 record', xp: 100, done: prCount >= 1, prog: prCount >= 1 ? '1/1' : '0/1' }
     ];

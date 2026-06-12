@@ -33,13 +33,13 @@ function cacheGet(k, d = null) { try { return JSON.parse(localStorage.getItem(ls
 // ---------- Thème + Accent + Taille ----------
 const mqDark = matchMedia("(prefers-color-scheme: dark)");
 function applyTheme() {
-  const pref = S.profile?.settings?.theme || localStorage.getItem("rc_theme") || "dark";
+  const pref = S.profile?.settings?.theme || localStorage.getItem("rc_theme") || "light";
   const dark = pref === "dark" || (pref === "auto" && mqDark.matches);
   document.documentElement.dataset.theme = dark ? "dark" : "light";
-  const meta = $("meta[name=theme-color]"); if (meta) meta.content = dark ? "#04060E" : "#E8EDF7";
+  const meta = $("meta[name=theme-color]"); if (meta) meta.content = dark ? "#0F131A" : "#F4F6FA";
   const fs = S.profile?.settings?.fontSize || localStorage.getItem("rc_fontsize") || "16";
   document.documentElement.style.fontSize = fs + "px";
-  const accent = S.profile?.settings?.accent || localStorage.getItem("rc_accent") || "#2BD9FE";
+  const accent = S.profile?.settings?.accent || localStorage.getItem("rc_accent") || "#2F80ED";
   document.documentElement.style.setProperty("--accent", accent);
 }
 function applyAccent(color) { if (!color) return; document.documentElement.style.setProperty("--accent", color); localStorage.setItem("rc_accent", color); }
@@ -146,7 +146,7 @@ function confetti(duration = 1700) {
   if (!c) { c = document.createElement('canvas'); c.id = 'confetti'; document.body.appendChild(c); }
   c.width = innerWidth; c.height = innerHeight;
   const ctx = c.getContext('2d');
-  const acc = cssVar('--accent') || '#2BD9FE';
+  const acc = cssVar('--accent') || '#2F80ED';
   const colors = [acc, '#5B8DEF', '#FFD66B', acc, '#9D7BFF'];
   const parts = Array.from({ length: 110 }, () => ({
     x: Math.random() * c.width, y: -20 - Math.random() * c.height * 0.4,
@@ -273,7 +273,7 @@ function checkReminders() {
   const key = lsKey('fired_' + t);
   const fired = JSON.parse(localStorage.getItem(key) || '{}');
   const mark = k => { fired[k] = 1; localStorage.setItem(key, JSON.stringify(fired)); };
-  if (r.workoutDays?.includes(day) && hhmm === r.workoutTime && !fired.workout) { fireNotif('⚔ DONJON DU JOUR', 'Un portail est apparu. 45 minutes.', 'workout'); mark('workout'); }
+  if (r.workoutDays?.includes(day) && hhmm === r.workoutTime && !fired.workout) { fireNotif('🏋 SÉANCE DU JOUR', 'C\'est l\'heure de ta séance. 45 minutes.', 'workout'); mark('workout'); }
   if (r.weighTime && hhmm === r.weighTime && !fired.weigh) { fireNotif('⚖ PESÉE OFFICIELLE', 'À jeun, mêmes conditions.', 'weigh'); mark('weigh'); }
   if (r.hydrate && ['10:00', '13:00', '16:00', '19:00'].includes(hhmm) && !fired['h' + hhmm]) { fireNotif('💧 HYDRATATION', "Un grand verre d'eau.", 'hyd'); mark('h' + hhmm); }
 }
@@ -282,7 +282,7 @@ setInterval(checkReminders, 30000);
 // ============================================================
 // SHELL : bandeau + deck à 5 panneaux
 // ============================================================
-const PANELS = ['STATUT', 'DONJON', 'RATION', 'SYSTÈME', 'ARCHIVES'];
+const PANELS = ['PROFIL', 'SÉANCE', 'NUTRITION', 'COACH', 'PROGRÈS'];
 let deck, strip;
 
 function mountShell() {
@@ -366,12 +366,12 @@ function renderStatut(el) {
   const SK = window.RPG.STAT_KEYS, SL = window.RPG.STAT_LABEL;
 
   el.innerHTML = `
-    <div class="label">[ SYSTÈME ] — FENÊTRE DE STATUT</div>
-    <h1 class="title-xl">${esc((p.pseudo || 'JOUEUR').toUpperCase())}</h1>
+    <div class="label">VUE D'ENSEMBLE</div>
+    <h1 class="title-xl">${esc((p.pseudo || 'TOI').toUpperCase())}</h1>
     <p class="glow mono" style="margin-top:4px;letter-spacing:0.12em">${esc(h.job.toUpperCase())}${h.streak >= 2 ? ` · SÉRIE ${h.streak}J` : ''}</p>
 
     <div class="win" style="margin-top:14px">
-      <div class="win-tag">STATUT</div>
+      <div class="win-tag">PROFIL</div>
       <div class="status-id">
         <div class="rank-badge" style="--rank:${h.rankColor}">
           <span class="r">${h.rank}</span><span class="rl">RANG</span>
@@ -400,32 +400,32 @@ function renderStatut(el) {
           </span>
           <button class="stat-add" data-stat="${k}" ${h.pointsAvailable > 0 ? '' : 'disabled'}>+</button>
         </div>`).join('')}
-      <div class="points-pill ${h.pointsAvailable > 0 ? '' : 'zero'}">◆ POINTS D'APTITUDE : ${h.pointsAvailable}</div>
+      <div class="points-pill ${h.pointsAvailable > 0 ? '' : 'zero'}">POINTS À RÉPARTIR : ${h.pointsAvailable}</div>
       <p class="mute small" style="margin-top:8px">Tes stats montent avec ce que tu fais réellement. À chaque niveau, 3 points libres à répartir.</p>
     </div>
 
     ${advice ? `<div class="advice-b ${advice.level === 'warn' ? 'warn' : ''}">${advice.icon} ${esc(advice.text)}</div>` : ''}
 
     <div class="win">
-      <div class="win-tag danger">QUÊTE JOURNALIÈRE</div>
-      <h2>LE DONJON</h2>
-      <p class="mute small" style="margin-bottom:4px">Construis ta séance librement via les portails.</p>
-      <button class="btn solid" style="margin-top:8px" onclick="goPanel(1)">⊳ ALLER FORGER UNE SÉANCE</button>
+      <div class="win-tag">OBJECTIFS DU JOUR</div>
+      <h2>TA SÉANCE DU JOUR</h2>
+      <p class="mute small" style="margin-bottom:4px">Compose librement ta séance d'aujourd'hui.</p>
+      <button class="btn solid" style="margin-top:8px" onclick="goPanel(1)">⊳ CRÉER MA SÉANCE</button>
       <hr class="divider">
       ${dq.map(q => `<div class="quest ${q.done ? 'done' : ''}"><span class="box">${q.done ? '✓' : ''}</span><span class="t">${esc(q.t)}</span><span class="xp">+${q.xp}</span></div>`).join('')}
-      <p class="mute small" style="margin-top:8px">⚠ Quête non terminée = série remise à zéro. Le repos fait partie de la progression : un jour off est normal.</p>
+      <p class="mute small" style="margin-top:8px">Un objectif manqué n'est pas grave : le repos fait partie de la progression. Un jour off est tout à fait normal.</p>
     </div>
 
     <div class="win">
-      <div class="win-tag">QUÊTE HEBDOMADAIRE</div>
+      <div class="win-tag">OBJECTIFS DE LA SEMAINE</div>
       ${wq.map(q => `<div class="quest ${q.done ? 'done' : ''}"><span class="box">${q.done ? '✓' : ''}</span><span class="t">${esc(q.t)} <span class="mute num">${q.prog}</span></span><span class="xp">+${q.xp}</span></div>`).join('')}
     </div>
 
     <div class="win">
-      <h2>◆ MESSAGE DU SYSTÈME</h2>
+      <h2>💬 CONSEIL DU JOUR</h2>
       <p style="font-size:0.92rem;font-weight:500;line-height:1.55">${esc(window.Coach.tipOfDay())}</p>
     </div>
-    <button class="btn ghost" onclick="location.hash='#/settings'">⚙ PARAMÈTRES DU SYSTÈME</button>`;
+    <button class="btn ghost" onclick="location.hash='#/settings'">⚙ RÉGLAGES</button>`;
 
   // Allocation de points d'aptitude
   $$('.stat-add', el).forEach(btn => btn.onclick = async () => {
@@ -468,18 +468,18 @@ function renderCombat(el) {
   const varietyBonus = activeGroups >= 5 ? 50 : activeGroups >= BONUS_GROUPS ? 20 : 0;
 
   const groupIcons = { 'Jambes': '🦵', 'Dos': '🔙', 'Poussée': '💪', 'Épaules': '🎯', 'Bras': '💎', 'Abdos': '🛡️', 'Cardio': '❤️🔥' };
-  const effBar = (val, max) => `<div class="bar" style="flex:1;height:6px;border:1px solid var(--line);background:rgba(0,0,0,0.3)"><i style="display:block;height:100%;width:${Math.min(100, max ? val/max*100 : 0)}%;background:${val > max ? 'var(--danger)' : 'var(--accent)'};box-shadow:0 0 6px ${val > max ? 'var(--danger)' : 'var(--accent)'};transition:width 0.3s"></i></div>`;
+  const effBar = (val, max) => `<div class="bar" style="flex:1;height:6px;border:1px solid var(--line);background:var(--surface-2);border-radius:999px;overflow:hidden"><i style="display:block;height:100%;width:${Math.min(100, max ? val/max*100 : 0)}%;background:${val > max ? 'var(--danger)' : 'var(--accent)'};transition:width 0.3s"></i></div>`;
 
   el.innerHTML = `
-    <div class="label">[ SYSTÈME ] — FORGE DU COMBATTANT</div>
-    <h1 class="title-xl">LE DONJON</h1>
+    <div class="label">PRÉPARER MA SÉANCE</div>
+    <h1 class="title-xl">ENTRAÎNEMENT</h1>
     <p class="mute" style="margin:6px 0 14px;font-weight:700">Construis ta séance : choisis tes exercices par zone. L'équilibre est la clé.</p>
 
     ${varietyBonus ? `<div class="advice-b good">🎯 BONUS VARIÉTÉ +${varietyBonus}% XP — ${activeGroups} zones travaillées</div>` : 
       totalSets ? `<div class="advice-b warn">⚠ TRAVAILLE ${BONUS_GROUPS}+ ZONES POUR UN BONUS XP</div>` : ''}
 
     <div class="brick">
-      <div class="row between"><h2>ZONES DE COMBAT</h2><span class="sys num" style="color:var(--accent)">${totalSets} SÉRIES</span></div>
+      <div class="row between"><h2>ZONES TRAVAILLÉES</h2><span class="sys num" style="color:var(--accent)">${totalSets} SÉRIES</span></div>
       <div class="eq-grid" id="group-grid">
         ${groups.map(g => `
           <div class="eq-item ${groupSets[g] ? 'on' : ''}" data-grp="${g}" style="flex-direction:column;align-items:center;text-align:center;padding:14px 8px">
@@ -523,14 +523,14 @@ function renderCombat(el) {
           </div>`;
         }).join('')}
       </div>
-      <button class="btn solid" id="launch-session" style="margin-top:10px">⊳ LANCER LE DONJON · ${draft.exercises.length} VAGUES</button>
+      <button class="btn solid" id="launch-session" style="margin-top:10px">⊳ DÉMARRER LA SÉANCE · ${draft.exercises.length} EXERCICES</button>
       <button class="btn ghost" id="clear-draft" style="margin-top:8px">VIDER LA SÉANCE</button>
     </div>` : ''}
 
     <hr class="divider">
-    <div class="label">ARSENAL — ${window.EXLIB.length} COMPÉTENCES</div>
-    <h2 class="sys" style="font-size:1.6rem;margin-bottom:10px">GRIMOIRE DE COMPÉTENCES</h2>
-    <label class="field"><input id="lib-q" placeholder="RECHERCHER UNE COMPÉTENCE, UN MUSCLE…"></label>
+    <div class="label">CATALOGUE — ${window.EXLIB.length} EXERCICES</div>
+    <h2 class="sys" style="font-size:1.6rem;margin-bottom:10px">BIBLIOTHÈQUE D'EXERCICES</h2>
+    <label class="field"><input id="lib-q" placeholder="RECHERCHER UN EXERCICE, UN MUSCLE…"></label>
     <div class="choices" id="lib-filters" style="margin-bottom:12px">
       <button class="chip on" data-g="">TOUS</button>
       ${window.EXLIB_GROUPS.map(g => `<button class="chip" data-g="${g}">${g.toUpperCase()}</button>`).join('')}
@@ -579,7 +579,7 @@ function renderCombat(el) {
       <button class="menu-item row" style="width:100%;text-align:left" onclick="go('/exo@${x.id}')">
         <span class="grow"><span class="ttl">${esc(x.name.toUpperCase())}</span><br><span class="mute small up" style="font-weight:700">${x.muscles.join(' · ')} — ${esc(x.equip)}</span></span>
         <span class="sys" style="color:var(--accent)">${'▮'.repeat(x.level)}${'▯'.repeat(3 - x.level)}</span>
-      </button>`).join('') || '<p class="mute">AUCUNE COMPÉTENCE À CE NOM.</p>';
+      </button>`).join('') || '<p class="mute">AUCUN EXERCICE À CE NOM.</p>';
   };
   $('#lib-q', el).oninput = e => { q = e.target.value; drawLib(); };
   $('#lib-filters', el).addEventListener('click', e => {
@@ -684,7 +684,7 @@ function sheetExo(id) {
     </div>` : ''}
     ${pr ? `<div class="brick">
       <div class="row between"><h2>🏆 TON RECORD</h2><b class="sys num">${fmtPR(pr.set)}</b></div>
-      ${history.length >= 2 ? '<canvas class="chart" id="exo-chart"></canvas>' : '<p class="mute small">ENCORE UN COMBAT ET LA COURBE APPARAÎT.</p>'}
+      ${history.length >= 2 ? '<canvas class="chart" id="exo-chart"></canvas>' : '<p class="mute small">ENCORE UNE SÉANCE ET LA COURBE APPARAÎT.</p>'}
     </div>` : ''}`);
   if (history.length >= 2) requestAnimationFrame(() => drawLine($('#exo-chart'), history));
 }
@@ -704,9 +704,9 @@ function sheetSession(sid) {
   if (!draft.startedAt) { draft.startedAt = Date.now(); cacheSet(draftKey, draft); }
 
   const sh = openSheet(`
-    <div class="label danger">DONJON EN COURS</div>
+    <div class="label danger">SÉANCE EN COURS</div>
     <h1 class="title-xl" style="font-size:2.4rem">${esc(sess.name.toUpperCase())}</h1>
-    <p class="sys" style="color:var(--accent);margin:4px 0 14px">${esc((sess.sub || '').toUpperCase())} · ${sess.exercises.length} VAGUES</p>
+    <p class="sys" style="color:var(--accent);margin:4px 0 14px">${esc((sess.sub || '').toUpperCase())} · ${sess.exercises.length} EXERCICES</p>
     <div class="advice-b ${adapted.changed ? 'warn' : 'good'}">${adapted.changed ? '🎚' : '✓'} ${esc(adapted.summary)}</div>
     ${sess.exercises.map((pe, ei) => {
       const ex = getExo(pe.exo) || { name: pe.exo };
@@ -740,7 +740,7 @@ function sheetSession(sid) {
         </div>
       </div>`;
     }).join('')}
-    <button class="btn" id="finish">🏁 NETTOYER LE DONJON</button>
+    <button class="btn" id="finish">🏁 TERMINER LA SÉANCE</button>
     <div style="height:84px"></div>`);
 
   const saveDraft = () => cacheSet(draftKey, draft);
@@ -806,13 +806,13 @@ function showVictory({ sets, prs, durMin, xpGain, newBelts, leveledTo, rank }) {
   const ov = document.createElement('div');
   ov.className = 'levelup';
   ov.innerHTML = `
-    <div class="sys-line">[ NOTIFICATION DU SYSTÈME ]</div>
+    <div class="sys-line">SÉANCE TERMINÉE</div>
     ${leveledTo ? `
       <div class="big">NIVEAU ${leveledTo}</div>
-      <div class="sub glow">VOUS ÊTES MONTÉ DE NIVEAU</div>
-      <p class="pts">◆ +3 POINTS D'APTITUDE À RÉPARTIR</p>
+      <div class="sub glow">TU PASSES AU NIVEAU SUPÉRIEUR</div>
+      <p class="pts">+3 POINTS À RÉPARTIR</p>
     ` : `
-      <div class="big">DONJON</div>
+      <div class="big">BRAVO</div>
       <div class="sub glow">${prs.length ? 'NETTOYÉ — RECORD ÉTABLI' : 'NETTOYÉ'}</div>
     `}
     <div class="vstats">
@@ -820,12 +820,12 @@ function showVictory({ sets, prs, durMin, xpGain, newBelts, leveledTo, rank }) {
       <div class="cell"><b class="num">${Math.round(vol).toLocaleString('fr-FR')}</b><span>kg volume</span></div>
       <div class="cell"><b class="num">${durMin || '—'}</b><span>min</span></div>
     </div>
-    <div class="notif"><b class="glow num">+${xpGain} XP</b> &nbsp;·&nbsp; +${window.RPG.XP.workout} donjon · +${window.RPG.XP.set}×${sets.length} séries${prs.length ? ` · +${window.RPG.XP.pr}×${prs.length} record${prs.length > 1 ? 's' : ''}` : ''}</div>
+    <div class="notif"><b class="glow num">+${xpGain} XP</b> &nbsp;·&nbsp; +${window.RPG.XP.workout} séance · +${window.RPG.XP.set}×${sets.length} séries${prs.length ? ` · +${window.RPG.XP.pr}×${prs.length} record${prs.length > 1 ? 's' : ''}` : ''}</div>
     ${varietyPct ? `<div class="notif gold">🎯 BONUS VARIÉTÉ +${varietyPct}% — ${exoGroups.size} zones travaillées</div>` : ''}
     ${prs.map(s => `<div class="notif">🏆 RECORD — ${esc((getExo(s.exoId)?.name || s.ex))} : ${fmtPR(s)}</div>`).join('')}
     ${newBelts.map(b => `<div class="notif gold">${b.icon} TITRE OBTENU : ${esc(b.name)}</div>`).join('')}
-    ${leveledTo ? `<div class="notif gold">⬆ RANG DE CHASSEUR : ${rank}</div>` : ''}
-    <button class="btn solid" style="max-width:380px;margin-top:18px" id="v-ok">${leveledTo ? '◆ RÉPARTIR MES POINTS' : 'RETOUR AU STATUT'}</button>`;
+    ${leveledTo ? `<div class="notif gold">⬆ NIVEAU DE RANG : ${rank}</div>` : ''}
+    <button class="btn solid" style="max-width:380px;margin-top:18px" id="v-ok">${leveledTo ? 'RÉPARTIR MES POINTS' : 'RETOUR AU PROFIL'}</button>`;
   document.body.appendChild(ov);
   confetti(leveledTo || prs.length || newBelts.length ? 2600 : 1600);
   if (navigator.vibrate) navigator.vibrate(leveledTo ? [120, 60, 120, 60, 220] : [90, 50, 90]);
@@ -900,8 +900,8 @@ function renderCantine(el) {
     </div>`;
 
   el.innerHTML = `
-    <div class="label">[ SYSTÈME ] — INVENTAIRE</div>
-    <h1 class="title-xl">LA RATION</h1>
+    <div class="label">MES REPAS DU JOUR</div>
+    <h1 class="title-xl">NUTRITION</h1>
     <div class="brick" style="margin-top:14px">
       <div class="row between"><h2>AUJOURD'HUI</h2><b class="sys num" style="font-size:1.2rem">${tot.kcal}/${t.kcal || '—'} KCAL</b></div>
       ${bar('PROTÉINES', tot.p, t.p)}${bar('GLUCIDES', tot.c, t.c)}${bar('LIPIDES', tot.f, t.f)}
@@ -911,7 +911,7 @@ function renderCantine(el) {
       </div>
       <button class="btn ghost" style="margin-top:8px" onclick="go('/shopping')">🛒 RÉAPPROVISIONNEMENT</button>
     </div>
-    <div class="label" style="margin-bottom:6px">GRIMOIRE — ${recipes.length} RECETTES</div>
+    <div class="label" style="margin-bottom:6px">CATALOGUE — ${recipes.length} RECETTES</div>
     <label class="field"><input id="rec-q" placeholder="RECHERCHER UNE RECETTE, UN INGRÉDIENT…"></label>
     <div class="choices" id="meal-filters" style="margin-bottom:12px">
       ${['', 'petit-déj', 'déjeuner', 'dîner', 'collation', 'batch'].map(m =>
@@ -1055,21 +1055,21 @@ function renderCoach(el) {
   const advice = window.Coach.dailyAdvice(S.logs, S.profile);
   const f = window.RPG.fighter(S.logs, S.profile);
   el.innerHTML = `
-    <div class="label">[ SYSTÈME ] — INTELLIGENCE</div>
-    <h1 class="title-xl">LE SYSTÈME</h1>
-    <p class="mute" style="margin:6px 0 14px;font-weight:700">${window.KB.length} FICHES TECHNIQUES · ANALYSES SUR TES ${f.workouts} COMBATS</p>
+    <div class="label">TON COACH</div>
+    <h1 class="title-xl">COACH</h1>
+    <p class="mute" style="margin:6px 0 14px;font-weight:700">${window.KB.length} FICHES TECHNIQUES · ANALYSES SUR TES ${f.workouts} SÉANCES</p>
     ${advice.map(a => `<div class="advice-b ${a.level === 'warn' ? 'warn' : 'good'}">${a.icon} ${esc(a.text)}</div>`).join('')}
     <div class="brick">
       <div class="row between"><h2>🔬 ANALYSE HEBDOMADAIRE</h2><button class="btn sm solid" id="show-analysis">LANCER</button></div>
       <div id="analysis"></div>
     </div>
     <div class="brick">
-      <h2>INTERROGER LE SYSTÈME</h2>
+      <h2>POSE TA QUESTION</h2>
       <div class="chat-b" id="chat">
         <div class="bub coach">Je connais ton palmarès (${f.workouts} combats, ${f.prCount} records, niveau ${f.lvl}). Pose ta question ou tape un thème 👇</div>
       </div>
       <div class="choices" id="kb-zone" style="margin-bottom:10px">
-        <button class="chip" data-act="adapt">🎚 ADAPTER MON DONJON</button>
+        <button class="chip" data-act="adapt">🎚 ADAPTER MA SÉANCE</button>
         ${window.KB_CATS.map(c => `<button class="chip" data-cat="${c}">${c.toUpperCase()}</button>`).join('')}
       </div>
       <div class="row">
@@ -1115,7 +1115,7 @@ function renderCoach(el) {
       const next = nextSession();
       const a = window.Coach.adaptSession(next, S.logs, S.profile);
       push('me', 'Adapter mon combat du jour');
-      push('coach', `${a.summary}\n\n${a.session.name} :\n` + a.session.exercises.map((x, i) => `R${i + 1}. ${getExo(x.exo)?.name || x.exo} — ${x.sets}×${x.reps} (RPE ${x.rpe})`).join('\n') + `\n\nLance-le depuis LE COMBAT : l'adaptation y est appliquée.`);
+      push('coach', `${a.summary}\n\n${a.session.name} :\n` + a.session.exercises.map((x, i) => `R${i + 1}. ${getExo(x.exo)?.name || x.exo} — ${x.sets}×${x.reps} (RPE ${x.rpe})`).join('\n') + `\n\nLance-le depuis l'onglet SÉANCE : l'adaptation y est appliquée.`);
     }
   });
   const send = () => {
@@ -1154,20 +1154,20 @@ function renderPalmares(el) {
   const vd = fight.verdict;
 
   el.innerHTML = `
-    <div class="label">[ SYSTÈME ] — JOURNAL</div>
-    <h1 class="title-xl">ARCHIVES</h1>
+    <div class="label">SUIVI & PROGRÈS</div>
+    <h1 class="title-xl">PROGRÈS</h1>
 
     <div class="win" style="margin-top:14px">
-      <div class="win-tag danger">DUEL D'OMBRE</div>
-      <p class="mute small" style="margin-bottom:6px">TOI (cette semaine) affrontes TON OMBRE (toi, il y a 7 jours).</p>
+      <div class="win-tag">TON ÉVOLUTION</div>
+      <p class="mute small" style="margin-bottom:6px">Toi cette semaine, comparé à toi il y a 7 jours.</p>
       <div class="vs-grid">
         <div class="vs-side"><h3>TOI</h3><span class="mono small">CETTE SEMAINE</span></div>
-        <div class="vs-x">VS</div>
-        <div class="vs-side shadow"><h3>OMBRE</h3><span class="mono small">IL Y A 7 J</span></div>
+        <div class="vs-x">vs</div>
+        <div class="vs-side shadow"><h3>SEMAINE −1</h3><span class="mono small">IL Y A 7 J</span></div>
       </div>
       <table class="tale num">
         <tr><td class="${fight.cur.vol > fight.old.vol ? 'win' : ''}">${Math.round(fight.cur.vol).toLocaleString('fr-FR')}</td><td class="mid">volume kg</td><td class="${fight.old.vol > fight.cur.vol ? 'win-s' : ''}">${Math.round(fight.old.vol).toLocaleString('fr-FR')}</td></tr>
-        <tr><td class="${fight.cur.sessions > fight.old.sessions ? 'win' : ''}">${fight.cur.sessions}</td><td class="mid">donjons</td><td class="${fight.old.sessions > fight.cur.sessions ? 'win-s' : ''}">${fight.old.sessions}</td></tr>
+        <tr><td class="${fight.cur.sessions > fight.old.sessions ? 'win' : ''}">${fight.cur.sessions}</td><td class="mid">séances</td><td class="${fight.old.sessions > fight.cur.sessions ? 'win-s' : ''}">${fight.old.sessions}</td></tr>
         <tr><td class="${fight.cur.sets > fight.old.sets ? 'win' : ''}">${fight.cur.sets}</td><td class="mid">séries</td><td class="${fight.old.sets > fight.cur.sets ? 'win-s' : ''}">${fight.old.sets}</td></tr>
         ${fight.wNow != null && fight.wOld != null ? `<tr><td>${fight.wNow.toFixed(1)}</td><td class="mid">poids moy.</td><td>${fight.wOld.toFixed(1)}</td></tr>` : ''}
       </table>
@@ -1175,7 +1175,7 @@ function renderPalmares(el) {
     </div>
 
     <div class="brick">
-      <h2>CARNET DU CHASSEUR — AUJOURD'HUI</h2>
+      <h2>MON JOURNAL — AUJOURD'HUI</h2>
       <div class="row">
         <label class="field grow"><span>POIDS (KG)</span><input id="j-weight" type="number" inputmode="decimal" step="0.1" value="${entry.weight ?? ''}"></label>
         <label class="field grow"><span>SOMMEIL (H)</span><input id="j-sleep" type="number" inputmode="decimal" step="0.5" value="${entry.sleep ?? ''}"></label>
@@ -1188,7 +1188,7 @@ function renderPalmares(el) {
     </div>
 
     <div class="brick"><h2>PESÉE — 30 JOURS</h2><canvas class="chart" id="c-weight"></canvas></div>
-    <div class="brick"><h2>DONJONS / SEMAINE</h2><canvas class="chart" id="c-sessions"></canvas></div>
+    <div class="brick"><h2>SÉANCES / SEMAINE</h2><canvas class="chart" id="c-sessions"></canvas></div>
 
     <div class="brick">
       <h2>🏆 RECORDS (1RM ESTIMÉ — EPLEY)</h2>
@@ -1197,7 +1197,7 @@ function renderPalmares(el) {
         <canvas class="chart" id="c-prog"></canvas>
         <hr class="divider">
         ${prs.slice(0, 10).map(p => `<div class="pr-line"><span style="font-weight:700">${esc(p.exo.name.toUpperCase())}<br><span class="mute small">${p.day}</span></span><b class="v num">${fmtPR(p.set)}</b></div>`).join('')}`
-      : '<p class="mute">TES RECORDS APPARAÎTRONT APRÈS TON PREMIER DONJON.</p>'}
+      : '<p class="mute">TES RECORDS APPARAÎTRONT APRÈS TA PREMIÈRE SÉANCE.</p>'}
     </div>
 
     <div class="win">
@@ -1209,7 +1209,7 @@ function renderPalmares(el) {
 
     <div class="win">
       <div class="win-tag">COMPÉTENCES</div>
-      <h2 style="margin-bottom:10px">GRIMOIRE DU CHASSEUR — ${skills.filter(s => s.unlocked).length}/${skills.length}</h2>
+      <h2 style="margin-bottom:10px">COMPÉTENCES DÉBLOQUÉES — ${skills.filter(s => s.unlocked).length}/${skills.length}</h2>
       <div class="skill-grid">
         ${skills.map(s => `<div class="skill ${s.unlocked ? '' : 'locked'}"><div class="sn">${s.unlocked ? '◆' : '🔒'} ${esc(s.name)}</div><div class="sd">${esc(s.desc)}</div></div>`).join('')}
       </div>
@@ -1251,24 +1251,24 @@ function sheetSettings() {
   const r = set.reminders || { enabled: false, workoutDays: [1, 4], workoutTime: '18:00', weighTime: '07:30', hydrate: true };
   const t = S.profile.targets || {};
   const theme = set.theme || localStorage.getItem('rc_theme') || 'auto';
-  const curAccent = set.accent || localStorage.getItem('rc_accent') || '#2BD9FE';
+  const curAccent = set.accent || localStorage.getItem('rc_accent') || '#2F80ED';
   const curFs = set.fontSize || localStorage.getItem('rc_fontsize') || '16';
   const dayNames = ['DIM', 'LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM'];
   // Bloc thèmes enrichi injecté via buildSettingsHTML
   
   const sh = openSheet(`
-    <div class="label">[ SYSTÈME ] — PARAMÈTRES</div>
+    <div class="label">RÉGLAGES</div>
     <h1 class="title-xl" style="font-size:2.2rem">RÉGLAGES</h1>
 
     <div class="brick" style="margin-top:14px">
       <h2>🎨 THÈME</h2>
       <div class="choices" id="theme-pick">
-        ${[['auto', '🌗 AUTO'], ['light', '☀ PAPIER'], ['dark', '🌙 NUIT']].map(([v, l]) => '<button class="chip ' + (theme === v ? 'on' : '') + '" data-t="' + v + '">' + l + '</button>').join('')}
+        ${[['auto', '🌗 AUTO'], ['light', '☀ CLAIR'], ['dark', '🌙 SOMBRE']].map(([v, l]) => '<button class="chip ' + (theme === v ? 'on' : '') + '" data-t="' + v + '">' + l + '</button>').join('')}
       </div>
     </div>
 
     <div class="brick">
-      <h2>🎨 COULEUR DU SYSTÈME</h2>
+      <h2>🎨 COULEUR D'ACCENT</h2>
       <div class="accent-grid" id="accent-grid">
         ${window.ACCENT_PRESETS.map(p => '<div class="accent-btn ' + (curAccent === p.value ? 'on' : '') + '" data-ac="' + (p.value||'') + '"><div class="swatch" style="background:' + (p.value||curAccent) + '"></div>' + p.label + '</div>').join('')}
       </div>
@@ -1291,11 +1291,11 @@ function sheetSettings() {
     <div class="brick">
       <h2>🔔 RAPPELS</h2>
       <label class="checkline"><input type="checkbox" id="r-on" ${r.enabled ? 'checked' : ''}><span class="grow">ACTIVER LES RAPPELS</span></label>
-      <label class="field" style="margin-top:10px"><span>JOURS DE COMBAT</span>
+      <label class="field" style="margin-top:10px"><span>JOURS D'ENTRAÎNEMENT</span>
         <div class="choices" id="r-days">${dayNames.map((d, i) => '<button type="button" class="chip ' + (r.workoutDays.includes(i) ? 'on' : '') + '" data-d="' + i + '">' + d + '</button>').join('')}</div>
       </label>
       <div class="row">
-        <label class="field grow"><span>HEURE DU COMBAT</span><input id="r-time" type="time" value="${r.workoutTime}"></label>
+        <label class="field grow"><span>HEURE D'ENTRAÎNEMENT</span><input id="r-time" type="time" value="${r.workoutTime}"></label>
         <label class="field grow"><span>PESÉE</span><input id="r-weigh" type="time" value="${r.weighTime}"></label>
       </div>
       <label class="checkline"><input type="checkbox" id="r-hyd" ${r.hydrate ? 'checked' : ''}><span class="grow">HYDRATATION (10/13/16/19 H)</span></label>
@@ -1317,9 +1317,9 @@ function sheetSettings() {
     </div>
 
     <div class="brick">
-      <h2>👤 CHASSEUR</h2>
+      <h2>👤 MON COMPTE</h2>
       <p class="mute small" style="margin-bottom:10px;font-weight:600">${LOCAL_MODE ? 'MODE LOCAL : données sur cet appareil.' : 'CONNECTÉ : ' + esc(S.user.email) + ' · RLS + chiffrement au repos.'}</p>
-      <button class="btn ghost" id="redo">REFAIRE L'ÉVEIL</button>
+      <button class="btn ghost" id="redo">REFAIRE L'INTRO</button>
       <div style="height:8px"></div>
       <button class="btn ghost" id="export">⬇ EXPORTER MES DONNÉES (JSON)</button>
       ${LOCAL_MODE ? '' : '<div style="height:8px"></div><button class="btn" id="logout" style="background:var(--ink);color:var(--paper)">SE DÉCONNECTER</button>'}
@@ -1387,19 +1387,19 @@ function renderAuth() {
   w.className = 'auth-wrap';
   w.innerHTML = `
     <div class="inner">
-      <div class="label">[ SYSTÈME ] — ACCÈS CHASSEUR</div>
+      <div class="label">CONNEXION</div>
       <h1 class="title-xl" style="font-size:3.4rem">RECOMP<br>SYSTEM</h1>
-      <p class="mute" style="margin:8px 0 18px;font-weight:700">${LOCAL_MODE ? '⚠ MODE LOCAL (SUPABASE NON CONFIGURÉ) — DONNÉES SUR CET APPAREIL.' : 'DEVIENS PLUS FORT. MONTE EN NIVEAU. DOMINE TON OMBRE.'}</p>
+      <p class="mute" style="margin:8px 0 18px;font-weight:700">${LOCAL_MODE ? '⚠ MODE LOCAL (SUPABASE NON CONFIGURÉ) — DONNÉES SUR CET APPAREIL.' : 'PROGRESSE À TON RYTHME, UN PAS APRÈS L\'AUTRE.'}</p>
       <div class="brick">
         ${LOCAL_MODE ? `
-          <label class="field"><span>TON NOM DE CHASSEUR</span><input id="pseudo" placeholder="AXEL"></label>
-          <button class="btn" id="local-go">S'ÉVEILLER</button>
+          <label class="field"><span>TON PRÉNOM</span><input id="pseudo" placeholder="AXEL"></label>
+          <button class="btn" id="local-go">COMMENCER</button>
         ` : `
           <label class="field"><span>E-MAIL</span><input id="email" type="email" autocomplete="email"></label>
           <label class="field"><span>MOT DE PASSE</span><input id="pwd" type="password" autocomplete="current-password" placeholder="8 CARACTÈRES MIN."></label>
-          <button class="btn" id="login">S'ÉVEILLER</button>
+          <button class="btn" id="login">COMMENCER</button>
           <div style="height:8px"></div>
-          <button class="btn solid" id="signup">CRÉER MON CHASSEUR</button>
+          <button class="btn solid" id="signup">CRÉER MON COMPTE</button>
         `}
       </div>
     </div>`;
@@ -1449,13 +1449,13 @@ function sheetOnboarding() {
 
   function shell(inner) {
     ob.innerHTML = `
-      <div class="label">[ SYSTÈME ] — ÉVEIL DU JOUEUR</div>
-      <h1 class="title-xl" style="font-size:2.2rem">CRÉATION DU CHASSEUR</h1>
+      <div class="label">BIENVENUE</div>
+      <h1 class="title-xl" style="font-size:2.2rem">FAISONS CONNAISSANCE</h1>
       <div class="steps-b" style="margin-top:12px">${steps.map((_, i) => `<i class="${i <= step ? 'on' : ''}"></i>`).join('')}</div>
       <div class="brick">${inner}</div>
       <div class="row">
         ${step > 0 ? '<button class="btn ghost" id="prev" style="width:auto">RETOUR</button>' : ''}
-        <button class="btn grow" id="next">${step === steps.length - 1 ? "⚡ S'ÉVEILLER" : 'CONTINUER'}</button>
+        <button class="btn grow" id="next">${step === steps.length - 1 ? "⚡ COMMENCER" : 'CONTINUER'}</button>
       </div>`;
     $('#prev', ob) && ($('#prev', ob).onclick = () => { collect(); step--; steps[step](); });
     $('#next', ob).onclick = onNext;
@@ -1509,7 +1509,7 @@ function sheetOnboarding() {
       <p class="mute small" style="margin-bottom:12px;font-weight:600">Coche tout ce que tu as. Les exercices inadaptés seront remplacés automatiquement.</p>
       <div class="eq-grid" id="eq-grid">${eqHtml}</div>
       <label class="field" style="margin-top:14px"><span>CHARGE MAX / HALTÈRE (KG)</span><input id="dbkg" type="number" inputmode="numeric" value="${a.dbkg || 16}"></label>
-      <label class="field"><span>DONJONS / SEMAINE</span>${chips('days', [['2', '2'], ['3', '3'], ['4', '4']])}</label>`);
+      <label class="field"><span>SÉANCES / SEMAINE</span>${chips('days', [['2', '2'], ['3', '3'], ['4', '4']])}</label>`);
     bindChips([]);
     // Gestion grille équipement (toggle custom)
     ob.querySelector('#eq-grid').onclick = e => {
@@ -1550,7 +1550,7 @@ function sheetOnboarding() {
     history.replaceState(null, '', location.pathname);
     closeSheets();
     confetti(1600);
-    toast('⚡ ÉVEIL TERMINÉ');
+    toast('⚡ C\'EST PARTI !');
     renderAll();
     goPanel(0);
   }
@@ -1600,7 +1600,7 @@ function sheetMusic() {
   if (!MP) { toast('MODULE MUSIQUE NON DISPONIBLE'); return; }
   const st = MP.getState();
   const sh = openSheet(`
-    <div class="label">[ SYSTÈME ] — AUDIO</div>
+    <div class="label">MUSIQUE</div>
     <h1 class="title-xl" style="font-size:2.2rem">MUSIQUE</h1>
     <div class="brick" style="margin-top:14px">
       <h2>AJOUTER DE LA MUSIQUE</h2>

@@ -3,34 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>RECOMP — LE SYSTÈME</title>
-  <meta name="description" content="Deviens plus fort. Un vrai jeu de progression lié à tes entraînements. Hors-ligne.">
-  <meta name="theme-color" content="#04060E" id="tc">
+  <title>RECOMP — Coach de remise en forme</title>
+  <meta name="description" content="Ton compagnon de remise en forme : entraînements guidés, nutrition et suivi de progression. 100 % hors-ligne.">
+  <meta name="theme-color" content="#F4F6FA" id="tc">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <!-- Anti-flash : thème sombre par défaut + couleur du Système avant le 1er rendu -->
+  <!-- Anti-flash : thème clair par défaut + couleur d'accent avant le 1er rendu -->
   <script>
     (function () {
-      var theme = localStorage.getItem('rc_theme') || 'dark';
+      var theme = localStorage.getItem('rc_theme') || 'light';
       var dark = theme === 'dark' || (theme === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
       document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-      var accent = localStorage.getItem('rc_accent') || '#2BD9FE';
+      var accent = localStorage.getItem('rc_accent') || '#2F80ED';
       document.documentElement.style.setProperty('--accent', accent);
       var fs = localStorage.getItem('rc_fontsize') || '16';
       document.documentElement.style.fontSize = fs + 'px';
       var tc = document.getElementById('tc');
-      if (tc) tc.content = dark ? '#04060E' : '#E8EDF7';
+      if (tc) tc.content = dark ? '#0F131A' : '#F4F6FA';
     })();
   </script>
 
-  <!-- Polices Système : Orbitron (display/chiffres), Rajdhani (texte), Share Tech Mono (terminal) -->
+  <!-- Police : Inter (interface santé, très lisible) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/style.css">
 </head>

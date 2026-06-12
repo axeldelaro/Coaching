@@ -449,11 +449,11 @@ window.EXCLUSION_OPTIONS = [
 
 // --- Catalogue thèmes visuels --------------------------------------------------
 window.ACCENT_PRESETS = [
-  { id: 'cyan',    label: 'CYAN SYSTÈME',    value: '#2BD9FE' },
-  { id: 'blue',    label: 'BLEU MANA',       value: '#5B8DEF' },
-  { id: 'purple',  label: 'VIOLET MONARQUE', value: '#9D7BFF' },
-  { id: 'gold',    label: 'OR RANG S',       value: '#FFD66B' },
-  { id: 'green',   label: 'VERT PORTAIL',    value: '#28E0A8' },
-  { id: 'magenta', label: 'MAGENTA OMBRE',   value: '#FF5BA8' },
-  { id: 'custom',  label: 'COULEUR LIBRE',   value: null }
+  { id: 'blue',    label: 'BLEU',     value: '#2F80ED' },
+  { id: 'teal',    label: 'TURQUOISE', value: '#0FB5AE' },
+  { id: 'green',   label: 'VERT',     value: '#16A34A' },
+  { id: 'indigo',  label: 'INDIGO',   value: '#6366F1' },
+  { id: 'coral',   label: 'CORAIL',   value: '#F2674E' },
+  { id: 'amber',   label: 'AMBRE',    value: '#D98A00' },
+  { id: 'custom',  label: 'LIBRE',    value: null }
 ];
