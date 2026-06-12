@@ -37,8 +37,10 @@ window.DEFAULT_PROGRAM = {
 };
 
 // --- Recettes ------------------------------------------------------------------
-// Toutes sans œufs ni oignons. micros = points forts micronutritionnels.
-// cost = €/portion approximatif · time = minutes · batch = adapté au batch cooking
+// micros = points forts micronutritionnels · tags = labels rapides (protéines, vegan…)
+// tip = astuce du chef (nutrition/technique) · cost = €/portion · time = minutes
+// batch = adapté au batch cooking. Le filtrage par exclusion (œufs, lactose, vegan…)
+// est géré dynamiquement par allowedRecipes() dans app.js selon le profil.
 window.RECIPES = [
   // ---------- PETIT-DÉJ ----------
   { id: 'r-skyr-bowl', name: 'Bowl skyr, flocons & banane', meal: 'petit-déj', kcal: 430, p: 32, c: 55, f: 9, time: 5, cost: 1.6,
@@ -224,7 +226,107 @@ window.RECIPES = [
   { id: 'r-smoothie-vert', name: 'Smoothie vert épinards-banane', meal: 'collation', kcal: 270, p: 22, c: 35, f: 5, time: 3, cost: 1.5,
     micros: ['Fer', 'Folates', 'Potassium'],
     ing: [['Épinards frais', 60, 'Légumes'], ['Banane', 100, 'Fruits'], ['Whey vanille', 25, 'Épicerie'], ['Lait demi-écrémé', 200, 'Frais']],
-    steps: "Tout au blender 30 s. Les épinards sont indétectables au goût grâce à la banane. 60 g d'épinards = 2 portions de légumes." }
+    steps: "Tout au blender 30 s. Les épinards sont indétectables au goût grâce à la banane. 60 g d'épinards = 2 portions de légumes." },
+
+  // ---------- PETIT-DÉJ (nouveautés) ----------
+  { id: 'r-porridge-vegan', name: 'Porridge vegan avoine-banane-chia', meal: 'petit-déj', kcal: 430, p: 16, c: 60, f: 14, time: 7, cost: 1.4,
+    micros: ['Fibres', 'Oméga-3 ALA', 'Magnésium'], tags: ['Vegan', 'Fibres'],
+    ing: [['Flocons d\'avoine', 60, 'Épicerie'], ['Lait d\'amande', 200, 'Frais'], ['Banane', 100, 'Fruits'], ['Beurre de cacahuète', 15, 'Épicerie'], ['Graines de chia', 10, 'Épicerie']],
+    steps: "Flocons + lait d'amande 3 min à feu doux. Hors du feu, ajoute la banane écrasée, le beurre de cacahuète et les graines de chia. Laisse épaissir 2 min.",
+    tip: "Le seul petit-déj 100 % végétal de l'app : combine avoine, cacahuète et chia pour un bon profil d'acides aminés sans produit animal." },
+  { id: 'r-omelette-feta', name: 'Omelette épinards-féta', meal: 'petit-déj', kcal: 360, p: 28, c: 6, f: 25, time: 10, cost: 2.2,
+    micros: ['Vitamine B12', 'Calcium', 'Choline'], tags: ['Riche en protéines', 'Low-carb', 'Express'],
+    ing: [['Œufs', 120, 'Frais'], ['Blancs d\'œufs', 60, 'Frais'], ['Épinards frais', 60, 'Légumes'], ['Féta', 40, 'Frais'], ['Huile d\'olive', 5, 'Épicerie']],
+    steps: "Bats les œufs et les blancs. Fais tomber les épinards 1 min à la poêle, verse les œufs, émiette la féta dessus. Plie quand le dessus est encore baveux.",
+    tip: "Mélanger œufs entiers + blancs garde le repas riche en protéines tout en maîtrisant les lipides. La choline du jaune soutient mémoire et concentration." },
+  { id: 'r-pancakes', name: 'Pancakes protéinés banane-avoine', meal: 'petit-déj', kcal: 420, p: 30, c: 52, f: 9, time: 12, cost: 1.7,
+    micros: ['Potassium', 'Fibres', 'B2'], tags: ['Riche en protéines', 'Plaisir'],
+    ing: [['Flocons d\'avoine', 50, 'Épicerie'], ['Œufs', 60, 'Frais'], ['Banane bien mûre', 100, 'Fruits'], ['Whey vanille', 25, 'Épicerie'], ['Lait demi-écrémé', 60, 'Frais'], ['Levure chimique', 3, 'Épicerie']],
+    steps: "Mixe tout en pâte lisse. Petites louches sur poêle anti-adhésive feu moyen, retourne quand des bulles apparaissent. 2 min par face.",
+    tip: "La banane bien mûre apporte le sucré : inutile d'ajouter du sucre. Idéal en petit-déj du week-end ou en collation post-séance." },
+  { id: 'r-bircher', name: 'Bircher muesli pomme-cannelle', meal: 'petit-déj', kcal: 400, p: 24, c: 56, f: 10, time: 5, cost: 1.6, batch: true,
+    batchNote: "Prépare 3 bols la veille : se conserve 3 jours au frigo.",
+    micros: ['Fibres', 'Pectine', 'Calcium'], tags: ['Batch', 'Fibres'],
+    ing: [['Flocons d\'avoine', 50, 'Épicerie'], ['Skyr nature', 150, 'Frais'], ['Lait demi-écrémé', 80, 'Frais'], ['Pomme', 120, 'Fruits'], ['Cannelle', 2, 'Épicerie'], ['Cerneaux de noix', 12, 'Épicerie']],
+    steps: "Mélange flocons, skyr, lait et cannelle la veille. Le matin : râpe la pomme dessus, ajoute les noix. Frais et croquant.",
+    tip: "La pectine de la pomme et les fibres de l'avoine forment un gel qui prolonge la satiété toute la matinée." },
+
+  // ---------- DÉJEUNER (nouveautés) ----------
+  { id: 'r-salade-beluga', name: 'Salade lentilles béluga, féta & betterave', meal: 'déjeuner', kcal: 470, p: 24, c: 52, f: 17, time: 15, cost: 2.4, batch: true,
+    batchNote: "Se prépare en saladier pour 3 portions, 3 jours au frigo (ajoute la féta au moment de servir).",
+    micros: ['Fer', 'Folates', 'Nitrates'], tags: ['Végétarien', 'Batch', 'Fibres'],
+    ing: [['Lentilles béluga (crues)', 70, 'Épicerie'], ['Betterave cuite', 100, 'Légumes'], ['Féta', 40, 'Frais'], ['Roquette', 30, 'Légumes'], ['Huile d\'olive', 10, 'Épicerie'], ['Citron', 15, 'Fruits']],
+    steps: "Lentilles béluga 18 min (elles tiennent et ne s'écrasent pas). Refroidies, mélange avec betterave en dés, roquette, féta émiettée. Vinaigrette huile-citron.",
+    tip: "Les nitrates de la betterave améliorent l'oxygénation musculaire : un bon réflexe les jours d'entraînement intense." },
+  { id: 'r-riz-cantonais', name: 'Riz cantonais protéiné (dinde & petits pois)', meal: 'déjeuner', kcal: 540, p: 38, c: 62, f: 13, time: 18, cost: 2.6, batch: true,
+    batchNote: "Idéal pour recycler un reste de riz : double les quantités sans effort.",
+    micros: ['B3', 'Fer', 'Sélénium'], tags: ['Riche en protéines', 'Anti-gaspi'],
+    ing: [['Riz (cru)', 70, 'Épicerie'], ['Jambon de dinde', 80, 'Boucherie'], ['Œufs', 60, 'Frais'], ['Petits pois', 80, 'Surgelés'], ['Sauce soja', 12, 'Épicerie'], ['Ail', 4, 'Légumes']],
+    steps: "Riz cuit refroidi. Brouille l'œuf à la poêle, réserve. Saute le jambon de dinde et les petits pois, ajoute le riz, l'œuf, la sauce soja. Bien chaud.",
+    tip: "Le riz de la veille, refroidi, contient de l'amidon résistant : meilleure satiété et glycémie plus douce que le riz fraîchement cuit." },
+  { id: 'r-couscous-poulet', name: 'Couscous semoule poulet-pois chiches', meal: 'déjeuner', kcal: 560, p: 42, c: 64, f: 12, time: 20, cost: 2.8, batch: true,
+    batchNote: "Multiplie par 3 : la semoule se réchauffe en 1 min au micro-ondes.",
+    micros: ['B6', 'Fibres', 'Sélénium'], tags: ['Riche en protéines', 'Batch'],
+    ing: [['Semoule de couscous', 70, 'Épicerie'], ['Filet de poulet', 130, 'Boucherie'], ['Pois chiches (égouttés)', 80, 'Conserves'], ['Courgette', 120, 'Légumes'], ['Carotte', 80, 'Légumes'], ['Ras el-hanout', 4, 'Épicerie']],
+    steps: "Semoule couverte d'eau bouillante salée 5 min, égraine à la fourchette. Poulet en dés saisi au ras el-hanout, ajoute légumes en dés et pois chiches, 8 min. Sers sur la semoule.",
+    tip: "Poulet + pois chiches = combo qui pousse les protéines à 42 g tout en apportant fibres et satiété pour un déjeuner qui tient l'après-midi." },
+  { id: 'r-bagel-saumon', name: 'Bagel complet saumon fumé & fromage frais', meal: 'déjeuner', kcal: 480, p: 32, c: 48, f: 17, time: 6, cost: 3.4,
+    micros: ['Oméga-3 EPA/DHA', 'B12', 'Vitamine D'], tags: ['Express', 'Oméga-3'],
+    ing: [['Pain complet', 90, 'Boulangerie'], ['Saumon fumé', 80, 'Frais'], ['Fromage frais', 40, 'Frais'], ['Concombre', 50, 'Légumes'], ['Aneth', 3, 'Légumes'], ['Citron', 10, 'Fruits']],
+    steps: "Tartine le fromage frais, dépose le saumon fumé, le concombre en fines lamelles, l'aneth et un trait de citron. Déjeuner froid prêt en 6 min.",
+    tip: "Le saumon fumé est l'une des rares sources alimentaires de vitamine D : précieux l'hiver pour l'immunité et les os." },
+
+  // ---------- DÎNER (nouveautés) ----------
+  { id: 'r-cabillaud-polenta', name: 'Cabillaud, polenta crémeuse & épinards', meal: 'dîner', kcal: 470, p: 40, c: 42, f: 13, time: 22, cost: 3.6,
+    micros: ['Iode', 'Phosphore', 'B12'], tags: ['Riche en protéines', 'Sans gluten'],
+    ing: [['Dos de cabillaud', 160, 'Poissonnerie'], ['Polenta (crue)', 60, 'Épicerie'], ['Épinards frais', 120, 'Légumes'], ['Lait demi-écrémé', 100, 'Frais'], ['Parmesan', 15, 'Frais'], ['Citron', 15, 'Fruits']],
+    steps: "Polenta dans 250 ml d'eau + lait 8 min en remuant, parmesan en fin. Cabillaud poêlé 4 min par face. Épinards tombés à côté. Citron sur le poisson.",
+    tip: "Le cabillaud est un poisson maigre ultra-protéiné (18 g/100 g) : parfait quand on veut beaucoup de protéines pour peu de calories et de lipides." },
+  { id: 'r-maquereau-quinoa', name: 'Maquereau grillé, quinoa & poivrons', meal: 'dîner', kcal: 560, p: 36, c: 44, f: 26, time: 20, cost: 2.8,
+    micros: ['Oméga-3 EPA/DHA', 'Vitamine D', 'Sélénium'], tags: ['Oméga-3', 'Économique'],
+    ing: [['Filets de maquereau', 150, 'Poissonnerie'], ['Quinoa (cru)', 65, 'Épicerie'], ['Poivron', 150, 'Légumes'], ['Huile d\'olive', 8, 'Épicerie'], ['Citron', 20, 'Fruits'], ['Persil', 5, 'Légumes']],
+    steps: "Quinoa 12 min. Poivrons en lanières rôtis 12 min au four. Maquereau côté peau 3 min puis 1 min. Citron et persil dessus.",
+    tip: "Le maquereau est le champion oméga-3 le moins cher : 1 portion couvre largement la cible hebdomadaire de poisson gras." },
+  { id: 'r-chili-sincarne', name: 'Chili sin carne haricots noirs (vegan)', meal: 'dîner', kcal: 490, p: 22, c: 78, f: 9, time: 25, cost: 1.6, batch: true,
+    batchNote: "Congèle en portions : un dîner vegan complet toujours sous la main.",
+    micros: ['Fer', 'Fibres', 'Magnésium'], tags: ['Vegan', 'Batch', 'Économique'],
+    ing: [['Haricots noirs (égouttés)', 150, 'Conserves'], ['Tomates concassées', 200, 'Conserves'], ['Riz complet (cru)', 60, 'Épicerie'], ['Poivron', 100, 'Légumes'], ['Maïs', 60, 'Conserves'], ['Cumin + paprika fumé', 5, 'Épicerie']],
+    steps: "Poivron sauté 3 min, ajoute tomates, haricots noirs, maïs et épices, mijote 15 min. Sers sur riz complet.",
+    tip: "Légumineuse + céréale (haricots + riz) forme une protéine complète : indispensable pour couvrir tous les acides aminés sans viande." },
+  { id: 'r-boulettes-dinde', name: 'Boulettes de dinde, courgette spaghetti & tomate', meal: 'dîner', kcal: 470, p: 44, c: 28, f: 20, time: 25, cost: 3.0, batch: true,
+    batchNote: "Les boulettes se congèlent crues ou cuites : pratique en semaine.",
+    micros: ['B3', 'Lycopène', 'Zinc'], tags: ['Riche en protéines', 'Low-carb'],
+    ing: [['Dinde hachée', 160, 'Boucherie'], ['Courgette', 250, 'Légumes'], ['Coulis de tomate', 150, 'Conserves'], ['Chapelure', 15, 'Épicerie'], ['Ail', 5, 'Légumes'], ['Origan', 2, 'Épicerie']],
+    steps: "Mélange dinde + chapelure + ail, forme des boulettes, dore-les 8 min. Ajoute le coulis, mijote 8 min. Courgette en spaghetti (économe) sautée 3 min à côté.",
+    tip: "La courgette en spaghetti remplace les pâtes : on garde le plaisir d'un plat sauce tomate pour 3 fois moins de glucides." },
+  { id: 'r-curry-poischiches', name: 'Curry de pois chiches épinards-coco (vegan)', meal: 'dîner', kcal: 520, p: 20, c: 72, f: 16, time: 20, cost: 1.8, batch: true,
+    batchNote: "Encore meilleur réchauffé : double les quantités.",
+    micros: ['Fer', 'Fibres', 'Curcumine'], tags: ['Vegan', 'Batch', 'Fibres'],
+    ing: [['Pois chiches (égouttés)', 150, 'Conserves'], ['Lait de coco léger', 120, 'Conserves'], ['Épinards frais', 100, 'Légumes'], ['Tomates concassées', 150, 'Conserves'], ['Riz basmati (cru)', 60, 'Épicerie'], ['Curry + curcuma', 6, 'Épicerie']],
+    steps: "Tomates + épices 5 min, ajoute pois chiches et lait de coco, mijote 10 min. Épinards en fin. Sers sur riz.",
+    tip: "Le curcuma + une pincée de poivre noir décuple l'absorption de la curcumine, l'actif anti-inflammatoire de l'épice." },
+  { id: 'r-steak-haricots-verts', name: 'Pavé de bœuf, haricots verts & pommes grenaille', meal: 'dîner', kcal: 540, p: 46, c: 38, f: 22, time: 25, cost: 4.0,
+    micros: ['Fer héminique', 'Zinc', 'Vitamine C'], tags: ['Riche en protéines', 'Fer'],
+    ing: [['Pavé de bœuf maigre', 160, 'Boucherie'], ['Pommes de terre grenaille', 200, 'Légumes'], ['Haricots verts', 150, 'Légumes'], ['Huile d\'olive', 8, 'Épicerie'], ['Ail', 5, 'Légumes'], ['Thym', 2, 'Épicerie']],
+    steps: "Grenailles rôties 22 min au four avec ail et thym. Haricots verts vapeur 8 min. Pavé saisi 2-3 min par face, laisse reposer 3 min avant de trancher.",
+    tip: "Laisser reposer la viande après cuisson redistribue les jus : elle reste tendre et juteuse plutôt que sèche." },
+
+  // ---------- COLLATIONS (nouveautés) ----------
+  { id: 'r-skyr-cacao', name: 'Skyr cacao-framboises', meal: 'collation', kcal: 230, p: 26, c: 22, f: 3, time: 2, cost: 1.4,
+    micros: ['Calcium', 'Caséine lente', 'Antioxydants'], tags: ['Riche en protéines', 'Express', 'Low-fat'],
+    ing: [['Skyr nature', 250, 'Frais'], ['Cacao non sucré', 6, 'Épicerie'], ['Framboises surgelées', 80, 'Surgelés'], ['Miel', 8, 'Épicerie']],
+    steps: "Mélange skyr + cacao + miel. Framboises décongelées écrasées dessus. 26 g de protéines pour 230 kcal : la collation reine.",
+    tip: "La caséine du skyr se digère lentement (6-7 h) : idéale le soir pour nourrir le muscle pendant le sommeil." },
+  { id: 'r-edamame', name: 'Edamame vapeur au sel', meal: 'collation', kcal: 190, p: 17, c: 14, f: 8, time: 6, cost: 1.5,
+    micros: ['Fer', 'Folates', 'Isoflavones'], tags: ['Végétarien', 'Riche en protéines', 'Express'],
+    ing: [['Edamame (cosses)', 150, 'Surgelés'], ['Sel', 2, 'Épicerie'], ['Graines de sésame', 3, 'Épicerie']],
+    steps: "Edamame 5 min à la vapeur (ou eau bouillante), sale et parsème de sésame. Presse les cosses pour sortir les graines.",
+    tip: "Rare snack végétal aussi riche en protéines complètes : 17 g pour moins de 200 kcal, parfait devant un film sans culpabilité." },
+  { id: 'r-mugcake', name: 'Mug cake protéiné chocolat (micro-ondes)', meal: 'collation', kcal: 280, p: 24, c: 28, f: 8, time: 4, cost: 1.3,
+    micros: ['Magnésium', 'B12'], tags: ['Plaisir', 'Riche en protéines', 'Express'],
+    ing: [['Whey chocolat', 30, 'Épicerie'], ['Flocons d\'avoine (mixés)', 25, 'Épicerie'], ['Œufs', 50, 'Frais'], ['Cacao non sucré', 5, 'Épicerie'], ['Lait demi-écrémé', 40, 'Frais'], ['Levure chimique', 2, 'Épicerie']],
+    steps: "Mélange tout dans un mug. Micro-ondes 60-75 s (surveille : il doit rester moelleux). Le dessert qui rentre dans les macros.",
+    tip: "Sors-le dès que le dessus est pris : 10 s de trop le rendent caoutchouteux. Le cœur continue de cuire hors du micro-ondes." }
 ];
 
 // --- Badges --------------------------------------------------------------------
@@ -295,7 +397,19 @@ window.TIPS = [
   "Photos de progression : même éclairage, même heure, même lieu. La comparaison objective bat le miroir quotidien.",
   "La marche post-repas (15 min) réduit le pic glycémique de 30 %. Prends l'habitude après le déjeuner.",
   "Ne sous-estime pas les légumineuses : 25 g de protéines, 15 g de fibres et quasi zéro gras pour 100 g de lentilles sèches.",
-  "Le magnésium améliore le sommeil et réduit les crampes. Sources : amandes, chocolat noir, eaux minérales riches (Hépar, Contrex)."
+  "Le magnésium améliore le sommeil et réduit les crampes. Sources : amandes, chocolat noir, eaux minérales riches (Hépar, Contrex).",
+  "Mange une protéine complète à chaque repas (animale, ou légumineuse + céréale) : c'est le profil d'acides aminés qui pilote la construction musculaire.",
+  "Excentrique lent (3-4 s à la descente) = plus de micro-dommages utiles et plus de gains de force qu'une descente subie.",
+  "L'amplitude complète bat la charge lourde tronquée : un mouvement complet à charge modérée recrute plus de fibres et protège mieux les articulations.",
+  "Garde toujours 1 à 3 répétitions en réserve (RIR) sur tes séries de travail : tu progresses sans cramer ta récupération.",
+  "Le poisson gras 2×/semaine (maquereau, sardines, saumon) couvre tes oméga-3 EPA/DHA, anti-inflammatoires et alliés de la récupération.",
+  "La vitamine C des légumes crus (poivron, brocoli, agrumes) multiplie l'absorption du fer végétal des lentilles et épinards.",
+  "Un échauffement de 5 min de mobilité ciblée (hanches, épaules, chevilles) débloque plus d'amplitude qu'il n'en fait perdre en fatigue.",
+  "La constance bat l'intensité : 3 séances correctes chaque semaine pendant 3 mois transforment un physique. Une séance héroïque, non.",
+  "Tes glucides ne te font pas grossir : c'est le surplus calorique total. Place-les surtout autour de l'entraînement pour la performance.",
+  "Varie tes sources de protéines (œufs, poisson, volaille, légumineuses, laitages) : tu couvres mieux micronutriments et acides aminés.",
+  "Le sommeil est ton premier anabolisant : 7-9 h régulières font plus pour tes muscles que n'importe quel complément.",
+  "Bois un grand verre d'eau au réveil : on se réveille déshydraté, et la vigilance comme la performance en dépendent."
 ];
 
 // --- Catalogue matériel (pour l'onboarding et les réglages) --------------------

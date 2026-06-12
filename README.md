@@ -32,8 +32,8 @@ Les stats sont liées au **type** d'exercice : le volume en force nourrit la FOR
 On glisse horizontalement entre les panneaux ; le bandeau du haut suit.
 
 1. **STATUT** — la fenêtre iconique : rang, niveau, classe, PV/PM, les 5 stats avec boutons `[+]` d'allocation, quête journalière (« entrer dans le donjon ») et hebdomadaire.
-2. **DONJON** — ton programme (les « portails »), édition des séries, substitution de compétences, et le grimoire complet de **67 exercices**.
-3. **RATION** — nutrition : générateur de journée selon tes cibles, recettes (micros/coût/batch), liste de réapprovisionnement par rayon.
+2. **DONJON** — ton programme (les « portails »), édition des séries, substitution de compétences, et le grimoire complet de **110 exercices** (8 catégories, dont une section **Mobilité / échauffement**) avec recherche par nom ou muscle.
+3. **RATION** — nutrition : générateur de journée selon tes cibles, **56 recettes** détaillées (micros, tags, astuce du chef, coût, batch), recherche par recette ou ingrédient, liste de réapprovisionnement par rayon.
 4. **SYSTÈME** — le coach scripté hors-ligne : conseils du jour corrélés à ton sommeil/RPE, analyse hebdo, et réponses à tes questions (base de 52 fiches).
 5. **ARCHIVES** — duel d'ombre, carnet (poids/sommeil/énergie), courbes 30 jours, records (1RM Epley), titres et compétences débloqués.
 
@@ -63,9 +63,9 @@ recomp/
 │   └── style.css            Interface « Système » : fenêtres lumineuses, coins angulaires
 ├── js/
 │   ├── config.js            Clés Supabase (mode LOCAL auto si absentes)
-│   ├── exercises.js         67 exercices détaillés (technique, erreurs, régressions)
+│   ├── exercises.js         110 exercices détaillés (technique, erreurs, régressions, mobilité)
 │   ├── knowledge.js         52 fiches de connaissance (coach)
-│   ├── data.js              Programme, 25 recettes, badges, tips, catalogues matériel/exclusions/couleurs
+│   ├── data.js              Programme, 56 recettes, badges, tips, catalogues matériel/exclusions/couleurs
 │   ├── coach.js             Moteur du coach scripté (signaux, conseils, analyse, Q/R)
 │   ├── rpg.js               Moteur de jeu : XP, niveaux, rangs, stats, points, PV/PM, classe, compétences, duel
 │   └── app.js               Application (données, rendu, hors-ligne, charts)

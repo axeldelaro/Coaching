@@ -1,5 +1,5 @@
 /* RECOMP FIGHT CAMP — Service Worker v3 */
-const CACHE = 'recomp-v9';
+const CACHE = 'recomp-v10';
 const SHELL = [
   './', './index.html', './css/style.css',
   './js/config.js', './js/exercises.js', './js/knowledge.js',

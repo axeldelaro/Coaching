@@ -217,19 +217,25 @@ function computeTargets(a) {
 
 function allowedRecipes() {
   const al = S.profile.anamnese?.allergies || [];
+  // Lait animal sans confondre le lait de coco (sans lactose).
+  const hasDairyMilk = ing => /\blait\b/i.test(ing) && !/lait de coco|lait d'?amande|lait de soja|lait d'?avoine/i.test(ing);
   return window.RECIPES.filter(r => {
     const ing = r.ing.map(i => i[0]).join(' ').toLowerCase();
-    if (al.includes('lactose') && /skyr|fromage blanc|lait|whey|yaourt|yaourt grec/i.test(ing)) return false;
-    if (al.includes('gluten') && /pâtes|tortilla|flocons|pain|granola/i.test(ing)) return false;
-    if (al.includes('fruits_de_mer') && /thon|sardine|saumon|crevette|poisson/i.test(ing)) return false;
-    if (al.includes('viande_rouge') && /bœuf|boeuf|steak|rumsteck/i.test(ing)) return false;
-    if (al.includes('volaille') && /poulet|dinde|volaille/i.test(ing)) return false;
-    if (al.includes('legumineuses') && /lentille|pois chiche|haricots? rouge/i.test(ing)) return false;
-    if (al.includes('noix') && /amande|noisette|cacahuète|noix/i.test(ing)) return false;
-    if (al.includes('soja') && /tofu|soja/i.test(ing)) return false;
-    if (al.includes('porc') && /porc|jambon|lard|bacon/i.test(ing)) return false;
-    if (al.includes('vegan') && /poulet|dinde|bœuf|boeuf|steak|saumon|thon|sardine|rumsteck|whey|skyr|fromage|lait|yaourt|caséine/i.test(ing)) return false;
-    if (al.includes('cafe') && /café|caféine/i.test(ing)) return false;
+    if (al.includes('oeufs') && /œuf|oeuf|omelette/i.test(ing)) return false;
+    if (al.includes('lactose') && (/skyr|fromage|ricotta|cottage|mozzarell|féta|feta|parmesan|whey|yaourt|caséine|crème|creme|ghee/i.test(ing) || hasDairyMilk(ing))) return false;
+    if (al.includes('gluten') && /pâtes|tortilla|flocons|pain|granola|muesli|boulgour|couscous|semoule|épeautre|epeautre|orge|seitan|chapelure|wrap|biscotte/i.test(ing)) return false;
+    if (al.includes('fruits_de_mer') && /thon|sardine|saumon|crevette|poisson|maquereau|cabillaud|hareng|colin|haddock|moule|crabe|calamar|gambas|truite|lieu|anchois/i.test(ing)) return false;
+    if (al.includes('viande_rouge') && /bœuf|boeuf|steak|rumsteck|veau|agneau/i.test(ing)) return false;
+    if (al.includes('volaille') && /poulet|dinde|volaille|escalope/i.test(ing)) return false;
+    if (al.includes('legumineuses') && /lentille|pois chiche|pois cassé|haricots? (rouge|noir|blanc)|edamame|flageolet|fève|feve/i.test(ing)) return false;
+    if (al.includes('noix') && /amande|noisette|cacahuète|cacahuete|noix|cajou|pistache|pécan|pecan/i.test(ing)) return false;
+    if (al.includes('soja') && /tofu|soja|edamame|miso|tempeh/i.test(ing)) return false;
+    if (al.includes('porc') && /porc|lard|bacon|chorizo|saucisson|lardon/i.test(ing)) return false;
+    if (al.includes('porc') && /jambon/i.test(ing) && !/jambon de (dinde|volaille|poulet)/i.test(ing)) return false;
+    if (al.includes('vegan') && (/poulet|dinde|bœuf|boeuf|steak|rumsteck|veau|agneau|saumon|thon|sardine|maquereau|cabillaud|hareng|crevette|crabe|poisson|jambon|œuf|oeuf|whey|skyr|fromage|ricotta|cottage|mozzarell|féta|feta|parmesan|yaourt|caséine|crème|creme|miel|gélatine|gelatine/i.test(ing) || hasDairyMilk(ing))) return false;
+    if (al.includes('cafe') && /café|cafe|caféine|cafeine/i.test(ing)) return false;
+    if (al.includes('sucre') && /sucre|miel|sirop d'?érable|sirop d'?agave/i.test(ing)) return false;
+    if (al.includes('alcool') && /vin|bière|biere|rhum|cognac|alcool/i.test(ing)) return false;
     return true;
   });
 }
@@ -884,7 +890,8 @@ function renderCantine(el) {
     if (r) { s.kcal += r.kcal; s.p += r.p; s.c += r.c; s.f += r.f; }
     return s;
   }, { kcal: 0, p: 0, c: 0, f: 0 });
-  let mealFilter = '';
+  let mealFilter = '', recQ = '';
+  const normR = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
   const bar = (label, val, max) => `
     <div class="mb-row"><span>${label}</span>
@@ -904,6 +911,8 @@ function renderCantine(el) {
       </div>
       <button class="btn ghost" style="margin-top:8px" onclick="go('/shopping')">🛒 RÉAPPROVISIONNEMENT</button>
     </div>
+    <div class="label" style="margin-bottom:6px">GRIMOIRE — ${recipes.length} RECETTES</div>
+    <label class="field"><input id="rec-q" placeholder="RECHERCHER UNE RECETTE, UN INGRÉDIENT…"></label>
     <div class="choices" id="meal-filters" style="margin-bottom:12px">
       ${['', 'petit-déj', 'déjeuner', 'dîner', 'collation', 'batch'].map(m =>
         `<button class="chip ${m === '' ? 'on' : ''}" data-m="${m}">${m === '' ? 'TOUT' : m === 'batch' ? '🍲 BATCH' : m.toUpperCase()}</button>`).join('')}
@@ -911,7 +920,8 @@ function renderCantine(el) {
     <div id="rec-list"></div>`;
 
   const drawList = () => {
-    const list = recipes.filter(r => !mealFilter || (mealFilter === 'batch' ? r.batch : r.meal === mealFilter));
+    const list = recipes.filter(r => (!mealFilter || (mealFilter === 'batch' ? r.batch : r.meal === mealFilter))
+      && (!recQ || normR(r.name + ' ' + r.ing.map(i => i[0]).join(' ') + ' ' + (r.tags || []).join(' ') + ' ' + (r.micros || []).join(' ')).includes(normR(recQ))));
     $('#rec-list', el).innerHTML = list.map(r => {
       const n = items.filter(i => i === r.id).length;
       return `
@@ -936,6 +946,7 @@ function renderCantine(el) {
     }).join('') || '<p class="mute">RIEN DANS CE FILTRE.</p>';
   };
   drawList();
+  $('#rec-q', el).oninput = e => { recQ = e.target.value; drawList(); };
 
   const saveMeals = async newItems => { await dbSaveLog('meals', todayStr(), { items: newItems }, { unique: true }); renderCantine(el); renderVestiaire($('#panel-0')); };
   el.addEventListener('click', e => {
@@ -965,13 +976,15 @@ function sheetRecipe(rid) {
         <span class="mute" style="font-weight:800">${r.time} MIN · ~${r.cost.toFixed(2).replace('.', ',')} €</span>
       </div>
       <div class="row wrap" style="gap:5px;margin-top:10px">${(r.micros || []).map(m => `<span class="micro">${esc(m)}</span>`).join('')}</div>
+      ${(r.tags || []).length ? `<div class="row wrap" style="gap:5px;margin-top:8px">${r.tags.map(t => `<span class="chip on">${esc(t.toUpperCase())}</span>`).join('')}</div>` : ''}
     </div>
     ${r.batch ? `<div class="warn-note" style="margin-bottom:18px">🍲 BATCH : ${esc(r.batchNote || 'Multiplie les quantités.')}</div>` : ''}
     <div class="brick">
       <h2>INGRÉDIENTS (1 PORTION)</h2>
       ${r.ing.map(([n, q]) => `<div class="checkline"><span class="grow">${esc(n)}</span><b class="sys num">${q} G</b></div>`).join('')}
     </div>
-    <div class="brick"><h2>PRÉPARATION</h2><p style="font-weight:600;font-size:0.94rem;line-height:1.65">${esc(r.steps)}</p></div>`);
+    <div class="brick"><h2>PRÉPARATION</h2><p style="font-weight:600;font-size:0.94rem;line-height:1.65">${esc(r.steps)}</p></div>
+    ${r.tip ? `<div class="warn-note" style="background:var(--panel);border-color:var(--line);color:var(--ink)">💡 ${esc(r.tip)}</div>` : ''}`);
 }
 
 function sheetShopping() {
