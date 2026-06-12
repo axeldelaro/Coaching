@@ -34,6 +34,12 @@
   --radius-pill: 999px;
   font-size: 16px;
 }
+[data-font="inter"] { font-family: "Inter", system-ui, sans-serif; }
+[data-font="outfit"] { font-family: "Outfit", system-ui, sans-serif; }
+[data-font="roboto"] { font-family: "Roboto", system-ui, sans-serif; }
+[data-font="poppins"] { font-family: "Poppins", system-ui, sans-serif; }
+[data-font="nunito"] { font-family: "Nunito", system-ui, sans-serif; }
+[data-font="system"] { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
 [data-theme="dark"] {
   --bg: #0F131A;
   --bg2: #0B0E14;
@@ -542,19 +548,7 @@ select { background-image: none; }
 }
 
 /* ============ Verrou paysage ============ */
-.landscape-block {
-  display: none; position: fixed; inset: 0; z-index: 9999;
-  background: var(--bg); color: var(--accent);
-  flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center;
-}
-.landscape-block .icon { font-size: 4rem; animation: rotatePhone 2s ease-in-out infinite; }
-@keyframes rotatePhone { 0%,100% { transform: rotate(90deg); } 50% { transform: rotate(0deg); } }
-.landscape-block h2 { font-weight: 800; font-size: 1.3rem; }
-.landscape-block p { color: var(--mute); font-size: 0.92rem; max-width: 290px; }
-@media (orientation: landscape) and (max-height: 500px) {
-  .landscape-block { display: flex; }
-  header.strip, .deck, .sheet, .levelup, .timer-b, .music-mini { display: none !important; }
-}
+.landscape-block { display: none; }
 
 /* ============ MINUTEUR CIRCULAIRE ============ */
 .timer-overlay {
@@ -653,6 +647,23 @@ body.music-on .toast { bottom: 84px; }
 .advice-b.good { border-color: color-mix(in srgb, var(--good) 40%, var(--line)); color: var(--good); background: color-mix(in srgb, var(--good) 7%, transparent); border-left-color: var(--good); }
 .advice-b.warn { border-color: color-mix(in srgb, var(--gold) 40%, var(--line)); color: var(--gold); background: color-mix(in srgb, var(--gold) 7%, transparent); border-left-color: var(--gold); }
 .gate .row button[disabled] { opacity: 0.3; pointer-events: none; }
+
+@media (min-width: 768px) {
+  .panel > .inner, .sheet > .inner, .auth-wrap .inner { max-width: 720px; }
+  .panel { padding: 28px 24px 40px; }
+  header.strip { justify-content: center; gap: 8px; }
+  .strip-item { min-width: 120px; font-size: 0.82rem; }
+  .eq-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  .skill-grid, .belt-grid { grid-template-columns: repeat(3, 1fr); }
+  .vs-grid { max-width: 500px; margin-left: auto; margin-right: auto; }
+  .gate-body { padding: 18px; }
+  .setrow { grid-template-columns: 30px 1fr 1fr 1fr 54px; gap: 10px; }
+  .setrow input { padding: 13px 6px; }
+  .btn { padding: 16px 20px; }
+  .menu-item { padding: 18px; }
+  .title-xl { font-size: 2.4rem; }
+  .fab-music { bottom: 24px; right: 24px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }

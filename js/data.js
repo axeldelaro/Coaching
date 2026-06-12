@@ -449,11 +449,23 @@ window.EXCLUSION_OPTIONS = [
 
 // --- Catalogue thèmes visuels --------------------------------------------------
 window.ACCENT_PRESETS = [
-  { id: 'blue',    label: 'BLEU',     value: '#2F80ED' },
+  { id: 'blue',    label: 'BLEU',      value: '#2F80ED' },
   { id: 'teal',    label: 'TURQUOISE', value: '#0FB5AE' },
-  { id: 'green',   label: 'VERT',     value: '#16A34A' },
-  { id: 'indigo',  label: 'INDIGO',   value: '#6366F1' },
-  { id: 'coral',   label: 'CORAIL',   value: '#F2674E' },
-  { id: 'amber',   label: 'AMBRE',    value: '#D98A00' },
-  { id: 'custom',  label: 'LIBRE',    value: null }
+  { id: 'green',   label: 'VERT',      value: '#16A34A' },
+  { id: 'indigo',  label: 'INDIGO',    value: '#6366F1' },
+  { id: 'purple',  label: 'VIOLET',    value: '#9333EA' },
+  { id: 'coral',   label: 'CORAIL',    value: '#F2674E' },
+  { id: 'rose',    label: 'ROSE',      value: '#EC4899' },
+  { id: 'amber',   label: 'AMBRE',     value: '#D98A00' },
+  { id: 'slate',   label: 'ARDOISE',   value: '#64748B' },
+  { id: 'custom',  label: 'LIBRE',     value: null }
+];
+
+window.FONT_PRESETS = [
+  { id: 'inter',   label: 'Inter',    family: '"Inter", system-ui, sans-serif',    url: 'Inter:wght@400;450;500;600;700;800' },
+  { id: 'outfit',  label: 'Outfit',   family: '"Outfit", system-ui, sans-serif',   url: 'Outfit:wght@400;500;600;700;800' },
+  { id: 'poppins', label: 'Poppins',  family: '"Poppins", system-ui, sans-serif',  url: 'Poppins:wght@400;500;600;700;800' },
+  { id: 'nunito',  label: 'Nunito',   family: '"Nunito", system-ui, sans-serif',   url: 'Nunito:wght@400;500;600;700;800' },
+  { id: 'roboto',  label: 'Roboto',   family: '"Roboto", system-ui, sans-serif',   url: 'Roboto:wght@400;500;700;900' },
+  { id: 'system',  label: 'Système',  family: 'system-ui, -apple-system, "Segoe UI", sans-serif', url: null }
 ];

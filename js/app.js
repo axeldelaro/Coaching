@@ -30,7 +30,7 @@ function lsKey(k) { return `rc_${S.user?.id || 'anon'}_${k}`; }
 function cacheSet(k, v) { localStorage.setItem(lsKey(k), JSON.stringify(v)); }
 function cacheGet(k, d = null) { try { return JSON.parse(localStorage.getItem(lsKey(k))) ?? d; } catch { return d; } }
 
-// ---------- Thème + Accent + Taille ----------
+// ---------- Thème + Accent + Taille + Police ----------
 const mqDark = matchMedia("(prefers-color-scheme: dark)");
 function applyTheme() {
   const pref = S.profile?.settings?.theme || localStorage.getItem("rc_theme") || "light";
@@ -41,8 +41,24 @@ function applyTheme() {
   document.documentElement.style.fontSize = fs + "px";
   const accent = S.profile?.settings?.accent || localStorage.getItem("rc_accent") || "#2F80ED";
   document.documentElement.style.setProperty("--accent", accent);
+  applyFont(S.profile?.settings?.font || localStorage.getItem("rc_font") || "inter");
 }
 function applyAccent(color) { if (!color) return; document.documentElement.style.setProperty("--accent", color); localStorage.setItem("rc_accent", color); }
+function applyFont(fontId) {
+  const preset = window.FONT_PRESETS?.find(f => f.id === fontId);
+  if (!preset) return;
+  document.body.style.fontFamily = preset.family;
+  localStorage.setItem("rc_font", fontId);
+  // Load font if needed
+  if (preset.url) {
+    const href = `https://fonts.googleapis.com/css2?family=${preset.url}&display=swap`;
+    if (!document.querySelector(`link[href="${href}"]`)) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet'; link.href = href;
+      document.head.appendChild(link);
+    }
+  }
+}
 mqDark.addEventListener("change", () => { applyTheme(); });
 
 // ---------- Données ----------
@@ -282,7 +298,7 @@ setInterval(checkReminders, 30000);
 // ============================================================
 // SHELL : bandeau + deck à 5 panneaux
 // ============================================================
-const PANELS = ['PROFIL', 'SÉANCE', 'NUTRITION', 'COACH', 'PROGRÈS'];
+const PANELS = ['ACCUEIL', 'ENTRAÎNEMENT', 'SUIVI'];
 let deck, strip;
 
 function mountShell() {
@@ -293,7 +309,6 @@ function mountShell() {
     <div class="deck" id="deck">
       ${PANELS.map((_, i) => `<section class="panel" data-p="${i}"><div class="inner" id="panel-${i}"></div></section>`).join('')}
     </div>
-    <div class="landscape-block"><span class="icon">📱</span><h2>TOURNE TON APPAREIL</h2><p>L'application est conçue pour le mode portrait.</p></div>
     <button class="fab-music" id="fab-music" title="Musique">🎵</button>`);
   deck = $('#deck'); strip = $('#strip');
   strip.onclick = e => {
@@ -324,9 +339,7 @@ const goPanel = i => deck?.scrollTo({ left: i * deck.clientWidth, behavior: 'smo
 function renderAll() {
   renderVestiaire($('#panel-0'));
   renderCombat($('#panel-1'));
-  renderCantine($('#panel-2'));
-  renderCoach($('#panel-3'));
-  renderPalmares($('#panel-4'));
+  renderSuivi($('#panel-2'));
 }
 
 // ============================================================
@@ -346,7 +359,7 @@ function handleHash() {
   const [path, arg] = h.split('@');
   closeSheets();
   if (!S.user || !S.profile) return;
-  const map = { '/session': sheetSession, '/exo': sheetExo, '/recipe': sheetRecipe, '/shopping': sheetShopping, '/settings': sheetSettings, '/onboarding': sheetOnboarding, '/music': sheetMusic };
+  const map = { '/session': sheetSession, '/exo': sheetExo, '/recipe': sheetRecipe, '/shopping': sheetShopping, '/settings': sheetSettings, '/onboarding': sheetOnboarding, '/music': sheetMusic, '/coach': sheetCoach };
   if (map[path]) map[path](arg);
 }
 window.addEventListener('hashchange', handleHash);
@@ -408,16 +421,10 @@ function renderStatut(el) {
 
     <div class="win">
       <div class="win-tag">OBJECTIFS DU JOUR</div>
-      <h2>TA SÉANCE DU JOUR</h2>
-      <p class="mute small" style="margin-bottom:4px">Compose librement ta séance d'aujourd'hui.</p>
-      <button class="btn solid" style="margin-top:8px" onclick="goPanel(1)">⊳ CRÉER MA SÉANCE</button>
-      <hr class="divider">
+      <button class="btn solid" style="margin-bottom:10px" onclick="goPanel(1)">⊳ CRÉER MA SÉANCE</button>
       ${dq.map(q => `<div class="quest ${q.done ? 'done' : ''}"><span class="box">${q.done ? '✓' : ''}</span><span class="t">${esc(q.t)}</span><span class="xp">+${q.xp}</span></div>`).join('')}
-      <p class="mute small" style="margin-top:8px">Un objectif manqué n'est pas grave : le repos fait partie de la progression. Un jour off est tout à fait normal.</p>
-    </div>
-
-    <div class="win">
-      <div class="win-tag">OBJECTIFS DE LA SEMAINE</div>
+      <hr class="divider">
+      <div class="label" style="margin:0">SEMAINE</div>
       ${wq.map(q => `<div class="quest ${q.done ? 'done' : ''}"><span class="box">${q.done ? '✓' : ''}</span><span class="t">${esc(q.t)} <span class="mute num">${q.prog}</span></span><span class="xp">+${q.xp}</span></div>`).join('')}
     </div>
 
@@ -425,7 +432,10 @@ function renderStatut(el) {
       <h2>💬 CONSEIL DU JOUR</h2>
       <p style="font-size:0.92rem;font-weight:500;line-height:1.55">${esc(window.Coach.tipOfDay())}</p>
     </div>
-    <button class="btn ghost" onclick="location.hash='#/settings'">⚙ RÉGLAGES</button>`;
+    <div class="row" style="gap:8px">
+      <button class="btn ghost grow" onclick="go('/coach')">💬 COACH</button>
+      <button class="btn ghost grow" onclick="go('/settings')">⚙ RÉGLAGES</button>
+    </div>`;
 
   // Allocation de points d'aptitude
   $$('.stat-add', el).forEach(btn => btn.onclick = async () => {
@@ -1049,12 +1059,12 @@ function sheetShopping() {
 }
 
 // ============================================================
-// PANNEAU 3 — LE COACH
+// COACH — overlay (sheet)
 // ============================================================
-function renderCoach(el) {
+function sheetCoach() {
   const advice = window.Coach.dailyAdvice(S.logs, S.profile);
   const f = window.RPG.fighter(S.logs, S.profile);
-  el.innerHTML = `
+  const sh = openSheet(`
     <div class="label">TON COACH</div>
     <h1 class="title-xl">COACH</h1>
     <p class="mute" style="margin:6px 0 14px;font-weight:700">${window.KB.length} FICHES TECHNIQUES · ANALYSES SUR TES ${f.workouts} SÉANCES</p>
@@ -1066,19 +1076,18 @@ function renderCoach(el) {
     <div class="brick">
       <h2>POSE TA QUESTION</h2>
       <div class="chat-b" id="chat">
-        <div class="bub coach">Je connais ton palmarès (${f.workouts} combats, ${f.prCount} records, niveau ${f.lvl}). Pose ta question ou tape un thème 👇</div>
+        <div class="bub coach">Je connais ton palmarès (${f.workouts} séances, ${f.prCount} records, niveau ${f.lvl}). Pose ta question ou tape un thème 👇</div>
       </div>
       <div class="choices" id="kb-zone" style="margin-bottom:10px">
-        <button class="chip" data-act="adapt">🎚 ADAPTER MA SÉANCE</button>
         ${window.KB_CATS.map(c => `<button class="chip" data-cat="${c}">${c.toUpperCase()}</button>`).join('')}
       </div>
       <div class="row">
         <input id="chat-q" class="grow" placeholder="EX : COMBIEN DE PROTÉINES PAR JOUR ?">
         <button class="btn sm" id="chat-send" style="height:48px">➤</button>
       </div>
-    </div>`;
+    </div>`);
 
-  const chat = $('#chat', el);
+  const chat = $('#chat', sh);
   const push = (cls, text) => {
     const d = document.createElement('div');
     d.className = 'bub ' + cls; d.textContent = text;
@@ -1094,14 +1103,14 @@ function renderCoach(el) {
   };
   const answer = entry => { push('me', entry.q); setTimeout(() => { push('coach', entry.a); pushRelated(entry); }, 160); };
 
-  $('#show-analysis', el).onclick = () => {
+  $('#show-analysis', sh).onclick = () => {
     const sections = window.Coach.analyze(S.logs, S.profile);
-    $('#analysis', el).innerHTML = sections.map(s => `
+    $('#analysis', sh).innerHTML = sections.map(s => `
       <div style="margin-top:12px"><b class="sys" style="font-size:0.95rem">${esc(s.title)}</b>
       ${s.lines.map(l => `<p style="font-size:0.88rem;font-weight:600;margin-top:5px;line-height:1.5">${esc(l)}</p>`).join('')}</div>`).join('');
   };
-  el.addEventListener('click', e => {
-    const cat = e.target.closest('[data-cat]'), kb = e.target.closest('[data-kb]'), act = e.target.closest('[data-act]');
+  sh.addEventListener('click', e => {
+    const cat = e.target.closest('[data-cat]'), kb = e.target.closest('[data-kb]');
     if (cat) {
       push('me', cat.dataset.cat);
       const d = document.createElement('div');
@@ -1111,17 +1120,12 @@ function renderCoach(el) {
     } else if (kb) {
       const entry = window.KB.find(k => k.id === kb.dataset.kb);
       if (entry) answer(entry);
-    } else if (act?.dataset.act === 'adapt') {
-      const next = nextSession();
-      const a = window.Coach.adaptSession(next, S.logs, S.profile);
-      push('me', 'Adapter mon combat du jour');
-      push('coach', `${a.summary}\n\n${a.session.name} :\n` + a.session.exercises.map((x, i) => `R${i + 1}. ${getExo(x.exo)?.name || x.exo} — ${x.sets}×${x.reps} (RPE ${x.rpe})`).join('\n') + `\n\nLance-le depuis l'onglet SÉANCE : l'adaptation y est appliquée.`);
     }
   });
   const send = () => {
-    const q = $('#chat-q', el).value.trim();
+    const q = $('#chat-q', sh).value.trim();
     if (!q) return;
-    $('#chat-q', el).value = '';
+    $('#chat-q', sh).value = '';
     push('me', q);
     const hit = window.Coach.ask(q);
     setTimeout(() => {
@@ -1129,16 +1133,33 @@ function renderCoach(el) {
       else push('coach', "Pas de fiche précise là-dessus. Tape un thème ci-dessous ou reformule (ex : « plateau », « créatine », « douleur épaule »).");
     }, 180);
   };
-  $('#chat-send', el).onclick = send;
-  $('#chat-q', el).onkeydown = e => { if (e.key === 'Enter') send(); };
+  $('#chat-send', sh).onclick = send;
+  $('#chat-q', sh).onkeydown = e => { if (e.key === 'Enter') send(); };
 }
 
 // ============================================================
-// PANNEAU 4 — LE PALMARÈS
+// PANNEAU 2 — SUIVI (Nutrition + Progrès fusionnés)
 // ============================================================
-function renderPalmares(el) {
-  const t = todayStr();
-  const entry = S.logs.find(l => l.kind === 'journal' && l.day === t)?.payload || {};
+function renderSuivi(el) {
+  // --- Nutrition section ---
+  const t = S.profile.targets || {};
+  const recipes = allowedRecipes();
+  const meals = S.logs.find(l => l.kind === 'meals' && l.day === todayStr());
+  const items = meals?.payload.items || [];
+  const tot = items.reduce((s, id) => {
+    const r = window.RECIPES.find(x => x.id === id);
+    if (r) { s.kcal += r.kcal; s.p += r.p; s.c += r.c; s.f += r.f; }
+    return s;
+  }, { kcal: 0, p: 0, c: 0, f: 0 });
+  const bar = (label, val, max) => `
+    <div class="mb-row"><span>${label}</span>
+      <span class="bar"><i class="${val > max ? 'over' : ''}" style="width:${Math.min(100, max ? val / max * 100 : 0)}%"></i></span>
+      <span class="num" style="text-align:right">${val}/${max || '—'} G</span>
+    </div>`;
+
+  // --- Progress section ---
+  const td = todayStr();
+  const entry = S.logs.find(l => l.kind === 'journal' && l.day === td)?.payload || {};
   const fight = window.RPG.weeklyFight(S.logs, S.profile);
   const days30 = Array.from({ length: 30 }, (_, i) => new Date(Date.now() - (29 - i) * 86400000).toISOString().slice(0, 10));
   const weights = days30.map(d => +S.logs.find(l => l.kind === 'journal' && l.day === d)?.payload.weight || null);
@@ -1154,12 +1175,35 @@ function renderPalmares(el) {
   const vd = fight.verdict;
 
   el.innerHTML = `
-    <div class="label">SUIVI & PROGRÈS</div>
-    <h1 class="title-xl">PROGRÈS</h1>
+    <div class="label">SUIVI & NUTRITION</div>
+    <h1 class="title-xl">SUIVI</h1>
+
+    <div class="brick" style="margin-top:14px">
+      <div class="row between"><h2>🍽 AUJOURD'HUI</h2><b class="sys num" style="font-size:1.2rem">${tot.kcal}/${t.kcal || '—'} KCAL</b></div>
+      ${bar('PROTÉINES', tot.p, t.p)}${bar('GLUCIDES', tot.c, t.c)}${bar('LIPIDES', tot.f, t.f)}
+      <div class="row" style="margin-top:14px">
+        <button class="btn solid grow" id="gen-day">⚡ GÉNÉRER MA JOURNÉE</button>
+        ${items.length ? '<button class="btn sm ghost" id="clear-day">VIDER</button>' : ''}
+      </div>
+      <button class="btn ghost" style="margin-top:8px" onclick="go('/shopping')">🛒 RÉAPPROVISIONNEMENT</button>
+    </div>
+
+    <div class="brick">
+      <h2>📓 JOURNAL — AUJOURD'HUI</h2>
+      <div class="row">
+        <label class="field grow"><span>POIDS (KG)</span><input id="j-weight" type="number" inputmode="decimal" step="0.1" value="${entry.weight ?? ''}"></label>
+        <label class="field grow"><span>SOMMEIL (H)</span><input id="j-sleep" type="number" inputmode="decimal" step="0.5" value="${entry.sleep ?? ''}"></label>
+      </div>
+      <label class="field"><span>ÉNERGIE</span>
+        <div class="scale5" id="j-energy">${['😫', '😕', '😐', '🙂', '🔥'].map((e2, i) => `<button data-v="${i + 1}" class="${entry.energy == i + 1 ? 'on' : ''}">${e2}</button>`).join('')}</div>
+      </label>
+      <label class="field"><span>NOTES</span><textarea id="j-notes" rows="2">${esc(entry.notes || '')}</textarea></label>
+      <button class="btn" id="j-save">ENREGISTRER (+${window.RPG.XP.journal} XP)</button>
+    </div>
 
     <div class="win" style="margin-top:14px">
       <div class="win-tag">TON ÉVOLUTION</div>
-      <p class="mute small" style="margin-bottom:6px">Toi cette semaine, comparé à toi il y a 7 jours.</p>
+      <p class="mute small" style="margin-bottom:6px">Toi cette semaine vs il y a 7 jours.</p>
       <div class="vs-grid">
         <div class="vs-side"><h3>TOI</h3><span class="mono small">CETTE SEMAINE</span></div>
         <div class="vs-x">vs</div>
@@ -1172,19 +1216,6 @@ function renderPalmares(el) {
         ${fight.wNow != null && fight.wOld != null ? `<tr><td>${fight.wNow.toFixed(1)}</td><td class="mid">poids moy.</td><td>${fight.wOld.toFixed(1)}</td></tr>` : ''}
       </table>
       <div class="verdict ${vd.code === 'win' || vd.code === 'first' ? '' : 'lose'}">${vd.txt}</div>
-    </div>
-
-    <div class="brick">
-      <h2>MON JOURNAL — AUJOURD'HUI</h2>
-      <div class="row">
-        <label class="field grow"><span>POIDS (KG)</span><input id="j-weight" type="number" inputmode="decimal" step="0.1" value="${entry.weight ?? ''}"></label>
-        <label class="field grow"><span>SOMMEIL (H)</span><input id="j-sleep" type="number" inputmode="decimal" step="0.5" value="${entry.sleep ?? ''}"></label>
-      </div>
-      <label class="field"><span>ÉNERGIE</span>
-        <div class="scale5" id="j-energy">${['😫', '😕', '😐', '🙂', '🔥'].map((e2, i) => `<button data-v="${i + 1}" class="${entry.energy == i + 1 ? 'on' : ''}">${e2}</button>`).join('')}</div>
-      </label>
-      <label class="field"><span>NOTES</span><textarea id="j-notes" rows="2">${esc(entry.notes || '')}</textarea></label>
-      <button class="btn" id="j-save">ENREGISTRER (+${window.RPG.XP.journal} XP)</button>
     </div>
 
     <div class="brick"><h2>PESÉE — 30 JOURS</h2><canvas class="chart" id="c-weight"></canvas></div>
@@ -1213,8 +1244,64 @@ function renderPalmares(el) {
       <div class="skill-grid">
         ${skills.map(s => `<div class="skill ${s.unlocked ? '' : 'locked'}"><div class="sn">${s.unlocked ? '◆' : '🔒'} ${esc(s.name)}</div><div class="sd">${esc(s.desc)}</div></div>`).join('')}
       </div>
-    </div>`;
+    </div>
 
+    <hr class="divider">
+    <div class="label" style="margin-bottom:6px">CATALOGUE — ${recipes.length} RECETTES</div>
+    <label class="field"><input id="rec-q" placeholder="RECHERCHER UNE RECETTE, UN INGRÉDIENT…"></label>
+    <div class="choices" id="meal-filters" style="margin-bottom:12px">
+      ${['', 'petit-déj', 'déjeuner', 'dîner', 'collation', 'batch'].map(m =>
+        `<button class="chip ${m === '' ? 'on' : ''}" data-m="${m}">${m === '' ? 'TOUT' : m === 'batch' ? '🍲 BATCH' : m.toUpperCase()}</button>`).join('')}
+    </div>
+    <div id="rec-list"></div>`;
+
+  // --- Nutrition interactions ---
+  let mealFilter = '', recQ = '';
+  const normR = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const drawList = () => {
+    const list = recipes.filter(r => (!mealFilter || (mealFilter === 'batch' ? r.batch : r.meal === mealFilter))
+      && (!recQ || normR(r.name + ' ' + r.ing.map(i => i[0]).join(' ') + ' ' + (r.tags || []).join(' ') + ' ' + (r.micros || []).join(' ')).includes(normR(recQ))));
+    $('#rec-list', el).innerHTML = list.map(r => {
+      const n = items.filter(i => i === r.id).length;
+      return `
+      <div class="menu-item">
+        <div class="row between" style="align-items:flex-start">
+          <div class="grow">
+            <span class="row wrap" style="gap:5px"><span class="label" style="margin:0">${r.meal.toUpperCase()}</span>${r.batch ? '<span class="batch-b">🍲 BATCH</span>' : ''}</span>
+            <p class="ttl" style="margin-top:6px">${esc(r.name.toUpperCase())} ${n ? `<span style="color:var(--accent)">×${n}</span>` : ''}</p>
+            <p class="mute small num" style="font-weight:700">P${r.p} · G${r.c} · L${r.f} · ${r.time} MIN · ~${r.cost.toFixed(2).replace('.', ',')} €</p>
+            <div class="row wrap" style="gap:4px;margin-top:6px">${(r.micros || []).map(m => `<span class="micro">${esc(m)}</span>`).join('')}</div>
+          </div>
+          <div style="text-align:right;flex:none">
+            <p class="kcal-big num">${r.kcal}</p>
+            <div class="row" style="margin-top:6px;justify-content:flex-end">
+              ${n ? `<button class="btn sm ghost" data-rm="${r.id}">−</button>` : ''}
+              <button class="btn sm solid" data-add="${r.id}">+</button>
+            </div>
+          </div>
+        </div>
+        <button class="btn sm ghost" style="margin-top:9px" onclick="go('/recipe@${r.id}')">📖 LA RECETTE</button>
+      </div>`;
+    }).join('') || '<p class="mute">RIEN DANS CE FILTRE.</p>';
+  };
+  drawList();
+  $('#rec-q', el).oninput = e => { recQ = e.target.value; drawList(); };
+
+  const saveMeals = async newItems => { await dbSaveLog('meals', todayStr(), { items: newItems }, { unique: true }); renderSuivi(el); renderVestiaire($('#panel-0')); };
+  el.addEventListener('click', e => {
+    const add = e.target.closest('[data-add]'), rm = e.target.closest('[data-rm]'), f2 = e.target.closest('[data-m]');
+    if (add) saveMeals([...items, add.dataset.add]);
+    else if (rm) { const c = [...items]; const i = c.indexOf(rm.dataset.rm); if (i >= 0) c.splice(i, 1); saveMeals(c); }
+    else if (f2) { mealFilter = f2.dataset.m; $$('#meal-filters .chip', el).forEach(x => x.classList.toggle('on', x === f2)); drawList(); }
+  });
+  $('#gen-day', el).onclick = () => {
+    const gen = generateDay(recipes, t);
+    if (!gen) { toast('PAS ASSEZ DE RECETTES COMPATIBLES'); return; }
+    saveMeals(gen); toast('⚡ JOURNÉE GÉNÉRÉE');
+  };
+  $('#clear-day', el) && ($('#clear-day', el).onclick = () => saveMeals([]));
+
+  // --- Journal interactions ---
   let energy = entry.energy || null;
   $('#j-energy', el).onclick = e => {
     const b = e.target.closest('button'); if (!b) return;
@@ -1222,7 +1309,7 @@ function renderPalmares(el) {
     $$('#j-energy button', el).forEach(x => x.classList.toggle('on', x === b));
   };
   $('#j-save', el).onclick = async () => {
-    await dbSaveLog('journal', t, { weight: +$('#j-weight', el).value || null, sleep: +$('#j-sleep', el).value || null, energy, notes: $('#j-notes', el).value }, { unique: true });
+    await dbSaveLog('journal', td, { weight: +$('#j-weight', el).value || null, sleep: +$('#j-sleep', el).value || null, energy, notes: $('#j-notes', el).value }, { unique: true });
     toast('CARNET SIGNÉ ✍'); confetti(900);
     renderAll();
   };
@@ -1243,6 +1330,9 @@ function renderPalmares(el) {
   });
 }
 
+// (renderPalmares kept as alias for backward compat)
+const renderPalmares = renderSuivi;
+
 // ============================================================
 // RÉGLAGES (sheet)
 // ============================================================
@@ -1256,6 +1346,8 @@ function sheetSettings() {
   const dayNames = ['DIM', 'LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM'];
   // Bloc thèmes enrichi injecté via buildSettingsHTML
   
+  const curFont = set.font || localStorage.getItem('rc_font') || 'inter';
+
   const sh = openSheet(`
     <div class="label">RÉGLAGES</div>
     <h1 class="title-xl" style="font-size:2.2rem">RÉGLAGES</h1>
@@ -1276,6 +1368,13 @@ function sheetSettings() {
         <span>COULEUR LIBRE</span>
         <input type="color" id="custom-color" value="${curAccent}">
       </label>
+    </div>
+
+    <div class="brick">
+      <h2>🔤 POLICE</h2>
+      <div class="accent-grid" id="font-grid">
+        ${window.FONT_PRESETS.map(f => `<div class="accent-btn ${curFont === f.id ? 'on' : ''}" data-font="${f.id}" style="font-family:${f.family}"><div class="swatch" style="background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:var(--ink)">${f.label}</div>${f.label.toUpperCase()}</div>`).join('')}
+      </div>
     </div>
 
     <div class="brick">
@@ -1300,7 +1399,6 @@ function sheetSettings() {
       </div>
       <label class="checkline"><input type="checkbox" id="r-hyd" ${r.hydrate ? 'checked' : ''}><span class="grow">HYDRATATION (10/13/16/19 H)</span></label>
       <button class="btn" id="r-save" style="margin-top:10px">ENREGISTRER LES RAPPELS</button>
-      <p class="mute small" style="margin-top:8px;font-weight:600">Notifications locales : déclenchées si l'app est installée/récemment ouverte.</p>
     </div>
 
     <div class="brick">
@@ -1318,7 +1416,7 @@ function sheetSettings() {
 
     <div class="brick">
       <h2>👤 MON COMPTE</h2>
-      <p class="mute small" style="margin-bottom:10px;font-weight:600">${LOCAL_MODE ? 'MODE LOCAL : données sur cet appareil.' : 'CONNECTÉ : ' + esc(S.user.email) + ' · RLS + chiffrement au repos.'}</p>
+      <p class="mute small" style="margin-bottom:10px;font-weight:600">${LOCAL_MODE ? 'MODE LOCAL : données sur cet appareil.' : 'CONNECTÉ : ' + esc(S.user.email)}</p>
       <button class="btn ghost" id="redo">REFAIRE L'INTRO</button>
       <div style="height:8px"></div>
       <button class="btn ghost" id="export">⬇ EXPORTER MES DONNÉES (JSON)</button>
@@ -1345,6 +1443,15 @@ function sheetSettings() {
   $('#custom-color', sh).oninput = async e => {
     applyAccent(e.target.value);
     await dbSaveProfile({ settings: { ...S.profile.settings, accent: e.target.value } });
+  };
+  // Font picker
+  $('#font-grid', sh).onclick = async e => {
+    const b = e.target.closest('[data-font]'); if (!b) return;
+    $$('[data-font]', sh).forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    applyFont(b.dataset.font);
+    await dbSaveProfile({ settings: { ...S.profile.settings, font: b.dataset.font } });
+    toast('POLICE APPLIQUÉE');
   };
   // Taille de police
   let curFsNum = +curFs;
@@ -1392,7 +1499,7 @@ function renderAuth() {
       <p class="mute" style="margin:8px 0 18px;font-weight:700">${LOCAL_MODE ? '⚠ MODE LOCAL (SUPABASE NON CONFIGURÉ) — DONNÉES SUR CET APPAREIL.' : 'PROGRESSE À TON RYTHME, UN PAS APRÈS L\'AUTRE.'}</p>
       <div class="brick">
         ${LOCAL_MODE ? `
-          <label class="field"><span>TON PRÉNOM</span><input id="pseudo" placeholder="AXEL"></label>
+          <label class="field"><span>TON PRÉNOM</span><input id="pseudo" placeholder=""></label>
           <button class="btn" id="local-go">COMMENCER</button>
         ` : `
           <label class="field"><span>E-MAIL</span><input id="email" type="email" autocomplete="email"></label>
@@ -1441,11 +1548,11 @@ function enterApp() {
 
 function sheetOnboarding() {
   const prev = S.profile?.anamnese || {};
-  const a = { sex: 'H', activity: 'leger', goal: 'perte', injuries: [], allergies: [], equipment: ['halteres', 'barre', 'chaise_romaine'], days: '2', ...prev, done: false };
+  const a = { sex: 'H', activity: 'leger', goal: 'perte', allergies: [], equipment: [], days: '2', ...prev, done: false };
   let step = 0;
   const sh = openSheet('<div id="ob"></div>', { closable: false });
   const ob = $('#ob', sh);
-  const steps = [stepBio, stepSante, stepLogistique, stepNutrition];
+  const steps = [stepBio, stepLogistique, stepNutrition];
 
   function shell(inner) {
     ob.innerHTML = `
@@ -1490,25 +1597,16 @@ function sheetOnboarding() {
       <label class="field"><span>OBJECTIF</span>${chips('goal', [['perte', '🔥 PERTE DE GRAS'], ['maintien', '⚖ RECOMP'], ['prise', '💪 MASSE']])}</label>`);
     bindChips();
   }
-  function stepSante() {
-    shell(`
-      <h2>2 · BLESSURES & ARTICULATIONS</h2>
-      <p class="mute small" style="margin-bottom:12px;font-weight:600">Chaque zone cochée remplace automatiquement les techniques à risque.</p>
-      <label class="field"><span>ANTÉCÉDENTS</span>${chips('injuries', [['epaule', 'ÉPAULE / CLAVICULE'], ['genou', 'GENOU'], ['lombaires', 'LOMBAIRES'], ['poignet', 'POIGNET']], true)}</label>
-      <label class="field"><span>SOMMEIL (H/NUIT)</span><input id="sleep" type="number" inputmode="decimal" step="0.5" value="${a.sleep || ''}"></label>
-      <label class="field"><span>STRESS (1–10)</span><input id="stress" type="number" inputmode="numeric" min="1" max="10" value="${a.stress || ''}"></label>`);
-    bindChips(['injuries']);
-  }
   function stepLogistique() {
     // Grille dynamique depuis le catalogue EQUIPMENT_OPTIONS
     const eqHtml = window.EQUIPMENT_OPTIONS.map(eq =>
       `<div class="eq-item ${a.equipment.includes(eq.id) ? 'on' : ''}" data-eq="${eq.id}"><span class="ico">${eq.icon}</span>${eq.label.toUpperCase()}</div>`
     ).join('');
     shell(`
-      <h2>3 · ÉQUIPEMENT DISPONIBLE</h2>
+      <h2>2 · ÉQUIPEMENT DISPONIBLE</h2>
       <p class="mute small" style="margin-bottom:12px;font-weight:600">Coche tout ce que tu as. Les exercices inadaptés seront remplacés automatiquement.</p>
       <div class="eq-grid" id="eq-grid">${eqHtml}</div>
-      <label class="field" style="margin-top:14px"><span>CHARGE MAX / HALTÈRE (KG)</span><input id="dbkg" type="number" inputmode="numeric" value="${a.dbkg || 16}"></label>
+      <label class="field" style="margin-top:14px"><span>CHARGE MAX / HALTÈRE (KG)</span><input id="dbkg" type="number" inputmode="numeric" value="${a.dbkg || ''}"></label>
       <label class="field"><span>SÉANCES / SEMAINE</span>${chips('days', [['2', '2'], ['3', '3'], ['4', '4']])}</label>`);
     bindChips([]);
     // Gestion grille équipement (toggle custom)
@@ -1526,7 +1624,7 @@ function sheetOnboarding() {
       `<div class="eq-item ${a.allergies.includes(ex.id) ? 'on' : ''}" data-ex="${ex.id}"><span class="ico">${ex.icon}</span>${ex.label.slice(0,22).toUpperCase()}</div>`
     ).join('');
     shell(`
-      <h2>4 · LA CANTINE</h2>
+      <h2>3 · LA CANTINE</h2>
       <p class="mute small" style="margin-bottom:12px;font-weight:600">Coche ce que tu ne manges pas. Les recettes incompatibles seront masquées.</p>
       <div class="eq-grid" id="ex-grid">${exHtml}</div>
       <label class="field" style="margin-top:14px"><span>BUDGET COURSES / SEM (€)</span><input id="budget" type="number" inputmode="numeric" value="${a.budget || ''}"></label>
@@ -1669,8 +1767,8 @@ function sheetMusic() {
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { });
 window.go = go; window.goPanel = goPanel;
 
-// Portrait lock
-try { screen.orientation?.lock?.('portrait-primary').catch(() => {}); } catch {}
+// Portrait lock disabled for PC compatibility
+// try { screen.orientation?.lock?.('portrait-primary').catch(() => {}); } catch {}
 
 (async function boot() {
   applyTheme();
