@@ -42,291 +42,7865 @@ window.DEFAULT_PROGRAM = {
 // batch = adapté au batch cooking. Le filtrage par exclusion (œufs, lactose, vegan…)
 // est géré dynamiquement par allowedRecipes() dans app.js selon le profil.
 window.RECIPES = [
-  // ---------- PETIT-DÉJ ----------
-  { id: 'r-skyr-bowl', name: 'Bowl skyr, flocons & banane', meal: 'petit-déj', kcal: 430, p: 32, c: 55, f: 9, time: 5, cost: 1.6,
-    micros: ['Calcium', 'Potassium', 'B12'],
-    ing: [['Skyr nature', 250, 'Frais'], ["Flocons d'avoine", 50, 'Épicerie'], ['Banane', 120, 'Fruits'], ['Beurre de cacahuète', 10, 'Épicerie']],
-    steps: "Mélange skyr et flocons, laisse gonfler 5 min. Banane en rondelles, filet de beurre de cacahuète." },
-  { id: 'r-porridge', name: 'Porridge protéiné fruits rouges', meal: 'petit-déj', kcal: 420, p: 34, c: 50, f: 8, time: 7, cost: 1.8,
-    micros: ['Fibres', 'Antioxydants', 'Manganèse'],
-    ing: [["Flocons d'avoine", 60, 'Épicerie'], ['Whey vanille', 30, 'Épicerie'], ['Fruits rouges surgelés', 100, 'Surgelés'], ['Lait demi-écrémé', 150, 'Frais']],
-    steps: "Flocons + lait 2 min au micro-ondes. Hors chauffe, incorpore la whey (sinon elle coagule). Fruits rouges réchauffés dessus." },
-  { id: 'r-overnight', name: 'Overnight oats choco-noisette', meal: 'petit-déj', kcal: 450, p: 28, c: 58, f: 12, time: 5, cost: 1.5, batch: true,
-    batchNote: "Prépare 3 bocaux d'un coup : se conserve 3 jours au frigo.",
-    micros: ['Magnésium', 'Fibres', 'Fer'],
-    ing: [["Flocons d'avoine", 60, 'Épicerie'], ['Fromage blanc 3%', 150, 'Frais'], ['Lait demi-écrémé', 100, 'Frais'], ['Cacao non sucré', 8, 'Épicerie'], ['Noisettes', 12, 'Épicerie'], ['Miel', 10, 'Épicerie']],
-    steps: "Mélange tout dans un bocal la veille. Le matin : prêt. Noisettes concassées au moment de servir." },
-  { id: 'r-galettes', name: "Galettes d'avoine à la banane (sans œuf)", meal: 'petit-déj', kcal: 390, p: 22, c: 60, f: 8, time: 12, cost: 1.2,
-    micros: ['Potassium', 'Fibres'],
-    ing: [["Flocons d'avoine", 70, 'Épicerie'], ['Banane bien mûre', 130, 'Fruits'], ['Whey vanille', 20, 'Épicerie'], ['Lait demi-écrémé', 60, 'Frais']],
-    steps: "Écrase la banane (c'est elle qui lie, pas besoin d'œuf), mélange tout. Poêle anti-adhésive feu moyen, 2 min par face." },
-  { id: 'r-smoothie', name: 'Smoothie banane-beurre de cacahuète', meal: 'petit-déj', kcal: 410, p: 30, c: 45, f: 12, time: 3, cost: 1.4,
-    micros: ['Potassium', 'Magnésium', 'B12'],
-    ing: [['Lait demi-écrémé', 250, 'Frais'], ['Banane', 100, 'Fruits'], ['Whey vanille', 30, 'Épicerie'], ['Beurre de cacahuète', 12, 'Épicerie']],
-    steps: "Tout au blender 30 s. Idéal les matins pressés ou en post-séance." },
-  // ---------- DÉJEUNER ----------
-  { id: 'r-poulet-riz', name: 'Poulet, riz & brocoli', meal: 'déjeuner', kcal: 520, p: 45, c: 55, f: 11, time: 20, cost: 2.8, batch: true,
-    batchNote: "Le classique du meal prep : cuis 600 g de poulet et 280 g de riz d'un coup = 4 boîtes.",
-    micros: ['Vitamine C', 'B6', 'Sélénium'],
-    ing: [['Filet de poulet', 150, 'Boucherie'], ['Riz basmati (cru)', 70, 'Épicerie'], ['Brocoli', 200, 'Légumes'], ["Huile d'olive", 10, 'Épicerie'], ['Paprika', 2, 'Épicerie'], ['Ail en poudre', 2, 'Épicerie']],
-    steps: "Cuis le riz. Saisis le poulet en dés 6–8 min (paprika, ail en poudre). Brocoli vapeur 5 min — encore croquant pour garder la vitamine C. Huile d'olive en finition." },
-  { id: 'r-pates-thon', name: 'Pâtes au thon & tomate', meal: 'déjeuner', kcal: 530, p: 38, c: 65, f: 11, time: 15, cost: 2.2,
-    micros: ['Oméga-3', 'Lycopène', 'Iode'],
-    ing: [['Pâtes complètes (crues)', 80, 'Épicerie'], ['Thon au naturel', 140, 'Conserves'], ['Coulis de tomate', 200, 'Conserves'], ["Huile d'olive", 8, 'Épicerie'], ['Ail', 5, 'Légumes'], ['Origan', 2, 'Épicerie']],
-    steps: "Pâtes al dente. Chauffe le coulis avec ail et origan, ajoute le thon égoutté 2 min. Le lycopène de la tomate cuite est mieux absorbé avec un filet d'huile." },
-  { id: 'r-wrap-poulet', name: 'Wrap poulet crudités', meal: 'déjeuner', kcal: 480, p: 38, c: 45, f: 15, time: 10, cost: 2.5,
-    micros: ['Bêta-carotène', 'Fibres'],
-    ing: [['Tortilla de blé', 70, 'Épicerie'], ['Filet de poulet', 120, 'Boucherie'], ['Carotte râpée', 60, 'Légumes'], ['Concombre', 60, 'Légumes'], ['Fromage blanc 3%', 40, 'Frais'], ['Citron', 10, 'Fruits']],
-    steps: "Poulet grillé en lamelles. Tartine la tortilla de fromage blanc citronné, garnis, roule serré. Transportable partout." },
-  { id: 'r-quinoa-bowl', name: 'Bowl quinoa, poulet & avocat', meal: 'déjeuner', kcal: 560, p: 40, c: 48, f: 20, time: 20, cost: 3.2,
-    micros: ['Folates', 'Vitamine E', 'Magnésium'],
-    ing: [['Quinoa (cru)', 70, 'Épicerie'], ['Filet de poulet', 130, 'Boucherie'], ['Avocat', 70, 'Fruits'], ['Tomates cerises', 100, 'Légumes'], ['Citron', 20, 'Fruits']],
-    steps: "Quinoa 12 min à l'eau salée. Poulet grillé. Assemble avec avocat en dés, tomates, jus de citron. Protéine complète + bons lipides." },
-  { id: 'r-salade-riz', name: 'Salade de riz thon-maïs', meal: 'déjeuner', kcal: 490, p: 32, c: 62, f: 12, time: 15, cost: 2.0, batch: true,
-    batchNote: "Se prépare en saladier pour 3 portions, 3 jours au frigo.",
-    micros: ['Iode', 'Sélénium'],
-    ing: [['Riz (cru)', 70, 'Épicerie'], ['Thon au naturel', 120, 'Conserves'], ['Maïs', 80, 'Conserves'], ['Tomate', 100, 'Légumes'], ["Huile d'olive", 10, 'Épicerie']],
-    steps: "Riz refroidi + thon + maïs + tomate en dés. Vinaigrette légère. Le riz refroidi forme de l'amidon résistant : meilleur pour la satiété." },
-  { id: 'r-tartines', name: 'Tartines complètes thon-avocat', meal: 'déjeuner', kcal: 470, p: 30, c: 42, f: 19, time: 8, cost: 2.6,
-    micros: ['Oméga-3', 'Vitamine E', 'Fibres'],
-    ing: [['Pain complet', 90, 'Boulangerie'], ['Thon au naturel', 100, 'Conserves'], ['Avocat', 80, 'Fruits'], ['Citron', 15, 'Fruits'], ['Poivre', 1, 'Épicerie'], ["Piment d'Espelette", 1, 'Épicerie']],
-    steps: "Écrase l'avocat au citron, étale, ajoute le thon émietté. Poivre, piment d'Espelette. Déjeuner express." },
-  // ---------- DÎNER ----------
-  { id: 'r-boeuf-patate', name: 'Bœuf 5 %, patate douce & haricots', meal: 'dîner', kcal: 540, p: 42, c: 50, f: 14, time: 30, cost: 3.0, batch: true,
-    batchNote: "Rôtis 1 kg de patates douces d'un coup : elles se réchauffent parfaitement.",
-    micros: ['Fer héminique', 'Bêta-carotène', 'Zinc'],
-    ing: [['Steak haché 5%', 150, 'Boucherie'], ['Patate douce', 250, 'Légumes'], ['Haricots verts', 200, 'Légumes'], ["Huile d'olive", 8, 'Épicerie']],
-    steps: "Patate douce en cubes au four 25 min à 200 °C. Steak à la poêle. Haricots vapeur 8 min. Le fer du bœuf est le mieux absorbé de tous." },
-  { id: 'r-dahl', name: 'Dahl de lentilles corail', meal: 'dîner', kcal: 510, p: 26, c: 75, f: 10, time: 20, cost: 1.5, batch: true,
-    batchNote: "×3 sans effort : le dahl est encore meilleur réchauffé le lendemain.",
-    micros: ['Fer', 'Folates', 'Fibres'],
-    ing: [['Lentilles corail (crues)', 90, 'Épicerie'], ['Riz basmati (cru)', 50, 'Épicerie'], ['Lait de coco léger', 100, 'Conserves'], ['Tomates concassées', 150, 'Conserves'], ['Curry + curcuma', 5, 'Épicerie']],
-    steps: "Lentilles + tomates + épices + 250 ml d'eau, 15 min feu doux. Lait de coco en fin. Sers sur riz. Le repas le moins cher de l'app." },
-  { id: 'r-sardines', name: 'Sardines, pommes de terre & courgettes', meal: 'dîner', kcal: 500, p: 34, c: 45, f: 19, time: 20, cost: 2.4,
-    micros: ['Oméga-3 EPA/DHA', 'Calcium', 'Vitamine D'],
-    ing: [["Sardines à l'huile (égouttées)", 100, 'Conserves'], ['Pommes de terre', 300, 'Légumes'], ['Courgette', 200, 'Légumes'], ['Citron', 30, 'Fruits'], ['Persil', 5, 'Légumes']],
-    steps: "Pommes de terre vapeur 15 min, courgettes poêlées 6 min. Sardines tièdes dessus, citron, persil. Avec les arêtes = la meilleure source de calcium qui existe." },
-  { id: 'r-chili', name: 'Chili express bœuf-haricots', meal: 'dîner', kcal: 560, p: 44, c: 55, f: 15, time: 20, cost: 2.7, batch: true,
-    batchNote: "LA recette à tripler : congèle en portions, dépanne n'importe quel soir.",
-    micros: ['Fer', 'Fibres', 'Zinc'],
-    ing: [['Steak haché 5%', 130, 'Boucherie'], ['Haricots rouges (égouttés)', 130, 'Conserves'], ['Tomates concassées', 200, 'Conserves'], ['Riz (cru)', 50, 'Épicerie'], ['Paprika fumé + cumin', 5, 'Épicerie']],
-    steps: "Saisis la viande, ajoute tomates + haricots + épices, mijote 10 min. Sers sur riz." },
-  { id: 'r-curry-poulet', name: 'Curry de poulet coco-riz', meal: 'dîner', kcal: 570, p: 42, c: 58, f: 16, time: 25, cost: 3.0, batch: true,
-    batchNote: "Double les quantités : le curry se bonifie au frigo.",
-    micros: ['B6', 'Sélénium', 'Curcumine'],
-    ing: [['Filet de poulet', 150, 'Boucherie'], ['Riz basmati (cru)', 65, 'Épicerie'], ['Lait de coco léger', 120, 'Conserves'], ['Courgette', 150, 'Légumes'], ['Curry', 6, 'Épicerie'], ['Poivre noir', 2, 'Épicerie']],
-    steps: "Poulet saisi, courgette en dés 3 min, lait de coco + curry, mijote 10 min. Sur riz. Le curcuma du curry + poivre noir = duo anti-inflammatoire." },
-  { id: 'r-saumon', name: 'Saumon, riz & épinards', meal: 'dîner', kcal: 580, p: 38, c: 50, f: 22, time: 18, cost: 4.2,
-    micros: ['Oméga-3 EPA/DHA', 'Vitamine D', 'Fer'],
-    ing: [['Pavé de saumon', 140, 'Poissonnerie'], ['Riz (cru)', 65, 'Épicerie'], ['Épinards frais', 150, 'Légumes'], ['Citron', 20, 'Fruits'], ['Ail', 5, 'Légumes']],
-    steps: "Saumon au four 12 min à 200 °C (ou poêle côté peau). Épinards tombés 2 min à l'ail. 2 poissons gras/semaine = la cible oméga-3." },
-  { id: 'r-boeuf-brocoli', name: 'Bœuf sauté au brocoli (façon asiatique)', meal: 'dîner', kcal: 520, p: 40, c: 48, f: 16, time: 15, cost: 3.4,
-    micros: ['Fer', 'Vitamine C', 'Zinc'],
-    ing: [['Bœuf à sauter (rumsteck)', 140, 'Boucherie'], ['Brocoli', 200, 'Légumes'], ['Riz (cru)', 60, 'Épicerie'], ['Sauce soja', 15, 'Épicerie'], ['Ail + gingembre', 8, 'Légumes']],
-    steps: "Wok très chaud : bœuf en lamelles 2 min, réserve. Brocoli 4 min avec un fond d'eau. Réunis avec soja-ail-gingembre. La vitamine C du brocoli booste l'absorption du fer." },
-  { id: 'r-dinde-pates', name: 'Pâtes à la dinde hachée & courgettes', meal: 'dîner', kcal: 540, p: 44, c: 60, f: 11, time: 18, cost: 2.8, batch: true,
-    batchNote: "La sauce se congèle très bien en portions.",
-    micros: ['B3', 'Sélénium', 'Lycopène'],
-    ing: [['Dinde hachée', 150, 'Boucherie'], ['Pâtes complètes (crues)', 75, 'Épicerie'], ['Coulis de tomate', 180, 'Conserves'], ['Courgette', 150, 'Légumes'], ['Ail', 5, 'Légumes']],
-    steps: "Dinde revenue à l'ail, courgette râpée (invisible dans la sauce !), coulis, 8 min. La dinde : aussi protéinée que le poulet, souvent moins chère." },
-  { id: 'r-tofu', name: 'Tofu sauté, riz & légumes (végé)', meal: 'dîner', kcal: 490, p: 28, c: 58, f: 15, time: 18, cost: 2.3,
-    micros: ['Calcium', 'Fer', 'Isoflavones'],
-    ing: [['Tofu ferme', 180, 'Frais'], ['Riz (cru)', 60, 'Épicerie'], ['Poivron', 120, 'Légumes'], ['Sauce soja', 15, 'Épicerie'], ['Huile de sésame', 8, 'Épicerie']],
-    steps: "Tofu pressé puis doré 6 min (il doit croustiller). Poivron sauté. Soja + sésame en finition. Option végé complète de l'app." },
-  { id: 'r-soupe-lentilles', name: 'Soupe complète lentilles-carottes', meal: 'dîner', kcal: 430, p: 24, c: 60, f: 9, time: 25, cost: 1.4, batch: true,
-    batchNote: "Une marmite = 4 dîners. Se congèle parfaitement.",
-    micros: ['Fer', 'Bêta-carotène', 'Fibres'],
-    ing: [['Lentilles vertes (crues)', 80, 'Épicerie'], ['Carottes', 200, 'Légumes'], ['Pommes de terre', 150, 'Légumes'], ['Bouillon de légumes', 500, 'Épicerie'], ['Cumin', 3, 'Épicerie']],
-    steps: "Tout dans la marmite, 25 min. Mixe la moitié pour le velouté, garde l'autre pour la mâche. Rassasiant pour très peu de calories." },
-  // ---------- COLLATIONS ----------
-  { id: 'r-fb-miel', name: 'Fromage blanc, miel & amandes', meal: 'collation', kcal: 280, p: 22, c: 24, f: 11, time: 2, cost: 1.1,
-    micros: ['Calcium', 'Caséine lente', 'Vitamine E'],
-    ing: [['Fromage blanc 3%', 250, 'Frais'], ['Miel', 15, 'Épicerie'], ['Amandes', 15, 'Épicerie']],
-    steps: "Assemble. La caséine du fromage blanc se digère en 6–7 h : la collation parfaite du soir pour nourrir le muscle pendant la nuit." },
-  { id: 'r-yaourt-granola', name: 'Yaourt grec, granola & kiwi', meal: 'collation', kcal: 290, p: 18, c: 32, f: 10, time: 3, cost: 1.5,
-    micros: ['Vitamine C', 'Probiotiques', 'Calcium'],
-    ing: [['Yaourt grec', 170, 'Frais'], ['Granola', 30, 'Épicerie'], ['Kiwi', 90, 'Fruits']],
-    steps: "Assemble. 1 kiwi = 100 % de la vitamine C journalière. Les probiotiques du yaourt soutiennent la digestion des protéines." },
-  { id: 'r-riz-au-lait', name: 'Riz au lait protéiné vanille', meal: 'collation', kcal: 310, p: 24, c: 45, f: 5, time: 25, cost: 1.2, batch: true,
-    batchNote: "Prépare 4 pots d'un coup, 4 jours au frigo. Le dessert qui rentre dans les macros.",
-    micros: ['Calcium', 'B12'],
-    ing: [['Riz rond (cru)', 50, 'Épicerie'], ['Lait demi-écrémé', 300, 'Frais'], ['Whey vanille', 25, 'Épicerie'], ['Cannelle', 2, 'Épicerie']],
-    steps: "Riz dans le lait à feu doux 25 min en remuant. Hors du feu, attends 5 min puis incorpore la whey (jamais sur le feu)." },
-  { id: 'r-pois-chiches', name: 'Pois chiches rôtis croustillants', meal: 'collation', kcal: 250, p: 13, c: 35, f: 7, time: 30, cost: 0.8, batch: true,
-    batchNote: "Une plaque entière se garde 4 jours en boîte hermétique : le snack salé anti-chips.",
-    micros: ['Fibres', 'Fer', 'Folates'],
-    ing: [['Pois chiches (égouttés)', 150, 'Conserves'], ["Huile d'olive", 6, 'Épicerie'], ['Paprika fumé', 3, 'Épicerie']],
-    steps: "Sèche bien les pois chiches, huile + épices, four 200 °C 25–30 min en secouant à mi-cuisson. Croustillant garanti." },
-
-  // ---------- PETIT-DÉJ (compléments) ----------
-  { id: 'r-tartine-rc', name: 'Tartine ricotta, miel & noix', meal: 'petit-déj', kcal: 380, p: 18, c: 48, f: 14, time: 5, cost: 2.0,
-    micros: ['Calcium', 'Oméga-3 ALA', 'Manganèse'],
-    ing: [['Pain complet', 80, 'Boulangerie'], ['Ricotta', 60, 'Frais'], ['Miel', 12, 'Épicerie'], ['Cerneaux de noix', 15, 'Épicerie']],
-    steps: "Tartine la ricotta sur le pain toasté. Filet de miel, noix concassées. Ratio protéines/glucides idéal pour démarrer sans lourdeur." },
-  { id: 'r-chia-pudding', name: 'Chia pudding coco-mangue', meal: 'petit-déj', kcal: 360, p: 14, c: 42, f: 14, time: 5, cost: 1.8, batch: true,
-    batchNote: "Prépare 3 bocaux la veille : 3 matins réglés.",
-    micros: ['Oméga-3 ALA', 'Fibres', 'Vitamine C'],
-    ing: [['Graines de chia', 30, 'Épicerie'], ['Lait de coco léger', 200, 'Conserves'], ['Mangue surgelée', 100, 'Surgelés'], ['Miel', 10, 'Épicerie']],
-    steps: "Mélange chia + lait de coco + miel. Frigo 4 h minimum (ou toute la nuit). Mangue décongelée en dés dessus le matin." },
-
-  // ---------- DÉJEUNER (compléments) ----------
-  { id: 'r-buddha-bowl', name: 'Buddha bowl complet', meal: 'déjeuner', kcal: 550, p: 28, c: 62, f: 18, time: 20, cost: 3.0,
-    micros: ['Fibres', 'Fer', 'Vitamine C'],
-    ing: [['Quinoa (cru)', 60, 'Épicerie'], ['Pois chiches (égouttées)', 100, 'Conserves'], ['Patate douce', 150, 'Légumes'], ['Avocat', 60, 'Fruits'], ['Épinards frais', 50, 'Légumes'], ['Tahini', 15, 'Épicerie'], ['Citron', 15, 'Fruits']],
-    steps: "Quinoa 12 min. Patate douce en cubes rôtis au four 20 min. Assemble tout dans un bol : quinoa, pois chiches, patate douce, avocat, épinards. Sauce tahini + citron." },
-  { id: 'r-poke', name: 'Poké bowl saumon-riz', meal: 'déjeuner', kcal: 520, p: 32, c: 55, f: 16, time: 15, cost: 4.5,
-    micros: ['Oméga-3 EPA/DHA', 'Sélénium', 'Iode'],
-    ing: [['Saumon frais (sushi grade)', 120, 'Poissonnerie'], ['Riz (cru)', 65, 'Épicerie'], ['Concombre', 80, 'Légumes'], ['Avocat', 50, 'Fruits'], ['Sauce soja', 15, 'Épicerie'], ['Graines de sésame', 5, 'Épicerie'], ['Vinaigre de riz', 10, 'Épicerie']],
-    steps: "Riz vinaigré refroidi. Saumon en cubes marinés 10 min dans soja + sésame. Concombre et avocat en lamelles. Assemble froid." },
-  { id: 'r-gratin-patate', name: 'Gratin de patate douce au poulet', meal: 'déjeuner', kcal: 540, p: 42, c: 50, f: 14, time: 35, cost: 3.2, batch: true,
-    batchNote: "Un plat pour 4 portions : découpe et congèle.",
-    micros: ['Bêta-carotène', 'B6', 'Sélénium'],
-    ing: [['Filet de poulet', 150, 'Boucherie'], ['Patate douce', 300, 'Légumes'], ['Fromage râpé', 25, 'Frais'], ['Crème légère 15%', 50, 'Frais'], ['Moutarde', 5, 'Épicerie']],
-    steps: "Patate douce en rondelles, poulet en morceaux. Couches alternées dans un plat. Crème + moutarde + fromage dessus. Four 30 min à 180 °C." },
-  { id: 'r-taboulé', name: 'Taboulé de boulgour aux herbes', meal: 'déjeuner', kcal: 430, p: 12, c: 58, f: 16, time: 15, cost: 1.8, batch: true,
-    batchNote: "Se conserve 3 jours au frigo. Idéal pour les lunchbox.",
-    micros: ['Fibres', 'Fer', 'Vitamine C'],
-    ing: [['Boulgour (cru)', 80, 'Épicerie'], ['Tomates', 150, 'Légumes'], ['Concombre', 100, 'Légumes'], ['Menthe fraîche', 10, 'Légumes'], ['Persil plat', 20, 'Légumes'], ['Huile d olive', 15, 'Épicerie'], ['Citron', 30, 'Fruits']],
-    steps: "Boulgour couvert d'eau bouillante 10 min, égoutter. Tomates et concombre en petits dés. Herbes ciselées. Assaisonne huile + citron. Sers frais." },
-
-  // ---------- DÎNER (compléments) ----------
-  { id: 'r-ratatouille', name: 'Ratatouille & steak haché', meal: 'dîner', kcal: 480, p: 36, c: 35, f: 18, time: 30, cost: 3.0, batch: true,
-    batchNote: "La ratatouille se congèle très bien en portions.",
-    micros: ['Lycopène', 'Vitamine C', 'Fibres'],
-    ing: [['Steak haché 5%', 130, 'Boucherie'], ['Courgette', 150, 'Légumes'], ['Aubergine', 120, 'Légumes'], ['Poivron', 100, 'Légumes'], ['Tomates concassées', 200, 'Conserves'], ['Huile d olive', 10, 'Épicerie'], ['Herbes de Provence', 3, 'Épicerie']],
-    steps: "Légumes en cubes sautés 5 min, tomates concassées + herbes, mijote 20 min couvert. Steak grillé à part. Riche en fibres et très rassasiant pour peu de calories." },
-  { id: 'r-wok-crevettes', name: 'Wok de crevettes aux légumes', meal: 'dîner', kcal: 420, p: 34, c: 40, f: 12, time: 15, cost: 4.0,
-    micros: ['Iode', 'Sélénium', 'Zinc'],
-    ing: [['Crevettes décortiquées', 150, 'Surgelés'], ['Nouilles de riz', 60, 'Épicerie'], ['Poivron', 100, 'Légumes'], ['Courgette', 100, 'Légumes'], ['Sauce soja', 15, 'Épicerie'], ['Gingembre frais', 5, 'Légumes']],
-    steps: "Nouilles trempées 5 min dans l'eau chaude. Wok très chaud : crevettes 2 min, réserve. Légumes 3 min. Réunis avec nouilles + soja + gingembre." },
-  { id: 'r-blanquette', name: 'Blanquette de dinde express', meal: 'dîner', kcal: 500, p: 40, c: 45, f: 13, time: 25, cost: 3.0, batch: true,
-    batchNote: "Double les quantités : se réchauffe très bien.",
-    micros: ['B3', 'B6', 'Sélénium'],
-    ing: [['Escalope de dinde', 160, 'Boucherie'], ['Riz (cru)', 60, 'Épicerie'], ['Carottes', 120, 'Légumes'], ['Champignons', 100, 'Légumes'], ['Crème légère 15%', 60, 'Frais'], ['Bouillon de volaille', 200, 'Épicerie'], ['Citron', 15, 'Fruits']],
-    steps: "Dinde en cubes + carottes rondelles dans le bouillon 15 min. Champignons 5 min. Crème + jus de citron en fin. Sers sur riz. Version légère du classique." },
-  { id: 'r-shakshuka', name: 'Shakshuka sans œuf (tofu)', meal: 'dîner', kcal: 380, p: 22, c: 35, f: 16, time: 20, cost: 2.2,
-    micros: ['Lycopène', 'Fer', 'Calcium'],
-    ing: [['Tofu soyeux', 200, 'Frais'], ['Tomates concassées', 250, 'Conserves'], ['Poivron', 100, 'Légumes'], ['Cumin + paprika', 5, 'Épicerie'], ['Pain complet', 60, 'Boulangerie']],
-    steps: "Poivron sauté 3 min. Tomates + épices, mijote 10 min. Découpe le tofu en cubes, niche-le dans la sauce 5 min. Sers avec pain pour tremper. Version végé sans œuf." },
-
-  // ---------- COLLATIONS (compléments) ----------
-  { id: 'r-energy-balls', name: 'Energy balls choco-avoine', meal: 'collation', kcal: 260, p: 10, c: 32, f: 12, time: 10, cost: 1.5, batch: true,
-    batchNote: "Roule 12 boules d'un coup. 5 jours au frigo, 1 mois au congélateur.",
-    micros: ['Magnésium', 'Fer', 'Fibres'],
-    ing: [['Flocons d avoine', 60, 'Épicerie'], ['Beurre de cacahuète', 30, 'Épicerie'], ['Cacao non sucré', 10, 'Épicerie'], ['Miel', 15, 'Épicerie'], ['Whey chocolat', 15, 'Épicerie']],
-    steps: "Mixe les flocons grossièrement. Mélange tout à la main. Roule en boules de 25 g. Frigo 1 h. Le snack portable et riche en énergie." },
-  { id: 'r-banane-beurre', name: 'Banane + beurre de cacahuète', meal: 'collation', kcal: 240, p: 8, c: 30, f: 11, time: 2, cost: 0.8,
-    micros: ['Potassium', 'Magnésium', 'B6'],
-    ing: [['Banane', 120, 'Fruits'], ['Beurre de cacahuète', 20, 'Épicerie']],
-    steps: "Coupe la banane en rondelles, tartine de beurre de cacahuète. Le snack pré-séance parfait : glucides rapides + lipides qui tiennent." },
-  { id: 'r-cottage-tomate', name: 'Cottage cheese & tomates cerises', meal: 'collation', kcal: 200, p: 24, c: 10, f: 7, time: 3, cost: 1.6,
-    micros: ['Calcium', 'Caséine', 'Lycopène'],
-    ing: [['Cottage cheese', 200, 'Frais'], ['Tomates cerises', 100, 'Légumes'], ['Basilic', 3, 'Légumes'], ['Poivre', 1, 'Épicerie']],
-    steps: "Cottage cheese dans un bol, tomates cerises coupées en deux, basilic, poivre. Collation ultra-protéinée à 200 kcal." },
-  { id: 'r-smoothie-vert', name: 'Smoothie vert épinards-banane', meal: 'collation', kcal: 270, p: 22, c: 35, f: 5, time: 3, cost: 1.5,
-    micros: ['Fer', 'Folates', 'Potassium'],
-    ing: [['Épinards frais', 60, 'Légumes'], ['Banane', 100, 'Fruits'], ['Whey vanille', 25, 'Épicerie'], ['Lait demi-écrémé', 200, 'Frais']],
-    steps: "Tout au blender 30 s. Les épinards sont indétectables au goût grâce à la banane. 60 g d'épinards = 2 portions de légumes." },
-
-  // ---------- PETIT-DÉJ (nouveautés) ----------
-  { id: 'r-porridge-vegan', name: 'Porridge vegan avoine-banane-chia', meal: 'petit-déj', kcal: 430, p: 16, c: 60, f: 14, time: 7, cost: 1.4,
-    micros: ['Fibres', 'Oméga-3 ALA', 'Magnésium'], tags: ['Vegan', 'Fibres'],
-    ing: [['Flocons d\'avoine', 60, 'Épicerie'], ['Lait d\'amande', 200, 'Frais'], ['Banane', 100, 'Fruits'], ['Beurre de cacahuète', 15, 'Épicerie'], ['Graines de chia', 10, 'Épicerie']],
-    steps: "Flocons + lait d'amande 3 min à feu doux. Hors du feu, ajoute la banane écrasée, le beurre de cacahuète et les graines de chia. Laisse épaissir 2 min.",
-    tip: "Le seul petit-déj 100 % végétal de l'app : combine avoine, cacahuète et chia pour un bon profil d'acides aminés sans produit animal." },
-  { id: 'r-omelette-feta', name: 'Omelette épinards-féta', meal: 'petit-déj', kcal: 360, p: 28, c: 6, f: 25, time: 10, cost: 2.2,
-    micros: ['Vitamine B12', 'Calcium', 'Choline'], tags: ['Riche en protéines', 'Low-carb', 'Express'],
-    ing: [['Œufs', 120, 'Frais'], ['Blancs d\'œufs', 60, 'Frais'], ['Épinards frais', 60, 'Légumes'], ['Féta', 40, 'Frais'], ['Huile d\'olive', 5, 'Épicerie']],
-    steps: "Bats les œufs et les blancs. Fais tomber les épinards 1 min à la poêle, verse les œufs, émiette la féta dessus. Plie quand le dessus est encore baveux.",
-    tip: "Mélanger œufs entiers + blancs garde le repas riche en protéines tout en maîtrisant les lipides. La choline du jaune soutient mémoire et concentration." },
-  { id: 'r-pancakes', name: 'Pancakes protéinés banane-avoine', meal: 'petit-déj', kcal: 420, p: 30, c: 52, f: 9, time: 12, cost: 1.7,
-    micros: ['Potassium', 'Fibres', 'B2'], tags: ['Riche en protéines', 'Plaisir'],
-    ing: [['Flocons d\'avoine', 50, 'Épicerie'], ['Œufs', 60, 'Frais'], ['Banane bien mûre', 100, 'Fruits'], ['Whey vanille', 25, 'Épicerie'], ['Lait demi-écrémé', 60, 'Frais'], ['Levure chimique', 3, 'Épicerie']],
-    steps: "Mixe tout en pâte lisse. Petites louches sur poêle anti-adhésive feu moyen, retourne quand des bulles apparaissent. 2 min par face.",
-    tip: "La banane bien mûre apporte le sucré : inutile d'ajouter du sucre. Idéal en petit-déj du week-end ou en collation post-séance." },
-  { id: 'r-bircher', name: 'Bircher muesli pomme-cannelle', meal: 'petit-déj', kcal: 400, p: 24, c: 56, f: 10, time: 5, cost: 1.6, batch: true,
-    batchNote: "Prépare 3 bols la veille : se conserve 3 jours au frigo.",
-    micros: ['Fibres', 'Pectine', 'Calcium'], tags: ['Batch', 'Fibres'],
-    ing: [['Flocons d\'avoine', 50, 'Épicerie'], ['Skyr nature', 150, 'Frais'], ['Lait demi-écrémé', 80, 'Frais'], ['Pomme', 120, 'Fruits'], ['Cannelle', 2, 'Épicerie'], ['Cerneaux de noix', 12, 'Épicerie']],
-    steps: "Mélange flocons, skyr, lait et cannelle la veille. Le matin : râpe la pomme dessus, ajoute les noix. Frais et croquant.",
-    tip: "La pectine de la pomme et les fibres de l'avoine forment un gel qui prolonge la satiété toute la matinée." },
-
-  // ---------- DÉJEUNER (nouveautés) ----------
-  { id: 'r-salade-beluga', name: 'Salade lentilles béluga, féta & betterave', meal: 'déjeuner', kcal: 470, p: 24, c: 52, f: 17, time: 15, cost: 2.4, batch: true,
-    batchNote: "Se prépare en saladier pour 3 portions, 3 jours au frigo (ajoute la féta au moment de servir).",
-    micros: ['Fer', 'Folates', 'Nitrates'], tags: ['Végétarien', 'Batch', 'Fibres'],
-    ing: [['Lentilles béluga (crues)', 70, 'Épicerie'], ['Betterave cuite', 100, 'Légumes'], ['Féta', 40, 'Frais'], ['Roquette', 30, 'Légumes'], ['Huile d\'olive', 10, 'Épicerie'], ['Citron', 15, 'Fruits']],
-    steps: "Lentilles béluga 18 min (elles tiennent et ne s'écrasent pas). Refroidies, mélange avec betterave en dés, roquette, féta émiettée. Vinaigrette huile-citron.",
-    tip: "Les nitrates de la betterave améliorent l'oxygénation musculaire : un bon réflexe les jours d'entraînement intense." },
-  { id: 'r-riz-cantonais', name: 'Riz cantonais protéiné (dinde & petits pois)', meal: 'déjeuner', kcal: 540, p: 38, c: 62, f: 13, time: 18, cost: 2.6, batch: true,
-    batchNote: "Idéal pour recycler un reste de riz : double les quantités sans effort.",
-    micros: ['B3', 'Fer', 'Sélénium'], tags: ['Riche en protéines', 'Anti-gaspi'],
-    ing: [['Riz (cru)', 70, 'Épicerie'], ['Jambon de dinde', 80, 'Boucherie'], ['Œufs', 60, 'Frais'], ['Petits pois', 80, 'Surgelés'], ['Sauce soja', 12, 'Épicerie'], ['Ail', 4, 'Légumes']],
-    steps: "Riz cuit refroidi. Brouille l'œuf à la poêle, réserve. Saute le jambon de dinde et les petits pois, ajoute le riz, l'œuf, la sauce soja. Bien chaud.",
-    tip: "Le riz de la veille, refroidi, contient de l'amidon résistant : meilleure satiété et glycémie plus douce que le riz fraîchement cuit." },
-  { id: 'r-couscous-poulet', name: 'Couscous semoule poulet-pois chiches', meal: 'déjeuner', kcal: 560, p: 42, c: 64, f: 12, time: 20, cost: 2.8, batch: true,
-    batchNote: "Multiplie par 3 : la semoule se réchauffe en 1 min au micro-ondes.",
-    micros: ['B6', 'Fibres', 'Sélénium'], tags: ['Riche en protéines', 'Batch'],
-    ing: [['Semoule de couscous', 70, 'Épicerie'], ['Filet de poulet', 130, 'Boucherie'], ['Pois chiches (égouttés)', 80, 'Conserves'], ['Courgette', 120, 'Légumes'], ['Carotte', 80, 'Légumes'], ['Ras el-hanout', 4, 'Épicerie']],
-    steps: "Semoule couverte d'eau bouillante salée 5 min, égraine à la fourchette. Poulet en dés saisi au ras el-hanout, ajoute légumes en dés et pois chiches, 8 min. Sers sur la semoule.",
-    tip: "Poulet + pois chiches = combo qui pousse les protéines à 42 g tout en apportant fibres et satiété pour un déjeuner qui tient l'après-midi." },
-  { id: 'r-bagel-saumon', name: 'Bagel complet saumon fumé & fromage frais', meal: 'déjeuner', kcal: 480, p: 32, c: 48, f: 17, time: 6, cost: 3.4,
-    micros: ['Oméga-3 EPA/DHA', 'B12', 'Vitamine D'], tags: ['Express', 'Oméga-3'],
-    ing: [['Pain complet', 90, 'Boulangerie'], ['Saumon fumé', 80, 'Frais'], ['Fromage frais', 40, 'Frais'], ['Concombre', 50, 'Légumes'], ['Aneth', 3, 'Légumes'], ['Citron', 10, 'Fruits']],
-    steps: "Tartine le fromage frais, dépose le saumon fumé, le concombre en fines lamelles, l'aneth et un trait de citron. Déjeuner froid prêt en 6 min.",
-    tip: "Le saumon fumé est l'une des rares sources alimentaires de vitamine D : précieux l'hiver pour l'immunité et les os." },
-
-  // ---------- DÎNER (nouveautés) ----------
-  { id: 'r-cabillaud-polenta', name: 'Cabillaud, polenta crémeuse & épinards', meal: 'dîner', kcal: 470, p: 40, c: 42, f: 13, time: 22, cost: 3.6,
-    micros: ['Iode', 'Phosphore', 'B12'], tags: ['Riche en protéines', 'Sans gluten'],
-    ing: [['Dos de cabillaud', 160, 'Poissonnerie'], ['Polenta (crue)', 60, 'Épicerie'], ['Épinards frais', 120, 'Légumes'], ['Lait demi-écrémé', 100, 'Frais'], ['Parmesan', 15, 'Frais'], ['Citron', 15, 'Fruits']],
-    steps: "Polenta dans 250 ml d'eau + lait 8 min en remuant, parmesan en fin. Cabillaud poêlé 4 min par face. Épinards tombés à côté. Citron sur le poisson.",
-    tip: "Le cabillaud est un poisson maigre ultra-protéiné (18 g/100 g) : parfait quand on veut beaucoup de protéines pour peu de calories et de lipides." },
-  { id: 'r-maquereau-quinoa', name: 'Maquereau grillé, quinoa & poivrons', meal: 'dîner', kcal: 560, p: 36, c: 44, f: 26, time: 20, cost: 2.8,
-    micros: ['Oméga-3 EPA/DHA', 'Vitamine D', 'Sélénium'], tags: ['Oméga-3', 'Économique'],
-    ing: [['Filets de maquereau', 150, 'Poissonnerie'], ['Quinoa (cru)', 65, 'Épicerie'], ['Poivron', 150, 'Légumes'], ['Huile d\'olive', 8, 'Épicerie'], ['Citron', 20, 'Fruits'], ['Persil', 5, 'Légumes']],
-    steps: "Quinoa 12 min. Poivrons en lanières rôtis 12 min au four. Maquereau côté peau 3 min puis 1 min. Citron et persil dessus.",
-    tip: "Le maquereau est le champion oméga-3 le moins cher : 1 portion couvre largement la cible hebdomadaire de poisson gras." },
-  { id: 'r-chili-sincarne', name: 'Chili sin carne haricots noirs (vegan)', meal: 'dîner', kcal: 490, p: 22, c: 78, f: 9, time: 25, cost: 1.6, batch: true,
-    batchNote: "Congèle en portions : un dîner vegan complet toujours sous la main.",
-    micros: ['Fer', 'Fibres', 'Magnésium'], tags: ['Vegan', 'Batch', 'Économique'],
-    ing: [['Haricots noirs (égouttés)', 150, 'Conserves'], ['Tomates concassées', 200, 'Conserves'], ['Riz complet (cru)', 60, 'Épicerie'], ['Poivron', 100, 'Légumes'], ['Maïs', 60, 'Conserves'], ['Cumin + paprika fumé', 5, 'Épicerie']],
-    steps: "Poivron sauté 3 min, ajoute tomates, haricots noirs, maïs et épices, mijote 15 min. Sers sur riz complet.",
-    tip: "Légumineuse + céréale (haricots + riz) forme une protéine complète : indispensable pour couvrir tous les acides aminés sans viande." },
-  { id: 'r-boulettes-dinde', name: 'Boulettes de dinde, courgette spaghetti & tomate', meal: 'dîner', kcal: 470, p: 44, c: 28, f: 20, time: 25, cost: 3.0, batch: true,
-    batchNote: "Les boulettes se congèlent crues ou cuites : pratique en semaine.",
-    micros: ['B3', 'Lycopène', 'Zinc'], tags: ['Riche en protéines', 'Low-carb'],
-    ing: [['Dinde hachée', 160, 'Boucherie'], ['Courgette', 250, 'Légumes'], ['Coulis de tomate', 150, 'Conserves'], ['Chapelure', 15, 'Épicerie'], ['Ail', 5, 'Légumes'], ['Origan', 2, 'Épicerie']],
-    steps: "Mélange dinde + chapelure + ail, forme des boulettes, dore-les 8 min. Ajoute le coulis, mijote 8 min. Courgette en spaghetti (économe) sautée 3 min à côté.",
-    tip: "La courgette en spaghetti remplace les pâtes : on garde le plaisir d'un plat sauce tomate pour 3 fois moins de glucides." },
-  { id: 'r-curry-poischiches', name: 'Curry de pois chiches épinards-coco (vegan)', meal: 'dîner', kcal: 520, p: 20, c: 72, f: 16, time: 20, cost: 1.8, batch: true,
-    batchNote: "Encore meilleur réchauffé : double les quantités.",
-    micros: ['Fer', 'Fibres', 'Curcumine'], tags: ['Vegan', 'Batch', 'Fibres'],
-    ing: [['Pois chiches (égouttés)', 150, 'Conserves'], ['Lait de coco léger', 120, 'Conserves'], ['Épinards frais', 100, 'Légumes'], ['Tomates concassées', 150, 'Conserves'], ['Riz basmati (cru)', 60, 'Épicerie'], ['Curry + curcuma', 6, 'Épicerie']],
-    steps: "Tomates + épices 5 min, ajoute pois chiches et lait de coco, mijote 10 min. Épinards en fin. Sers sur riz.",
-    tip: "Le curcuma + une pincée de poivre noir décuple l'absorption de la curcumine, l'actif anti-inflammatoire de l'épice." },
-  { id: 'r-steak-haricots-verts', name: 'Pavé de bœuf, haricots verts & pommes grenaille', meal: 'dîner', kcal: 540, p: 46, c: 38, f: 22, time: 25, cost: 4.0,
-    micros: ['Fer héminique', 'Zinc', 'Vitamine C'], tags: ['Riche en protéines', 'Fer'],
-    ing: [['Pavé de bœuf maigre', 160, 'Boucherie'], ['Pommes de terre grenaille', 200, 'Légumes'], ['Haricots verts', 150, 'Légumes'], ['Huile d\'olive', 8, 'Épicerie'], ['Ail', 5, 'Légumes'], ['Thym', 2, 'Épicerie']],
-    steps: "Grenailles rôties 22 min au four avec ail et thym. Haricots verts vapeur 8 min. Pavé saisi 2-3 min par face, laisse reposer 3 min avant de trancher.",
-    tip: "Laisser reposer la viande après cuisson redistribue les jus : elle reste tendre et juteuse plutôt que sèche." },
-
-  // ---------- COLLATIONS (nouveautés) ----------
-  { id: 'r-skyr-cacao', name: 'Skyr cacao-framboises', meal: 'collation', kcal: 230, p: 26, c: 22, f: 3, time: 2, cost: 1.4,
-    micros: ['Calcium', 'Caséine lente', 'Antioxydants'], tags: ['Riche en protéines', 'Express', 'Low-fat'],
-    ing: [['Skyr nature', 250, 'Frais'], ['Cacao non sucré', 6, 'Épicerie'], ['Framboises surgelées', 80, 'Surgelés'], ['Miel', 8, 'Épicerie']],
-    steps: "Mélange skyr + cacao + miel. Framboises décongelées écrasées dessus. 26 g de protéines pour 230 kcal : la collation reine.",
-    tip: "La caséine du skyr se digère lentement (6-7 h) : idéale le soir pour nourrir le muscle pendant le sommeil." },
-  { id: 'r-edamame', name: 'Edamame vapeur au sel', meal: 'collation', kcal: 190, p: 17, c: 14, f: 8, time: 6, cost: 1.5,
-    micros: ['Fer', 'Folates', 'Isoflavones'], tags: ['Végétarien', 'Riche en protéines', 'Express'],
-    ing: [['Edamame (cosses)', 150, 'Surgelés'], ['Sel', 2, 'Épicerie'], ['Graines de sésame', 3, 'Épicerie']],
-    steps: "Edamame 5 min à la vapeur (ou eau bouillante), sale et parsème de sésame. Presse les cosses pour sortir les graines.",
-    tip: "Rare snack végétal aussi riche en protéines complètes : 17 g pour moins de 200 kcal, parfait devant un film sans culpabilité." },
-  { id: 'r-mugcake', name: 'Mug cake protéiné chocolat (micro-ondes)', meal: 'collation', kcal: 280, p: 24, c: 28, f: 8, time: 4, cost: 1.3,
-    micros: ['Magnésium', 'B12'], tags: ['Plaisir', 'Riche en protéines', 'Express'],
-    ing: [['Whey chocolat', 30, 'Épicerie'], ['Flocons d\'avoine (mixés)', 25, 'Épicerie'], ['Œufs', 50, 'Frais'], ['Cacao non sucré', 5, 'Épicerie'], ['Lait demi-écrémé', 40, 'Frais'], ['Levure chimique', 2, 'Épicerie']],
-    steps: "Mélange tout dans un mug. Micro-ondes 60-75 s (surveille : il doit rester moelleux). Le dessert qui rentre dans les macros.",
-    tip: "Sors-le dès que le dessus est pris : 10 s de trop le rendent caoutchouteux. Le cœur continue de cuire hors du micro-ondes." }
+  {
+    "id": "r-gen-1",
+    "name": "Poulet sauce Curry avec Riz basmati et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 555,
+    "p": 50,
+    "c": 72,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Poulet à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-2",
+    "name": "Poulet sauce Soja & Gingembre avec Riz basmati et Épinards",
+    "meal": "dîner",
+    "kcal": 555,
+    "p": 50,
+    "c": 72,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Poulet à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-3",
+    "name": "Poulet sauce Tomate & Basilic avec Riz basmati et Poivron",
+    "meal": "dîner",
+    "kcal": 555,
+    "p": 50,
+    "c": 72,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Poulet à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-4",
+    "name": "Poulet sauce Crème légère & Moutarde avec Riz basmati et Haricots verts",
+    "meal": "dîner",
+    "kcal": 555,
+    "p": 50,
+    "c": 72,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Poulet à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-5",
+    "name": "Poulet sauce Piment doux & Citron avec Riz basmati et Courgette",
+    "meal": "dîner",
+    "kcal": 555,
+    "p": 50,
+    "c": 72,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Poulet à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-6",
+    "name": "Poulet sauce Lait de coco avec Riz basmati et Haricots verts",
+    "meal": "dîner",
+    "kcal": 555,
+    "p": 50,
+    "c": 72,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Poulet à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-7",
+    "name": "Poulet sauce Huile d'olive & Herbes avec Riz basmati et Haricots verts",
+    "meal": "dîner",
+    "kcal": 555,
+    "p": 50,
+    "c": 72,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Poulet à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-8",
+    "name": "Poulet sauce Curry avec Pâtes complètes et Poivron",
+    "meal": "dîner",
+    "kcal": 555,
+    "p": 50,
+    "c": 62,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Poulet à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-9",
+    "name": "Poulet sauce Soja & Gingembre avec Pâtes complètes et Haricots verts",
+    "meal": "dîner",
+    "kcal": 555,
+    "p": 50,
+    "c": 62,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Poulet à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-10",
+    "name": "Poulet sauce Tomate & Basilic avec Pâtes complètes et Courgette",
+    "meal": "dîner",
+    "kcal": 555,
+    "p": 50,
+    "c": 62,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Poulet à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-11",
+    "name": "Poulet sauce Crème légère & Moutarde avec Pâtes complètes et Épinards",
+    "meal": "dîner",
+    "kcal": 555,
+    "p": 50,
+    "c": 62,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Poulet à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-12",
+    "name": "Poulet sauce Piment doux & Citron avec Pâtes complètes et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 555,
+    "p": 50,
+    "c": 62,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Poulet à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-13",
+    "name": "Poulet sauce Lait de coco avec Pâtes complètes et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 555,
+    "p": 50,
+    "c": 62,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Poulet à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-14",
+    "name": "Poulet sauce Huile d'olive & Herbes avec Pâtes complètes et Poivron",
+    "meal": "dîner",
+    "kcal": 555,
+    "p": 50,
+    "c": 62,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Poulet à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-15",
+    "name": "Poulet sauce Curry avec Patates douces et Poivron",
+    "meal": "dîner",
+    "kcal": 347,
+    "p": 50,
+    "c": 26,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Poulet à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-16",
+    "name": "Poulet sauce Soja & Gingembre avec Patates douces et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 347,
+    "p": 50,
+    "c": 26,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Poulet à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-17",
+    "name": "Poulet sauce Tomate & Basilic avec Patates douces et Épinards",
+    "meal": "dîner",
+    "kcal": 347,
+    "p": 50,
+    "c": 26,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Poulet à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-18",
+    "name": "Poulet sauce Crème légère & Moutarde avec Patates douces et Épinards",
+    "meal": "dîner",
+    "kcal": 347,
+    "p": 50,
+    "c": 26,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Poulet à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-19",
+    "name": "Poulet sauce Piment doux & Citron avec Patates douces et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 347,
+    "p": 50,
+    "c": 26,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Poulet à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-20",
+    "name": "Poulet sauce Lait de coco avec Patates douces et Épinards",
+    "meal": "dîner",
+    "kcal": 347,
+    "p": 50,
+    "c": 26,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Poulet à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-21",
+    "name": "Poulet sauce Huile d'olive & Herbes avec Patates douces et Brocoli",
+    "meal": "dîner",
+    "kcal": 347,
+    "p": 50,
+    "c": 26,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Poulet à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-22",
+    "name": "Poulet sauce Curry avec Quinoa et Poivron",
+    "meal": "dîner",
+    "kcal": 563,
+    "p": 50,
+    "c": 61,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Poulet à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-23",
+    "name": "Poulet sauce Soja & Gingembre avec Quinoa et Carottes",
+    "meal": "dîner",
+    "kcal": 563,
+    "p": 50,
+    "c": 61,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Poulet à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-24",
+    "name": "Poulet sauce Tomate & Basilic avec Quinoa et Épinards",
+    "meal": "dîner",
+    "kcal": 563,
+    "p": 50,
+    "c": 61,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Poulet à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-25",
+    "name": "Poulet sauce Crème légère & Moutarde avec Quinoa et Haricots verts",
+    "meal": "dîner",
+    "kcal": 563,
+    "p": 50,
+    "c": 61,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Poulet",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Poulet à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-26",
+    "name": "Bœuf sauce Curry avec Riz basmati et Poivron",
+    "meal": "dîner",
+    "kcal": 705,
+    "p": 44,
+    "c": 72,
+    "f": 33,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Bœuf à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-27",
+    "name": "Bœuf sauce Soja & Gingembre avec Riz basmati et Brocoli",
+    "meal": "dîner",
+    "kcal": 705,
+    "p": 44,
+    "c": 72,
+    "f": 33,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Bœuf à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-28",
+    "name": "Bœuf sauce Tomate & Basilic avec Riz basmati et Carottes",
+    "meal": "dîner",
+    "kcal": 705,
+    "p": 44,
+    "c": 72,
+    "f": 33,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Bœuf à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-29",
+    "name": "Bœuf sauce Crème légère & Moutarde avec Riz basmati et Épinards",
+    "meal": "dîner",
+    "kcal": 705,
+    "p": 44,
+    "c": 72,
+    "f": 33,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Bœuf à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-30",
+    "name": "Bœuf sauce Piment doux & Citron avec Riz basmati et Brocoli",
+    "meal": "dîner",
+    "kcal": 705,
+    "p": 44,
+    "c": 72,
+    "f": 33,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Bœuf à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-31",
+    "name": "Bœuf sauce Lait de coco avec Riz basmati et Poivron",
+    "meal": "dîner",
+    "kcal": 705,
+    "p": 44,
+    "c": 72,
+    "f": 33,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Bœuf à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-32",
+    "name": "Bœuf sauce Huile d'olive & Herbes avec Riz basmati et Épinards",
+    "meal": "dîner",
+    "kcal": 705,
+    "p": 44,
+    "c": 72,
+    "f": 33,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Bœuf à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-33",
+    "name": "Bœuf sauce Curry avec Pâtes complètes et Carottes",
+    "meal": "dîner",
+    "kcal": 705,
+    "p": 44,
+    "c": 62,
+    "f": 34,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Bœuf à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-34",
+    "name": "Bœuf sauce Soja & Gingembre avec Pâtes complètes et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 705,
+    "p": 44,
+    "c": 62,
+    "f": 34,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Bœuf à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-35",
+    "name": "Bœuf sauce Tomate & Basilic avec Pâtes complètes et Brocoli",
+    "meal": "dîner",
+    "kcal": 705,
+    "p": 44,
+    "c": 62,
+    "f": 34,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Bœuf à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-36",
+    "name": "Bœuf sauce Crème légère & Moutarde avec Pâtes complètes et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 705,
+    "p": 44,
+    "c": 62,
+    "f": 34,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Bœuf à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-37",
+    "name": "Bœuf sauce Piment doux & Citron avec Pâtes complètes et Courgette",
+    "meal": "dîner",
+    "kcal": 705,
+    "p": 44,
+    "c": 62,
+    "f": 34,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Bœuf à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-38",
+    "name": "Bœuf sauce Lait de coco avec Pâtes complètes et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 705,
+    "p": 44,
+    "c": 62,
+    "f": 34,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Bœuf à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-39",
+    "name": "Bœuf sauce Huile d'olive & Herbes avec Pâtes complètes et Haricots verts",
+    "meal": "dîner",
+    "kcal": 705,
+    "p": 44,
+    "c": 62,
+    "f": 34,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Bœuf à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-40",
+    "name": "Bœuf sauce Curry avec Patates douces et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 497,
+    "p": 44,
+    "c": 26,
+    "f": 33,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Bœuf à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-41",
+    "name": "Bœuf sauce Soja & Gingembre avec Patates douces et Poivron",
+    "meal": "dîner",
+    "kcal": 497,
+    "p": 44,
+    "c": 26,
+    "f": 33,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Bœuf à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-42",
+    "name": "Bœuf sauce Tomate & Basilic avec Patates douces et Courgette",
+    "meal": "dîner",
+    "kcal": 497,
+    "p": 44,
+    "c": 26,
+    "f": 33,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Bœuf à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-43",
+    "name": "Bœuf sauce Crème légère & Moutarde avec Patates douces et Haricots verts",
+    "meal": "dîner",
+    "kcal": 497,
+    "p": 44,
+    "c": 26,
+    "f": 33,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Bœuf à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-44",
+    "name": "Bœuf sauce Piment doux & Citron avec Patates douces et Haricots verts",
+    "meal": "dîner",
+    "kcal": 497,
+    "p": 44,
+    "c": 26,
+    "f": 33,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Bœuf à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-45",
+    "name": "Bœuf sauce Lait de coco avec Patates douces et Carottes",
+    "meal": "dîner",
+    "kcal": 497,
+    "p": 44,
+    "c": 26,
+    "f": 33,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Bœuf à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-46",
+    "name": "Bœuf sauce Huile d'olive & Herbes avec Patates douces et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 497,
+    "p": 44,
+    "c": 26,
+    "f": 33,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Bœuf à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-47",
+    "name": "Bœuf sauce Curry avec Quinoa et Courgette",
+    "meal": "dîner",
+    "kcal": 713,
+    "p": 44,
+    "c": 61,
+    "f": 37,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Bœuf à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-48",
+    "name": "Bœuf sauce Soja & Gingembre avec Quinoa et Poivron",
+    "meal": "dîner",
+    "kcal": 713,
+    "p": 44,
+    "c": 61,
+    "f": 37,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Bœuf à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-49",
+    "name": "Bœuf sauce Tomate & Basilic avec Quinoa et Brocoli",
+    "meal": "dîner",
+    "kcal": 713,
+    "p": 44,
+    "c": 61,
+    "f": 37,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Bœuf à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-50",
+    "name": "Bœuf sauce Crème légère & Moutarde avec Quinoa et Épinards",
+    "meal": "dîner",
+    "kcal": 713,
+    "p": 44,
+    "c": 61,
+    "f": 37,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Bœuf",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Bœuf à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-51",
+    "name": "Saumon sauce Curry avec Riz basmati et Carottes",
+    "meal": "dîner",
+    "kcal": 630,
+    "p": 35,
+    "c": 72,
+    "f": 30,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Saumon à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-52",
+    "name": "Saumon sauce Soja & Gingembre avec Riz basmati et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 630,
+    "p": 35,
+    "c": 72,
+    "f": 30,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Saumon à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-53",
+    "name": "Saumon sauce Tomate & Basilic avec Riz basmati et Carottes",
+    "meal": "dîner",
+    "kcal": 630,
+    "p": 35,
+    "c": 72,
+    "f": 30,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Saumon à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-54",
+    "name": "Saumon sauce Crème légère & Moutarde avec Riz basmati et Épinards",
+    "meal": "dîner",
+    "kcal": 630,
+    "p": 35,
+    "c": 72,
+    "f": 30,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Saumon à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-55",
+    "name": "Saumon sauce Piment doux & Citron avec Riz basmati et Courgette",
+    "meal": "dîner",
+    "kcal": 630,
+    "p": 35,
+    "c": 72,
+    "f": 30,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Saumon à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-56",
+    "name": "Saumon sauce Lait de coco avec Riz basmati et Épinards",
+    "meal": "dîner",
+    "kcal": 630,
+    "p": 35,
+    "c": 72,
+    "f": 30,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Saumon à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-57",
+    "name": "Saumon sauce Huile d'olive & Herbes avec Riz basmati et Poivron",
+    "meal": "dîner",
+    "kcal": 630,
+    "p": 35,
+    "c": 72,
+    "f": 30,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Saumon à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-58",
+    "name": "Saumon sauce Curry avec Pâtes complètes et Brocoli",
+    "meal": "dîner",
+    "kcal": 630,
+    "p": 35,
+    "c": 62,
+    "f": 31,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Saumon à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-59",
+    "name": "Saumon sauce Soja & Gingembre avec Pâtes complètes et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 630,
+    "p": 35,
+    "c": 62,
+    "f": 31,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Saumon à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-60",
+    "name": "Saumon sauce Tomate & Basilic avec Pâtes complètes et Courgette",
+    "meal": "dîner",
+    "kcal": 630,
+    "p": 35,
+    "c": 62,
+    "f": 31,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Saumon à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-61",
+    "name": "Saumon sauce Crème légère & Moutarde avec Pâtes complètes et Courgette",
+    "meal": "dîner",
+    "kcal": 630,
+    "p": 35,
+    "c": 62,
+    "f": 31,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Saumon à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-62",
+    "name": "Saumon sauce Piment doux & Citron avec Pâtes complètes et Carottes",
+    "meal": "dîner",
+    "kcal": 630,
+    "p": 35,
+    "c": 62,
+    "f": 31,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Saumon à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-63",
+    "name": "Saumon sauce Lait de coco avec Pâtes complètes et Haricots verts",
+    "meal": "dîner",
+    "kcal": 630,
+    "p": 35,
+    "c": 62,
+    "f": 31,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Saumon à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-64",
+    "name": "Saumon sauce Huile d'olive & Herbes avec Pâtes complètes et Haricots verts",
+    "meal": "dîner",
+    "kcal": 630,
+    "p": 35,
+    "c": 62,
+    "f": 31,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Saumon à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-65",
+    "name": "Saumon sauce Curry avec Patates douces et Brocoli",
+    "meal": "dîner",
+    "kcal": 422,
+    "p": 35,
+    "c": 26,
+    "f": 30,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Saumon à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-66",
+    "name": "Saumon sauce Soja & Gingembre avec Patates douces et Haricots verts",
+    "meal": "dîner",
+    "kcal": 422,
+    "p": 35,
+    "c": 26,
+    "f": 30,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Saumon à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-67",
+    "name": "Saumon sauce Tomate & Basilic avec Patates douces et Courgette",
+    "meal": "dîner",
+    "kcal": 422,
+    "p": 35,
+    "c": 26,
+    "f": 30,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Saumon à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-68",
+    "name": "Saumon sauce Crème légère & Moutarde avec Patates douces et Carottes",
+    "meal": "dîner",
+    "kcal": 422,
+    "p": 35,
+    "c": 26,
+    "f": 30,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Saumon à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-69",
+    "name": "Saumon sauce Piment doux & Citron avec Patates douces et Poivron",
+    "meal": "dîner",
+    "kcal": 422,
+    "p": 35,
+    "c": 26,
+    "f": 30,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Saumon à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-70",
+    "name": "Saumon sauce Lait de coco avec Patates douces et Épinards",
+    "meal": "dîner",
+    "kcal": 422,
+    "p": 35,
+    "c": 26,
+    "f": 30,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Saumon à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-71",
+    "name": "Saumon sauce Huile d'olive & Herbes avec Patates douces et Poivron",
+    "meal": "dîner",
+    "kcal": 422,
+    "p": 35,
+    "c": 26,
+    "f": 30,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Saumon à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-72",
+    "name": "Saumon sauce Curry avec Quinoa et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 638,
+    "p": 35,
+    "c": 61,
+    "f": 34,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Saumon à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-73",
+    "name": "Saumon sauce Soja & Gingembre avec Quinoa et Brocoli",
+    "meal": "dîner",
+    "kcal": 638,
+    "p": 35,
+    "c": 61,
+    "f": 34,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Saumon à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-74",
+    "name": "Saumon sauce Tomate & Basilic avec Quinoa et Haricots verts",
+    "meal": "dîner",
+    "kcal": 638,
+    "p": 35,
+    "c": 61,
+    "f": 34,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Saumon à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-75",
+    "name": "Saumon sauce Crème légère & Moutarde avec Quinoa et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 638,
+    "p": 35,
+    "c": 61,
+    "f": 34,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Saumon",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Saumon à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-76",
+    "name": "Tofu sauce Curry avec Riz basmati et Carottes",
+    "meal": "dîner",
+    "kcal": 510,
+    "p": 26,
+    "c": 72,
+    "f": 20,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Tofu à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-77",
+    "name": "Tofu sauce Soja & Gingembre avec Riz basmati et Carottes",
+    "meal": "dîner",
+    "kcal": 510,
+    "p": 26,
+    "c": 72,
+    "f": 20,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Tofu à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-78",
+    "name": "Tofu sauce Tomate & Basilic avec Riz basmati et Haricots verts",
+    "meal": "dîner",
+    "kcal": 510,
+    "p": 26,
+    "c": 72,
+    "f": 20,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Tofu à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-79",
+    "name": "Tofu sauce Crème légère & Moutarde avec Riz basmati et Poivron",
+    "meal": "dîner",
+    "kcal": 510,
+    "p": 26,
+    "c": 72,
+    "f": 20,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Tofu à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-80",
+    "name": "Tofu sauce Piment doux & Citron avec Riz basmati et Courgette",
+    "meal": "dîner",
+    "kcal": 510,
+    "p": 26,
+    "c": 72,
+    "f": 20,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Tofu à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-81",
+    "name": "Tofu sauce Lait de coco avec Riz basmati et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 510,
+    "p": 26,
+    "c": 72,
+    "f": 20,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Tofu à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-82",
+    "name": "Tofu sauce Huile d'olive & Herbes avec Riz basmati et Épinards",
+    "meal": "dîner",
+    "kcal": 510,
+    "p": 26,
+    "c": 72,
+    "f": 20,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Tofu à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-83",
+    "name": "Tofu sauce Curry avec Pâtes complètes et Carottes",
+    "meal": "dîner",
+    "kcal": 510,
+    "p": 26,
+    "c": 62,
+    "f": 21,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Tofu à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-84",
+    "name": "Tofu sauce Soja & Gingembre avec Pâtes complètes et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 510,
+    "p": 26,
+    "c": 62,
+    "f": 21,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Tofu à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-85",
+    "name": "Tofu sauce Tomate & Basilic avec Pâtes complètes et Épinards",
+    "meal": "dîner",
+    "kcal": 510,
+    "p": 26,
+    "c": 62,
+    "f": 21,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Tofu à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-86",
+    "name": "Tofu sauce Crème légère & Moutarde avec Pâtes complètes et Courgette",
+    "meal": "dîner",
+    "kcal": 510,
+    "p": 26,
+    "c": 62,
+    "f": 21,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Tofu à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-87",
+    "name": "Tofu sauce Piment doux & Citron avec Pâtes complètes et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 510,
+    "p": 26,
+    "c": 62,
+    "f": 21,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Tofu à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-88",
+    "name": "Tofu sauce Lait de coco avec Pâtes complètes et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 510,
+    "p": 26,
+    "c": 62,
+    "f": 21,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Tofu à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-89",
+    "name": "Tofu sauce Huile d'olive & Herbes avec Pâtes complètes et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 510,
+    "p": 26,
+    "c": 62,
+    "f": 21,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Tofu à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-90",
+    "name": "Tofu sauce Curry avec Patates douces et Carottes",
+    "meal": "dîner",
+    "kcal": 302,
+    "p": 26,
+    "c": 26,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Tofu à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-91",
+    "name": "Tofu sauce Soja & Gingembre avec Patates douces et Poivron",
+    "meal": "dîner",
+    "kcal": 302,
+    "p": 26,
+    "c": 26,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Tofu à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-92",
+    "name": "Tofu sauce Tomate & Basilic avec Patates douces et Épinards",
+    "meal": "dîner",
+    "kcal": 302,
+    "p": 26,
+    "c": 26,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Tofu à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-93",
+    "name": "Tofu sauce Crème légère & Moutarde avec Patates douces et Courgette",
+    "meal": "dîner",
+    "kcal": 302,
+    "p": 26,
+    "c": 26,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Tofu à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-94",
+    "name": "Tofu sauce Piment doux & Citron avec Patates douces et Haricots verts",
+    "meal": "dîner",
+    "kcal": 302,
+    "p": 26,
+    "c": 26,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Tofu à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-95",
+    "name": "Tofu sauce Lait de coco avec Patates douces et Carottes",
+    "meal": "dîner",
+    "kcal": 302,
+    "p": 26,
+    "c": 26,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Tofu à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-96",
+    "name": "Tofu sauce Huile d'olive & Herbes avec Patates douces et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 302,
+    "p": 26,
+    "c": 26,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Tofu à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-97",
+    "name": "Tofu sauce Curry avec Quinoa et Poivron",
+    "meal": "dîner",
+    "kcal": 518,
+    "p": 26,
+    "c": 61,
+    "f": 24,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Tofu à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-98",
+    "name": "Tofu sauce Soja & Gingembre avec Quinoa et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 518,
+    "p": 26,
+    "c": 61,
+    "f": 24,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Tofu à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-99",
+    "name": "Tofu sauce Tomate & Basilic avec Quinoa et Poivron",
+    "meal": "dîner",
+    "kcal": 518,
+    "p": 26,
+    "c": 61,
+    "f": 24,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Tofu à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-100",
+    "name": "Tofu sauce Crème légère & Moutarde avec Quinoa et Haricots verts",
+    "meal": "dîner",
+    "kcal": 518,
+    "p": 26,
+    "c": 61,
+    "f": 24,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Tofu",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Tofu à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-101",
+    "name": "Dinde sauce Curry avec Riz basmati et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 495,
+    "p": 41,
+    "c": 72,
+    "f": 14,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Dinde à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-102",
+    "name": "Dinde sauce Soja & Gingembre avec Riz basmati et Haricots verts",
+    "meal": "dîner",
+    "kcal": 495,
+    "p": 41,
+    "c": 72,
+    "f": 14,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Dinde à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-103",
+    "name": "Dinde sauce Tomate & Basilic avec Riz basmati et Courgette",
+    "meal": "dîner",
+    "kcal": 495,
+    "p": 41,
+    "c": 72,
+    "f": 14,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Dinde à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-104",
+    "name": "Dinde sauce Crème légère & Moutarde avec Riz basmati et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 495,
+    "p": 41,
+    "c": 72,
+    "f": 14,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Dinde à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-105",
+    "name": "Dinde sauce Piment doux & Citron avec Riz basmati et Brocoli",
+    "meal": "dîner",
+    "kcal": 495,
+    "p": 41,
+    "c": 72,
+    "f": 14,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Dinde à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-106",
+    "name": "Dinde sauce Lait de coco avec Riz basmati et Brocoli",
+    "meal": "dîner",
+    "kcal": 495,
+    "p": 41,
+    "c": 72,
+    "f": 14,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Dinde à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-107",
+    "name": "Dinde sauce Huile d'olive & Herbes avec Riz basmati et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 495,
+    "p": 41,
+    "c": 72,
+    "f": 14,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Dinde à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-108",
+    "name": "Dinde sauce Curry avec Pâtes complètes et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 495,
+    "p": 41,
+    "c": 62,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Dinde à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-109",
+    "name": "Dinde sauce Soja & Gingembre avec Pâtes complètes et Épinards",
+    "meal": "dîner",
+    "kcal": 495,
+    "p": 41,
+    "c": 62,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Dinde à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-110",
+    "name": "Dinde sauce Tomate & Basilic avec Pâtes complètes et Courgette",
+    "meal": "dîner",
+    "kcal": 495,
+    "p": 41,
+    "c": 62,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Dinde à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-111",
+    "name": "Dinde sauce Crème légère & Moutarde avec Pâtes complètes et Haricots verts",
+    "meal": "dîner",
+    "kcal": 495,
+    "p": 41,
+    "c": 62,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Dinde à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-112",
+    "name": "Dinde sauce Piment doux & Citron avec Pâtes complètes et Haricots verts",
+    "meal": "dîner",
+    "kcal": 495,
+    "p": 41,
+    "c": 62,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Dinde à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-113",
+    "name": "Dinde sauce Lait de coco avec Pâtes complètes et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 495,
+    "p": 41,
+    "c": 62,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Dinde à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-114",
+    "name": "Dinde sauce Huile d'olive & Herbes avec Pâtes complètes et Épinards",
+    "meal": "dîner",
+    "kcal": 495,
+    "p": 41,
+    "c": 62,
+    "f": 15,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Dinde à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-115",
+    "name": "Dinde sauce Curry avec Patates douces et Épinards",
+    "meal": "dîner",
+    "kcal": 287,
+    "p": 41,
+    "c": 26,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Dinde à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-116",
+    "name": "Dinde sauce Soja & Gingembre avec Patates douces et Brocoli",
+    "meal": "dîner",
+    "kcal": 287,
+    "p": 41,
+    "c": 26,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Dinde à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-117",
+    "name": "Dinde sauce Tomate & Basilic avec Patates douces et Épinards",
+    "meal": "dîner",
+    "kcal": 287,
+    "p": 41,
+    "c": 26,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Dinde à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-118",
+    "name": "Dinde sauce Crème légère & Moutarde avec Patates douces et Épinards",
+    "meal": "dîner",
+    "kcal": 287,
+    "p": 41,
+    "c": 26,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Dinde à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-119",
+    "name": "Dinde sauce Piment doux & Citron avec Patates douces et Carottes",
+    "meal": "dîner",
+    "kcal": 287,
+    "p": 41,
+    "c": 26,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Dinde à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-120",
+    "name": "Dinde sauce Lait de coco avec Patates douces et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 287,
+    "p": 41,
+    "c": 26,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Dinde à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-121",
+    "name": "Dinde sauce Huile d'olive & Herbes avec Patates douces et Épinards",
+    "meal": "dîner",
+    "kcal": 287,
+    "p": 41,
+    "c": 26,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Dinde à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-122",
+    "name": "Dinde sauce Curry avec Quinoa et Carottes",
+    "meal": "dîner",
+    "kcal": 503,
+    "p": 41,
+    "c": 61,
+    "f": 18,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Dinde à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-123",
+    "name": "Dinde sauce Soja & Gingembre avec Quinoa et Courgette",
+    "meal": "dîner",
+    "kcal": 503,
+    "p": 41,
+    "c": 61,
+    "f": 18,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Dinde à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-124",
+    "name": "Dinde sauce Tomate & Basilic avec Quinoa et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 503,
+    "p": 41,
+    "c": 61,
+    "f": 18,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Dinde à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-125",
+    "name": "Dinde sauce Crème légère & Moutarde avec Quinoa et Haricots verts",
+    "meal": "dîner",
+    "kcal": 503,
+    "p": 41,
+    "c": 61,
+    "f": 18,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Dinde",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Dinde à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-126",
+    "name": "Crevettes sauce Curry avec Riz basmati et Épinards",
+    "meal": "dîner",
+    "kcal": 465,
+    "p": 35,
+    "c": 72,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Crevettes à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-127",
+    "name": "Crevettes sauce Soja & Gingembre avec Riz basmati et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 465,
+    "p": 35,
+    "c": 72,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Crevettes à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-128",
+    "name": "Crevettes sauce Tomate & Basilic avec Riz basmati et Carottes",
+    "meal": "dîner",
+    "kcal": 465,
+    "p": 35,
+    "c": 72,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Crevettes à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-129",
+    "name": "Crevettes sauce Crème légère & Moutarde avec Riz basmati et Poivron",
+    "meal": "dîner",
+    "kcal": 465,
+    "p": 35,
+    "c": 72,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Crevettes à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-130",
+    "name": "Crevettes sauce Piment doux & Citron avec Riz basmati et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 465,
+    "p": 35,
+    "c": 72,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Crevettes à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-131",
+    "name": "Crevettes sauce Lait de coco avec Riz basmati et Épinards",
+    "meal": "dîner",
+    "kcal": 465,
+    "p": 35,
+    "c": 72,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Crevettes à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-132",
+    "name": "Crevettes sauce Huile d'olive & Herbes avec Riz basmati et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 465,
+    "p": 35,
+    "c": 72,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Crevettes à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-133",
+    "name": "Crevettes sauce Curry avec Pâtes complètes et Épinards",
+    "meal": "dîner",
+    "kcal": 465,
+    "p": 35,
+    "c": 62,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Crevettes à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-134",
+    "name": "Crevettes sauce Soja & Gingembre avec Pâtes complètes et Brocoli",
+    "meal": "dîner",
+    "kcal": 465,
+    "p": 35,
+    "c": 62,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Crevettes à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-135",
+    "name": "Crevettes sauce Tomate & Basilic avec Pâtes complètes et Haricots verts",
+    "meal": "dîner",
+    "kcal": 465,
+    "p": 35,
+    "c": 62,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Crevettes à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-136",
+    "name": "Crevettes sauce Crème légère & Moutarde avec Pâtes complètes et Poivron",
+    "meal": "dîner",
+    "kcal": 465,
+    "p": 35,
+    "c": 62,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Crevettes à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-137",
+    "name": "Crevettes sauce Piment doux & Citron avec Pâtes complètes et Brocoli",
+    "meal": "dîner",
+    "kcal": 465,
+    "p": 35,
+    "c": 62,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Crevettes à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-138",
+    "name": "Crevettes sauce Lait de coco avec Pâtes complètes et Haricots verts",
+    "meal": "dîner",
+    "kcal": 465,
+    "p": 35,
+    "c": 62,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Crevettes à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-139",
+    "name": "Crevettes sauce Huile d'olive & Herbes avec Pâtes complètes et Haricots verts",
+    "meal": "dîner",
+    "kcal": 465,
+    "p": 35,
+    "c": 62,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Crevettes à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-140",
+    "name": "Crevettes sauce Curry avec Patates douces et Haricots verts",
+    "meal": "dîner",
+    "kcal": 257,
+    "p": 35,
+    "c": 26,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Crevettes à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-141",
+    "name": "Crevettes sauce Soja & Gingembre avec Patates douces et Épinards",
+    "meal": "dîner",
+    "kcal": 257,
+    "p": 35,
+    "c": 26,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Crevettes à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-142",
+    "name": "Crevettes sauce Tomate & Basilic avec Patates douces et Carottes",
+    "meal": "dîner",
+    "kcal": 257,
+    "p": 35,
+    "c": 26,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Crevettes à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-143",
+    "name": "Crevettes sauce Crème légère & Moutarde avec Patates douces et Haricots verts",
+    "meal": "dîner",
+    "kcal": 257,
+    "p": 35,
+    "c": 26,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Crevettes à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-144",
+    "name": "Crevettes sauce Piment doux & Citron avec Patates douces et Brocoli",
+    "meal": "dîner",
+    "kcal": 257,
+    "p": 35,
+    "c": 26,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Crevettes à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-145",
+    "name": "Crevettes sauce Lait de coco avec Patates douces et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 257,
+    "p": 35,
+    "c": 26,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Crevettes à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-146",
+    "name": "Crevettes sauce Huile d'olive & Herbes avec Patates douces et Épinards",
+    "meal": "dîner",
+    "kcal": 257,
+    "p": 35,
+    "c": 26,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Crevettes à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-147",
+    "name": "Crevettes sauce Curry avec Quinoa et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 473,
+    "p": 35,
+    "c": 61,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Crevettes à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-148",
+    "name": "Crevettes sauce Soja & Gingembre avec Quinoa et Carottes",
+    "meal": "dîner",
+    "kcal": 473,
+    "p": 35,
+    "c": 61,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Crevettes à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-149",
+    "name": "Crevettes sauce Tomate & Basilic avec Quinoa et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 473,
+    "p": 35,
+    "c": 61,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Crevettes à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-150",
+    "name": "Crevettes sauce Crème légère & Moutarde avec Quinoa et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 473,
+    "p": 35,
+    "c": 61,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Crevettes",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Crevettes à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-151",
+    "name": "Lentilles sauce Curry avec Riz basmati et Carottes",
+    "meal": "dîner",
+    "kcal": 855,
+    "p": 43,
+    "c": 72,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Lentilles à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-152",
+    "name": "Lentilles sauce Soja & Gingembre avec Riz basmati et Poivron",
+    "meal": "dîner",
+    "kcal": 855,
+    "p": 43,
+    "c": 72,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Lentilles à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-153",
+    "name": "Lentilles sauce Tomate & Basilic avec Riz basmati et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 855,
+    "p": 43,
+    "c": 72,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Lentilles à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-154",
+    "name": "Lentilles sauce Crème légère & Moutarde avec Riz basmati et Épinards",
+    "meal": "dîner",
+    "kcal": 855,
+    "p": 43,
+    "c": 72,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Lentilles à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-155",
+    "name": "Lentilles sauce Piment doux & Citron avec Riz basmati et Courgette",
+    "meal": "dîner",
+    "kcal": 855,
+    "p": 43,
+    "c": 72,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Lentilles à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-156",
+    "name": "Lentilles sauce Lait de coco avec Riz basmati et Carottes",
+    "meal": "dîner",
+    "kcal": 855,
+    "p": 43,
+    "c": 72,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Lentilles à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-157",
+    "name": "Lentilles sauce Huile d'olive & Herbes avec Riz basmati et Courgette",
+    "meal": "dîner",
+    "kcal": 855,
+    "p": 43,
+    "c": 72,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Lentilles à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-158",
+    "name": "Lentilles sauce Curry avec Pâtes complètes et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 855,
+    "p": 43,
+    "c": 62,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Lentilles à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-159",
+    "name": "Lentilles sauce Soja & Gingembre avec Pâtes complètes et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 855,
+    "p": 43,
+    "c": 62,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Lentilles à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-160",
+    "name": "Lentilles sauce Tomate & Basilic avec Pâtes complètes et Poivron",
+    "meal": "dîner",
+    "kcal": 855,
+    "p": 43,
+    "c": 62,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Lentilles à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-161",
+    "name": "Lentilles sauce Crème légère & Moutarde avec Pâtes complètes et Épinards",
+    "meal": "dîner",
+    "kcal": 855,
+    "p": 43,
+    "c": 62,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Lentilles à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-162",
+    "name": "Lentilles sauce Piment doux & Citron avec Pâtes complètes et Épinards",
+    "meal": "dîner",
+    "kcal": 855,
+    "p": 43,
+    "c": 62,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Lentilles à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-163",
+    "name": "Lentilles sauce Lait de coco avec Pâtes complètes et Haricots verts",
+    "meal": "dîner",
+    "kcal": 855,
+    "p": 43,
+    "c": 62,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Lentilles à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-164",
+    "name": "Lentilles sauce Huile d'olive & Herbes avec Pâtes complètes et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 855,
+    "p": 43,
+    "c": 62,
+    "f": 13,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Lentilles à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-165",
+    "name": "Lentilles sauce Curry avec Patates douces et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 647,
+    "p": 43,
+    "c": 26,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Lentilles à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-166",
+    "name": "Lentilles sauce Soja & Gingembre avec Patates douces et Poivron",
+    "meal": "dîner",
+    "kcal": 647,
+    "p": 43,
+    "c": 26,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Lentilles à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-167",
+    "name": "Lentilles sauce Tomate & Basilic avec Patates douces et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 647,
+    "p": 43,
+    "c": 26,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Lentilles à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-168",
+    "name": "Lentilles sauce Crème légère & Moutarde avec Patates douces et Brocoli",
+    "meal": "dîner",
+    "kcal": 647,
+    "p": 43,
+    "c": 26,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Lentilles à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-169",
+    "name": "Lentilles sauce Piment doux & Citron avec Patates douces et Brocoli",
+    "meal": "dîner",
+    "kcal": 647,
+    "p": 43,
+    "c": 26,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Lentilles à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-170",
+    "name": "Lentilles sauce Lait de coco avec Patates douces et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 647,
+    "p": 43,
+    "c": 26,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Lentilles à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-171",
+    "name": "Lentilles sauce Huile d'olive & Herbes avec Patates douces et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 647,
+    "p": 43,
+    "c": 26,
+    "f": 12,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Lentilles à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-172",
+    "name": "Lentilles sauce Curry avec Quinoa et Haricots verts",
+    "meal": "dîner",
+    "kcal": 863,
+    "p": 43,
+    "c": 61,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Lentilles à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-173",
+    "name": "Lentilles sauce Soja & Gingembre avec Quinoa et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 863,
+    "p": 43,
+    "c": 61,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Lentilles à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-174",
+    "name": "Lentilles sauce Tomate & Basilic avec Quinoa et Courgette",
+    "meal": "dîner",
+    "kcal": 863,
+    "p": 43,
+    "c": 61,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Lentilles à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-175",
+    "name": "Lentilles sauce Crème légère & Moutarde avec Quinoa et Brocoli",
+    "meal": "dîner",
+    "kcal": 863,
+    "p": 43,
+    "c": 61,
+    "f": 16,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Lentilles",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Brocoli",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Lentilles à la poêle. Ajoute le Brocoli coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-176",
+    "name": "Pois chiches sauce Curry avec Riz basmati et Courgette",
+    "meal": "dîner",
+    "kcal": 870,
+    "p": 34,
+    "c": 72,
+    "f": 20,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Pois chiches à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-177",
+    "name": "Pois chiches sauce Soja & Gingembre avec Riz basmati et Carottes",
+    "meal": "dîner",
+    "kcal": 870,
+    "p": 34,
+    "c": 72,
+    "f": 20,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Pois chiches à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-178",
+    "name": "Pois chiches sauce Tomate & Basilic avec Riz basmati et Carottes",
+    "meal": "dîner",
+    "kcal": 870,
+    "p": 34,
+    "c": 72,
+    "f": 20,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Pois chiches à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-179",
+    "name": "Pois chiches sauce Crème légère & Moutarde avec Riz basmati et Épinards",
+    "meal": "dîner",
+    "kcal": 870,
+    "p": 34,
+    "c": 72,
+    "f": 20,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Pois chiches à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-180",
+    "name": "Pois chiches sauce Piment doux & Citron avec Riz basmati et Carottes",
+    "meal": "dîner",
+    "kcal": 870,
+    "p": 34,
+    "c": 72,
+    "f": 20,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Pois chiches à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-181",
+    "name": "Pois chiches sauce Lait de coco avec Riz basmati et Haricots verts",
+    "meal": "dîner",
+    "kcal": 870,
+    "p": 34,
+    "c": 72,
+    "f": 20,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Pois chiches à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-182",
+    "name": "Pois chiches sauce Huile d'olive & Herbes avec Riz basmati et Poivron",
+    "meal": "dîner",
+    "kcal": 870,
+    "p": 34,
+    "c": 72,
+    "f": 20,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Riz basmati",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Riz basmati. Saisis le Pois chiches à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-183",
+    "name": "Pois chiches sauce Curry avec Pâtes complètes et Carottes",
+    "meal": "dîner",
+    "kcal": 870,
+    "p": 34,
+    "c": 62,
+    "f": 21,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Pois chiches à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-184",
+    "name": "Pois chiches sauce Soja & Gingembre avec Pâtes complètes et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 870,
+    "p": 34,
+    "c": 62,
+    "f": 21,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Pois chiches à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-185",
+    "name": "Pois chiches sauce Tomate & Basilic avec Pâtes complètes et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 870,
+    "p": 34,
+    "c": 62,
+    "f": 21,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Pois chiches à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-186",
+    "name": "Pois chiches sauce Crème légère & Moutarde avec Pâtes complètes et Épinards",
+    "meal": "dîner",
+    "kcal": 870,
+    "p": 34,
+    "c": 62,
+    "f": 21,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Pois chiches à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-187",
+    "name": "Pois chiches sauce Piment doux & Citron avec Pâtes complètes et Poivron",
+    "meal": "dîner",
+    "kcal": 870,
+    "p": 34,
+    "c": 62,
+    "f": 21,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Pois chiches à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-188",
+    "name": "Pois chiches sauce Lait de coco avec Pâtes complètes et Épinards",
+    "meal": "dîner",
+    "kcal": 870,
+    "p": 34,
+    "c": 62,
+    "f": 21,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Pois chiches à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-189",
+    "name": "Pois chiches sauce Huile d'olive & Herbes avec Pâtes complètes et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 870,
+    "p": 34,
+    "c": 62,
+    "f": 21,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Pâtes complètes",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Pâtes complètes. Saisis le Pois chiches à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-190",
+    "name": "Pois chiches sauce Curry avec Patates douces et Carottes",
+    "meal": "dîner",
+    "kcal": 662,
+    "p": 34,
+    "c": 26,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Pois chiches à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-191",
+    "name": "Pois chiches sauce Soja & Gingembre avec Patates douces et Carottes",
+    "meal": "dîner",
+    "kcal": 662,
+    "p": 34,
+    "c": 26,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Pois chiches à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-192",
+    "name": "Pois chiches sauce Tomate & Basilic avec Patates douces et Courgette",
+    "meal": "dîner",
+    "kcal": 662,
+    "p": 34,
+    "c": 26,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Courgette",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Pois chiches à la poêle. Ajoute le Courgette coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-193",
+    "name": "Pois chiches sauce Crème légère & Moutarde avec Patates douces et Épinards",
+    "meal": "dîner",
+    "kcal": 662,
+    "p": 34,
+    "c": 26,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Épinards",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Pois chiches à la poêle. Ajoute le Épinards coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-194",
+    "name": "Pois chiches sauce Piment doux & Citron avec Patates douces et Carottes",
+    "meal": "dîner",
+    "kcal": 662,
+    "p": 34,
+    "c": 26,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Piment doux",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Pois chiches à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Piment doux & Citron et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-195",
+    "name": "Pois chiches sauce Lait de coco avec Patates douces et Carottes",
+    "meal": "dîner",
+    "kcal": 662,
+    "p": 34,
+    "c": 26,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Lait de coco",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Pois chiches à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Lait de coco et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-196",
+    "name": "Pois chiches sauce Huile d'olive & Herbes avec Patates douces et Poivron",
+    "meal": "dîner",
+    "kcal": 662,
+    "p": 34,
+    "c": 26,
+    "f": 19,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Patates douces",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Poivron",
+        150,
+        "Légumes"
+      ],
+      [
+        "Huile d'olive",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Patates douces. Saisis le Pois chiches à la poêle. Ajoute le Poivron coupé en morceaux. Mélange avec la sauce Huile d'olive & Herbes et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-197",
+    "name": "Pois chiches sauce Curry avec Quinoa et Chou-fleur",
+    "meal": "dîner",
+    "kcal": 878,
+    "p": 34,
+    "c": 61,
+    "f": 24,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Chou-fleur",
+        150,
+        "Légumes"
+      ],
+      [
+        "Curry",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Pois chiches à la poêle. Ajoute le Chou-fleur coupé en morceaux. Mélange avec la sauce Curry et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-198",
+    "name": "Pois chiches sauce Soja & Gingembre avec Quinoa et Carottes",
+    "meal": "dîner",
+    "kcal": 878,
+    "p": 34,
+    "c": 61,
+    "f": 24,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Carottes",
+        150,
+        "Légumes"
+      ],
+      [
+        "Soja",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Pois chiches à la poêle. Ajoute le Carottes coupé en morceaux. Mélange avec la sauce Soja & Gingembre et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-199",
+    "name": "Pois chiches sauce Tomate & Basilic avec Quinoa et Tomates cerises",
+    "meal": "dîner",
+    "kcal": 878,
+    "p": 34,
+    "c": 61,
+    "f": 24,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Tomates cerises",
+        150,
+        "Légumes"
+      ],
+      [
+        "Tomate",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Pois chiches à la poêle. Ajoute le Tomates cerises coupé en morceaux. Mélange avec la sauce Tomate & Basilic et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-gen-200",
+    "name": "Pois chiches sauce Crème légère & Moutarde avec Quinoa et Haricots verts",
+    "meal": "dîner",
+    "kcal": 878,
+    "p": 34,
+    "c": 61,
+    "f": 24,
+    "time": 20,
+    "cost": 2.5,
+    "micros": [
+      "Vitamines",
+      "Fibres",
+      "Minéraux"
+    ],
+    "ing": [
+      [
+        "Pois chiches",
+        150,
+        "Principal"
+      ],
+      [
+        "Quinoa",
+        80,
+        "Épicerie"
+      ],
+      [
+        "Haricots verts",
+        150,
+        "Légumes"
+      ],
+      [
+        "Crème légère",
+        10,
+        "Divers"
+      ]
+    ],
+    "steps": "Fais cuire le Quinoa. Saisis le Pois chiches à la poêle. Ajoute le Haricots verts coupé en morceaux. Mélange avec la sauce Crème légère & Moutarde et laisse mijoter quelques minutes. Sers chaud."
+  },
+  {
+    "id": "r-s1",
+    "name": "Muffins protéinés myrtille",
+    "meal": "collation",
+    "kcal": 250,
+    "p": 20,
+    "c": 30,
+    "f": 5,
+    "time": 25,
+    "cost": 1.5,
+    "micros": [
+      "Antioxydants"
+    ],
+    "ing": [
+      [
+        "Avoine",
+        50,
+        "Epicerie"
+      ],
+      [
+        "Whey",
+        30,
+        "Suppléments"
+      ],
+      [
+        "Myrtilles",
+        50,
+        "Fruits"
+      ]
+    ],
+    "steps": "Mélange, cuis 20 min au four."
+  },
+  {
+    "id": "r-s2",
+    "name": "Bowl Fromage blanc & Granola",
+    "meal": "collation",
+    "kcal": 300,
+    "p": 25,
+    "c": 35,
+    "f": 8,
+    "time": 5,
+    "cost": 1,
+    "micros": [
+      "Calcium"
+    ],
+    "ing": [
+      [
+        "Fromage blanc",
+        200,
+        "Frais"
+      ],
+      [
+        "Granola",
+        40,
+        "Epicerie"
+      ]
+    ],
+    "steps": "Mélange."
+  }
 ];
 
 // --- Badges --------------------------------------------------------------------

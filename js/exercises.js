@@ -4021,3 +4021,4 @@ window.EXLIB = [
     "flag": null
   }
 ];
+window.EXLIB_GROUPS = [...new Set(window.EXLIB.map(e => e.group))];
