@@ -27,8 +27,8 @@ window.EXLIB = [
     "breath": "Inspire en haut, bloque pendant la descente, expire à la remontée.",
     "easier": "box-squat",
     "harder": "bulgarian-split",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Goblet_Squat/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Goblet_Squat/1.jpg"
   },
   {
     "id": "bulgarian-split",
@@ -58,8 +58,8 @@ window.EXLIB = [
     "breath": "Inspire en descente, expire en poussée.",
     "easier": "rear-lunge",
     "harder": "pistol-squat",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Side_Split_Squat/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Side_Split_Squat/1.jpg"
   },
   {
     "id": "rear-lunge",
@@ -89,8 +89,8 @@ window.EXLIB = [
     "breath": "Inspire en descente, expire au retour.",
     "easier": "lateral-lunge",
     "harder": "walking-lunge",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Crossover_Reverse_Lunge/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Crossover_Reverse_Lunge/1.jpg"
   },
   {
     "id": "walking-lunge",
@@ -118,8 +118,8 @@ window.EXLIB = [
     "breath": "Rythme respiratoire continu, expire à chaque poussée.",
     "easier": "rear-lunge",
     "harder": "bulgarian-split",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Walking_Lunge/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Walking_Lunge/1.jpg"
   },
   {
     "id": "romanian-dl",
@@ -150,8 +150,8 @@ window.EXLIB = [
     "breath": "Inspire en haut, descends gainé, expire à la remontée.",
     "easier": "glute-bridge",
     "harder": "single-rdl",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Romanian_Deadlift/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Romanian_Deadlift/1.jpg"
   },
   {
     "id": "single-rdl",
@@ -182,8 +182,8 @@ window.EXLIB = [
     "breath": "Lent et contrôlé, expire en remontant.",
     "easier": "romanian-dl",
     "harder": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Chest_Push_single_response/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Chest_Push_single_response/1.jpg"
   },
   {
     "id": "hip-thrust",
@@ -211,8 +211,8 @@ window.EXLIB = [
     "breath": "Expire en montée, inspire en descente.",
     "easier": "glute-bridge",
     "harder": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Hip_Thrust/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Hip_Thrust/1.jpg"
   },
   {
     "id": "calf-raise",
@@ -240,8 +240,8 @@ window.EXLIB = [
     "breath": "Respiration libre et régulière.",
     "easier": null,
     "harder": "calf-single",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Seated_Calf_Raise/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Seated_Calf_Raise/1.jpg"
   },
   {
     "id": "calf-single",
@@ -267,8 +267,8 @@ window.EXLIB = [
     "breath": "Respiration libre.",
     "easier": "calf-raise",
     "harder": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Chest_Push_single_response/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Chest_Push_single_response/1.jpg"
   },
   {
     "id": "sumo-squat",
@@ -296,8 +296,8 @@ window.EXLIB = [
     "breath": "Inspire en bas, expire en poussant.",
     "easier": null,
     "harder": "goblet-squat",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Kettlebell_Sumo_High_Pull/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Kettlebell_Sumo_High_Pull/1.jpg"
   },
   {
     "id": "box-squat",
@@ -324,8 +324,8 @@ window.EXLIB = [
     "breath": "Expire en remontant.",
     "easier": null,
     "harder": "goblet-squat",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Box_Squat/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Box_Squat/1.jpg"
   },
   {
     "id": "pullup",
@@ -355,7 +355,9 @@ window.EXLIB = [
     ],
     "breath": "Expire en tirant, inspire en descendant.",
     "easier": "pullup-neg",
-    "harder": null
+    "harder": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Weighted_Pull_Ups/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Weighted_Pull_Ups/1.jpg"
   },
   {
     "id": "pullup-neutral",
@@ -380,7 +382,9 @@ window.EXLIB = [
     ],
     "breath": "Expire en tirant.",
     "easier": "pullup-neg",
-    "harder": "pullup"
+    "harder": "pullup",
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bench_Press_with_Neutral_Grip/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bench_Press_with_Neutral_Grip/1.jpg"
   },
   {
     "id": "pullup-neg",
@@ -408,7 +412,9 @@ window.EXLIB = [
     ],
     "breath": "Inspire en haut, souffle long pendant la descente.",
     "easier": "inverted-row",
-    "harder": "pullup-neutral"
+    "harder": "pullup-neutral",
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Band_Assisted_Pull-Up/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Band_Assisted_Pull-Up/1.jpg"
   },
   {
     "id": "inverted-row",
@@ -438,7 +444,9 @@ window.EXLIB = [
     ],
     "breath": "Expire en tirant.",
     "easier": null,
-    "harder": "pullup-neg"
+    "harder": "pullup-neg",
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Inverted_Row/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Inverted_Row/1.jpg"
   },
   {
     "id": "db-row",
@@ -468,7 +476,9 @@ window.EXLIB = [
     ],
     "breath": "Expire en tirant.",
     "easier": "inverted-row",
-    "harder": null
+    "harder": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bent_Over_Two-Dumbbell_Row/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bent_Over_Two-Dumbbell_Row/1.jpg"
   },
   {
     "id": "bent-row",
@@ -497,7 +507,9 @@ window.EXLIB = [
     ],
     "breath": "Expire en tirant, gaine en isométrie.",
     "easier": "db-row",
-    "harder": null
+    "harder": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Smith_Machine_Bent_Over_Row/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Smith_Machine_Bent_Over_Row/1.jpg"
   },
   {
     "id": "shrugs",
@@ -525,8 +537,8 @@ window.EXLIB = [
     "breath": "Expire en haussant.",
     "easier": null,
     "harder": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Shrug/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Shrug/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Shrug/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Shrug/1.jpg"
   },
   {
     "id": "superman",
@@ -553,7 +565,9 @@ window.EXLIB = [
     ],
     "breath": "Expire en montant, respire en tenant.",
     "easier": null,
-    "harder": "back-ext"
+    "harder": "back-ext",
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Superman/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Superman/1.jpg"
   },
   {
     "id": "back-ext",
@@ -582,7 +596,9 @@ window.EXLIB = [
     ],
     "breath": "Inspire en descente, expire en remontée.",
     "easier": "superman",
-    "harder": null
+    "harder": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hyperextensions_Back_Extensions/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hyperextensions_Back_Extensions/1.jpg"
   },
   {
     "id": "incline-pushup",
@@ -613,8 +629,8 @@ window.EXLIB = [
     "breath": "Inspire en descente, expire en poussée.",
     "easier": null,
     "harder": "pushup",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternate_Incline_Dumbbell_Curl/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternate_Incline_Dumbbell_Curl/1.jpg"
   },
   {
     "id": "pushup",
@@ -646,8 +662,8 @@ window.EXLIB = [
     "breath": "Inspire en bas, expire en haut.",
     "easier": "incline-pushup",
     "harder": "dips-partial",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Push_Up_to_Side_Plank/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Push_Up_to_Side_Plank/1.jpg"
   },
   {
     "id": "dips-partial",
@@ -677,8 +693,8 @@ window.EXLIB = [
     "breath": "Inspire en descente, expire en poussée.",
     "easier": "incline-pushup",
     "harder": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Incline_Triceps_Extension/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Incline_Triceps_Extension/1.jpg"
   },
   {
     "id": "knee-pushup",
@@ -706,8 +722,8 @@ window.EXLIB = [
     "breath": "Expire en poussant.",
     "easier": "incline-pushup",
     "harder": "pushup",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Kneeling_Arm_Drill/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Kneeling_Arm_Drill/1.jpg"
   },
   {
     "id": "db-curl",
@@ -736,8 +752,8 @@ window.EXLIB = [
     "breath": "Expire en montée.",
     "easier": null,
     "harder": "conc-curl",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternate_Incline_Dumbbell_Curl/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternate_Incline_Dumbbell_Curl/1.jpg"
   },
   {
     "id": "conc-curl",
@@ -764,8 +780,8 @@ window.EXLIB = [
     "breath": "Expire en montée.",
     "easier": "db-curl",
     "harder": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Concentration_Curls/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Concentration_Curls/1.jpg"
   },
   {
     "id": "kickback",
@@ -792,8 +808,8 @@ window.EXLIB = [
     "breath": "Expire en tendant.",
     "easier": null,
     "harder": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Incline_Triceps_Extension/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Incline_Triceps_Extension/1.jpg"
   },
   {
     "id": "plank",
@@ -824,8 +840,8 @@ window.EXLIB = [
     "breath": "Respiration continue, jamais bloquée.",
     "easier": null,
     "harder": "plank-side",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/1.jpg"
   },
   {
     "id": "plank-side",
@@ -852,8 +868,8 @@ window.EXLIB = [
     "breath": "Continue.",
     "easier": "plank",
     "harder": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Push_Up_to_Side_Plank/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Push_Up_to_Side_Plank/1.jpg"
   },
   {
     "id": "hollow",
@@ -880,8 +896,8 @@ window.EXLIB = [
     "breath": "Respiration courte mais continue.",
     "easier": "dead-bug",
     "harder": "ab-wheel",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Body-Up/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Body-Up/1.jpg"
   },
   {
     "id": "leg-raise",
@@ -911,8 +927,8 @@ window.EXLIB = [
     "breath": "Expire en montant les genoux.",
     "easier": "dead-bug",
     "harder": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Flat_Bench_Lying_Leg_Raise/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Flat_Bench_Lying_Leg_Raise/1.jpg"
   },
   {
     "id": "weighted-crunch",
@@ -939,8 +955,8 @@ window.EXLIB = [
     "breath": "Expire en montant.",
     "easier": null,
     "harder": "leg-raise",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Weighted_Crunches/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Weighted_Crunches/1.jpg"
   },
   {
     "id": "russian-twist",
@@ -968,8 +984,8 @@ window.EXLIB = [
     "breath": "Expire à chaque rotation.",
     "easier": "plank-side",
     "harder": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Russian_Twist/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Russian_Twist/1.jpg"
   },
   {
     "id": "wall-sit",
@@ -999,8 +1015,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "bulgarian-split",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Calf_Stretch_Elbows_Against_Wall/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Calf_Stretch_Elbows_Against_Wall/1.jpg"
   },
   {
     "id": "step-up",
@@ -1031,8 +1047,8 @@ window.EXLIB = [
     "easier": "rear-lunge",
     "harder": "bulgarian-split",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Step_Ups/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Step_Ups/1.jpg"
   },
   {
     "id": "kb-swing",
@@ -1064,8 +1080,8 @@ window.EXLIB = [
     "easier": "romanian-dl",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One-Arm_Kettlebell_Swings/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One-Arm_Kettlebell_Swings/1.jpg"
   },
   {
     "id": "hip-thrust-db",
@@ -1096,8 +1112,8 @@ window.EXLIB = [
     "easier": "glute-bridge",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternate_Incline_Dumbbell_Curl/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternate_Incline_Dumbbell_Curl/1.jpg"
   },
   {
     "id": "glute-bridge",
@@ -1127,8 +1143,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "hip-thrust-db",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Glute_Bridge/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Glute_Bridge/1.jpg"
   },
   {
     "id": "lateral-lunge",
@@ -1160,8 +1176,8 @@ window.EXLIB = [
     "easier": "rear-lunge",
     "harder": "bulgarian-split",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bent_Over_Low-Pulley_Side_Lateral/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bent_Over_Low-Pulley_Side_Lateral/1.jpg"
   },
   {
     "id": "pullup-supine",
@@ -1192,7 +1208,9 @@ window.EXLIB = [
     "breath": "Expire en tirant, inspire en descendant.",
     "easier": "inverted-row",
     "harder": "pullup-weighted",
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
   },
   {
     "id": "pullup-weighted",
@@ -1223,7 +1241,9 @@ window.EXLIB = [
     "breath": "Expire en tirant.",
     "easier": "pullup-neutral",
     "harder": null,
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Weighted_Pull_Ups/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Weighted_Pull_Ups/1.jpg"
   },
   {
     "id": "band-row",
@@ -1255,7 +1275,9 @@ window.EXLIB = [
     "breath": "Expire en tirant, inspire en relâchant.",
     "easier": null,
     "harder": "db-row",
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Back_Flyes_-_With_Bands/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Back_Flyes_-_With_Bands/1.jpg"
   },
   {
     "id": "face-pull-band",
@@ -1286,7 +1308,9 @@ window.EXLIB = [
     "breath": "Expire en tirant, inspire en relâchant.",
     "easier": null,
     "harder": null,
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Face_Pull/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Face_Pull/1.jpg"
   },
   {
     "id": "ring-row",
@@ -1317,7 +1341,9 @@ window.EXLIB = [
     "breath": "Expire en tirant.",
     "easier": "band-row",
     "harder": "pullup-neutral",
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/90_90_Hamstring/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/90_90_Hamstring/1.jpg"
   },
   {
     "id": "pike-pushup",
@@ -1348,8 +1374,8 @@ window.EXLIB = [
     "easier": "incline-pushup",
     "harder": "handstand-pushup",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Pike/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Pike/1.jpg"
   },
   {
     "id": "handstand-pushup",
@@ -1380,8 +1406,8 @@ window.EXLIB = [
     "easier": "pike-pushup",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Handstand_Push-Ups/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Handstand_Push-Ups/1.jpg"
   },
   {
     "id": "db-press",
@@ -1412,8 +1438,8 @@ window.EXLIB = [
     "easier": "incline-pushup",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bench_Press/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bench_Press/1.jpg"
   },
   {
     "id": "db-shoulder-press",
@@ -1443,8 +1469,8 @@ window.EXLIB = [
     "easier": "pike-pushup",
     "harder": null,
     "flag": "clavicule",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Shoulder_Press/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Shoulder_Press/1.jpg"
   },
   {
     "id": "db-fly",
@@ -1474,8 +1500,8 @@ window.EXLIB = [
     "easier": "incline-pushup",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Decline_Dumbbell_Flyes/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Decline_Dumbbell_Flyes/1.jpg"
   },
   {
     "id": "band-pushdown",
@@ -1505,8 +1531,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "dips-partial",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Back_Flyes_-_With_Bands/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Back_Flyes_-_With_Bands/1.jpg"
   },
   {
     "id": "hammer-curl",
@@ -1536,8 +1562,8 @@ window.EXLIB = [
     "easier": null,
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternate_Hammer_Curl/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternate_Hammer_Curl/1.jpg"
   },
   {
     "id": "overhead-tricep",
@@ -1566,8 +1592,8 @@ window.EXLIB = [
     "easier": "band-pushdown",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Rope_Overhead_Triceps_Extension/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Rope_Overhead_Triceps_Extension/1.jpg"
   },
   {
     "id": "band-curl",
@@ -1598,8 +1624,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "db-curl",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Back_Flyes_-_With_Bands/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Back_Flyes_-_With_Bands/1.jpg"
   },
   {
     "id": "dead-bug",
@@ -1630,8 +1656,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "hollow",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dead_Bug/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dead_Bug/1.jpg"
   },
   {
     "id": "ab-wheel",
@@ -1664,8 +1690,8 @@ window.EXLIB = [
     "easier": "hollow",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Roller/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Roller/1.jpg"
   },
   {
     "id": "bicycle-crunch",
@@ -1729,8 +1755,8 @@ window.EXLIB = [
     "easier": "leg-raise",
     "harder": "toes-to-bar",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Bar_Good_Morning/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Bar_Good_Morning/1.jpg"
   },
   {
     "id": "toes-to-bar",
@@ -1762,8 +1788,8 @@ window.EXLIB = [
     "easier": "hanging-knee-raise",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": null,
+    "img_end": null
   },
   {
     "id": "burpee",
@@ -1792,7 +1818,9 @@ window.EXLIB = [
     "breath": "Expire au saut en l'air, inspire en descendant.",
     "easier": null,
     "harder": null,
-    "flag": null
+    "flag": null,
+    "img": null,
+    "img_end": null
   },
   {
     "id": "mountain-climber",
@@ -1822,7 +1850,9 @@ window.EXLIB = [
     "breath": "Respiration rythmique continue.",
     "easier": null,
     "harder": "burpee",
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Mountain_Climbers/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Mountain_Climbers/1.jpg"
   },
   {
     "id": "jump-rope",
@@ -1852,7 +1882,9 @@ window.EXLIB = [
     "breath": "Respiration nasale tant que possible.",
     "easier": "mountain-climber",
     "harder": null,
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bench_Jump/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bench_Jump/1.jpg"
   },
   {
     "id": "lateral-raise",
@@ -1881,8 +1913,8 @@ window.EXLIB = [
     "easier": null,
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Seated_Lateral_Raise/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Seated_Lateral_Raise/1.jpg"
   },
   {
     "id": "rear-delt-fly",
@@ -1912,8 +1944,8 @@ window.EXLIB = [
     "easier": "face-pull-band",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Rear_Delt_Fly/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Rear_Delt_Fly/1.jpg"
   },
   {
     "id": "band-pull-apart",
@@ -1944,8 +1976,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "rear-delt-fly",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Band_Pull_Apart/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Band_Pull_Apart/1.jpg"
   },
   {
     "id": "y-raise",
@@ -1974,8 +2006,8 @@ window.EXLIB = [
     "easier": null,
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternating_Deltoid_Raise/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternating_Deltoid_Raise/1.jpg"
   },
   {
     "id": "nordic-curl",
@@ -2005,8 +2037,8 @@ window.EXLIB = [
     "easier": "romanian-dl",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternate_Hammer_Curl/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternate_Hammer_Curl/1.jpg"
   },
   {
     "id": "pistol-squat",
@@ -2037,8 +2069,8 @@ window.EXLIB = [
     "easier": "bulgarian-split",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Kettlebell_Pistol_Squat/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Kettlebell_Pistol_Squat/1.jpg"
   },
   {
     "id": "frog-pump",
@@ -2066,8 +2098,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "glute-bridge",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Frog_Hops/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Frog_Hops/1.jpg"
   },
   {
     "id": "pallof-press",
@@ -2098,8 +2130,8 @@ window.EXLIB = [
     "easier": "plank-side",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pallof_Press/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pallof_Press/1.jpg"
   },
   {
     "id": "bear-crawl",
@@ -2130,8 +2162,8 @@ window.EXLIB = [
     "easier": "plank",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bear_Crawl_Sled_Drags/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bear_Crawl_Sled_Drags/1.jpg"
   },
   {
     "id": "bird-dog",
@@ -2162,8 +2194,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "dead-bug",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": null,
+    "img_end": null
   },
   {
     "id": "diamond-pushup",
@@ -2194,8 +2226,8 @@ window.EXLIB = [
     "breath": "Expire en poussant.",
     "easier": "kickback",
     "harder": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Incline_Pushdown/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Incline_Pushdown/1.jpg"
   },
   {
     "id": "wrist-curl",
@@ -2224,8 +2256,8 @@ window.EXLIB = [
     "easier": null,
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Wrist_Curl/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Wrist_Curl/1.jpg"
   },
   {
     "id": "high-knees",
@@ -2255,7 +2287,9 @@ window.EXLIB = [
     "breath": "Respiration rythmique.",
     "easier": null,
     "harder": "burpee",
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/High_Cable_Curls/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/High_Cable_Curls/1.jpg"
   },
   {
     "id": "plank-jack",
@@ -2285,7 +2319,9 @@ window.EXLIB = [
     "breath": "Respiration continue.",
     "easier": "mountain-climber",
     "harder": "burpee",
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/1.jpg"
   },
   {
     "id": "cossack-squat",
@@ -2317,8 +2353,8 @@ window.EXLIB = [
     "easier": "sumo-squat",
     "harder": "pistol-squat",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Full_Squat/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Full_Squat/1.jpg"
   },
   {
     "id": "jump-squat",
@@ -2349,8 +2385,8 @@ window.EXLIB = [
     "easier": "box-squat",
     "harder": "bulgarian-split",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Freehand_Jump_Squat/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Freehand_Jump_Squat/1.jpg"
   },
   {
     "id": "curtsy-lunge",
@@ -2381,8 +2417,8 @@ window.EXLIB = [
     "easier": "rear-lunge",
     "harder": "bulgarian-split",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Lunge/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Lunge/1.jpg"
   },
   {
     "id": "single-glute-bridge",
@@ -2412,8 +2448,8 @@ window.EXLIB = [
     "easier": "glute-bridge",
     "harder": "hip-thrust",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Single_Leg_Glute_Bridge/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Single_Leg_Glute_Bridge/1.jpg"
   },
   {
     "id": "sissy-squat",
@@ -2444,8 +2480,8 @@ window.EXLIB = [
     "easier": "wall-sit",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Weighted_Sissy_Squat/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Weighted_Sissy_Squat/1.jpg"
   },
   {
     "id": "kb-goblet-clean",
@@ -2477,8 +2513,8 @@ window.EXLIB = [
     "easier": "goblet-squat",
     "harder": "kb-swing",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One-Arm_Kettlebell_Clean/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One-Arm_Kettlebell_Clean/1.jpg"
   },
   {
     "id": "deadlift",
@@ -2512,7 +2548,9 @@ window.EXLIB = [
     "breath": "Grande inspiration ventrale en bas (Valsalva), expire en haut.",
     "easier": "romanian-dl",
     "harder": null,
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Axle_Deadlift/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Axle_Deadlift/1.jpg"
   },
   {
     "id": "good-morning",
@@ -2543,8 +2581,8 @@ window.EXLIB = [
     "easier": "romanian-dl",
     "harder": "deadlift",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Band_Good_Morning/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Band_Good_Morning/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Good_Morning/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Good_Morning/1.jpg"
   },
   {
     "id": "band-lat-pulldown",
@@ -2573,7 +2611,9 @@ window.EXLIB = [
     "breath": "Expire en tirant.",
     "easier": null,
     "harder": "pullup-neg",
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Back_Flyes_-_With_Bands/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Back_Flyes_-_With_Bands/1.jpg"
   },
   {
     "id": "pullover-db",
@@ -2603,7 +2643,9 @@ window.EXLIB = [
     "breath": "Inspire en descente (la cage s'ouvre), expire au retour.",
     "easier": "db-row",
     "harder": null,
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bent-Arm_Dumbbell_Pullover/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bent-Arm_Dumbbell_Pullover/1.jpg"
   },
   {
     "id": "decline-pushup",
@@ -2635,8 +2677,8 @@ window.EXLIB = [
     "breath": "Inspire en descente, expire en poussant.",
     "easier": "pushup",
     "harder": "pike-pushup",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Decline_Barbell_Bench_Press/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Decline_Barbell_Bench_Press/1.jpg"
   },
   {
     "id": "archer-pushup",
@@ -2667,8 +2709,8 @@ window.EXLIB = [
     "breath": "Inspire en descente, expire en poussant.",
     "easier": "pushup",
     "harder": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Incline_Pushdown/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Incline_Pushdown/1.jpg"
   },
   {
     "id": "band-chest-press",
@@ -2699,8 +2741,8 @@ window.EXLIB = [
     "breath": "Expire en poussant.",
     "easier": null,
     "harder": "pushup",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Back_Flyes_-_With_Bands/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Back_Flyes_-_With_Bands/1.jpg"
   },
   {
     "id": "ring-pushup",
@@ -2732,8 +2774,8 @@ window.EXLIB = [
     "breath": "Inspire en descente, expire en poussant.",
     "easier": "pushup",
     "harder": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/90_90_Hamstring/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/90_90_Hamstring/1.jpg"
   },
   {
     "id": "arnold-press",
@@ -2764,8 +2806,8 @@ window.EXLIB = [
     "easier": "db-shoulder-press",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Kettlebell_Arnold_Press/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Kettlebell_Arnold_Press/1.jpg"
   },
   {
     "id": "front-raise",
@@ -2794,8 +2836,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "db-shoulder-press",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Front_Raise_And_Pullover/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Front_Raise_And_Pullover/1.jpg"
   },
   {
     "id": "band-lateral-raise",
@@ -2824,8 +2866,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "lateral-raise",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Back_Flyes_-_With_Bands/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Back_Flyes_-_With_Bands/1.jpg"
   },
   {
     "id": "cuban-rotation",
@@ -2854,8 +2896,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "rear-delt-fly",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cuban_Press/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cuban_Press/1.jpg"
   },
   {
     "id": "reverse-curl",
@@ -2885,8 +2927,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "hammer-curl",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Dumbbell_Reverse_Curl/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Dumbbell_Reverse_Curl/1.jpg"
   },
   {
     "id": "zottman-curl",
@@ -2917,8 +2959,8 @@ window.EXLIB = [
     "easier": "db-curl",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Zottman_Curl/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Zottman_Curl/1.jpg"
   },
   {
     "id": "bench-dip",
@@ -2948,8 +2990,8 @@ window.EXLIB = [
     "breath": "Inspire en descente, expire en poussant.",
     "easier": null,
     "harder": "dips-partial",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bench_Dips/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bench_Dips/1.jpg"
   },
   {
     "id": "spider-curl",
@@ -2978,8 +3020,8 @@ window.EXLIB = [
     "easier": "db-curl",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Spider_Curl/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Spider_Curl/1.jpg"
   },
   {
     "id": "v-up",
@@ -3009,8 +3051,8 @@ window.EXLIB = [
     "easier": "leg-raise",
     "harder": "toes-to-bar",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": null,
+    "img_end": null
   },
   {
     "id": "flutter-kicks",
@@ -3040,8 +3082,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "leg-raise",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Flutter_Kicks/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Flutter_Kicks/1.jpg"
   },
   {
     "id": "copenhagen-plank",
@@ -3071,8 +3113,8 @@ window.EXLIB = [
     "easier": "plank-side",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/1.jpg"
   },
   {
     "id": "hollow-rock",
@@ -3102,8 +3144,8 @@ window.EXLIB = [
     "easier": "hollow",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bradford_Rocky_Presses/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bradford_Rocky_Presses/1.jpg"
   },
   {
     "id": "jumping-jack",
@@ -3133,7 +3175,9 @@ window.EXLIB = [
     "breath": "Respiration rythmique.",
     "easier": null,
     "harder": "burpee",
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Rope_Jumping/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Rope_Jumping/1.jpg"
   },
   {
     "id": "skater",
@@ -3163,7 +3207,9 @@ window.EXLIB = [
     "breath": "Respiration rythmique.",
     "easier": "high-knees",
     "harder": "burpee",
-    "flag": null
+    "flag": null,
+    "img": null,
+    "img_end": null
   },
   {
     "id": "shadow-box",
@@ -3193,7 +3239,9 @@ window.EXLIB = [
     "breath": "Expire sur chaque coup (souffle court « tss »).",
     "easier": null,
     "harder": "burpee",
-    "flag": null
+    "flag": null,
+    "img": null,
+    "img_end": null
   },
   {
     "id": "cat-cow",
@@ -3225,8 +3273,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "bird-dog",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": null,
+    "img_end": null
   },
   {
     "id": "world-greatest",
@@ -3258,8 +3306,8 @@ window.EXLIB = [
     "easier": "cat-cow",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Worlds_Greatest_Stretch/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Worlds_Greatest_Stretch/1.jpg"
   },
   {
     "id": "hip-flexor-stretch",
@@ -3290,8 +3338,8 @@ window.EXLIB = [
     "easier": null,
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Flexor_Incline_Dumbbell_Curls/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Flexor_Incline_Dumbbell_Curls/1.jpg"
   },
   {
     "id": "thoracic-rotation",
@@ -3322,8 +3370,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "world-greatest",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Internal_Rotation/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Internal_Rotation/1.jpg"
   },
   {
     "id": "shoulder-dislocate",
@@ -3355,8 +3403,8 @@ window.EXLIB = [
     "easier": null,
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternating_Cable_Shoulder_Press/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternating_Cable_Shoulder_Press/1.jpg"
   },
   {
     "id": "ankle-mobility",
@@ -3387,8 +3435,8 @@ window.EXLIB = [
     "easier": null,
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ankle_Circles/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ankle_Circles/1.jpg"
   },
   {
     "id": "hack-squat-db",
@@ -3418,8 +3466,8 @@ window.EXLIB = [
     "easier": "goblet-squat",
     "harder": "sissy-squat",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hack_Squat/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hack_Squat/1.jpg"
   },
   {
     "id": "db-leg-curl",
@@ -3449,8 +3497,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "nordic-curl",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternate_Incline_Dumbbell_Curl/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternate_Incline_Dumbbell_Curl/1.jpg"
   },
   {
     "id": "split-squat",
@@ -3482,8 +3530,8 @@ window.EXLIB = [
     "easier": "rear-lunge",
     "harder": "bulgarian-split",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Squat/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Side_Split_Squat/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Side_Split_Squat/1.jpg"
   },
   {
     "id": "seal-row",
@@ -3513,7 +3561,9 @@ window.EXLIB = [
     "breath": "Expire en tirant.",
     "easier": "db-row",
     "harder": "bent-row",
-    "flag": null
+    "flag": null,
+    "img": null,
+    "img_end": null
   },
   {
     "id": "meadows-row",
@@ -3544,7 +3594,9 @@ window.EXLIB = [
     "breath": "Expire en tirant.",
     "easier": "db-row",
     "harder": null,
-    "flag": null
+    "flag": null,
+    "img": null,
+    "img_end": null
   },
   {
     "id": "superman-hold",
@@ -3574,7 +3626,9 @@ window.EXLIB = [
     "breath": "Respiration lente et continue pendant la tenue.",
     "easier": null,
     "harder": "superman",
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Superman/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Superman/1.jpg"
   },
   {
     "id": "floor-press",
@@ -3605,8 +3659,8 @@ window.EXLIB = [
     "breath": "Inspire en descendant, expire en poussant.",
     "easier": "incline-pushup",
     "harder": "db-press",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Floor_Press/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Floor_Press/1.jpg"
   },
   {
     "id": "svend-press",
@@ -3636,8 +3690,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "db-fly",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Svend_Press/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Svend_Press/1.jpg"
   },
   {
     "id": "close-grip-pushup",
@@ -3668,8 +3722,8 @@ window.EXLIB = [
     "breath": "Inspire en descente, expire en poussant.",
     "easier": "pushup",
     "harder": "diamond-pushup",
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Close-Grip_Barbell_Bench_Press/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Close-Grip_Barbell_Bench_Press/1.jpg"
   },
   {
     "id": "upright-row",
@@ -3701,8 +3755,8 @@ window.EXLIB = [
     "easier": "lateral-raise",
     "harder": "arnold-press",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_One-Arm_Upright_Row/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_One-Arm_Upright_Row/1.jpg"
   },
   {
     "id": "lu-raise",
@@ -3733,8 +3787,8 @@ window.EXLIB = [
     "easier": "lateral-raise",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternating_Deltoid_Raise/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Alternating_Deltoid_Raise/1.jpg"
   },
   {
     "id": "scarecrow",
@@ -3764,8 +3818,8 @@ window.EXLIB = [
     "easier": "cuban-rotation",
     "harder": "rear-delt-fly",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plyo_Push-up/1.jpg"
+    "img": null,
+    "img_end": null
   },
   {
     "id": "preacher-curl",
@@ -3795,8 +3849,8 @@ window.EXLIB = [
     "easier": "db-curl",
     "harder": "spider-curl",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Preacher_Curl/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Preacher_Curl/1.jpg"
   },
   {
     "id": "cross-body-curl",
@@ -3826,8 +3880,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "hammer-curl",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crossover/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crossover/1.jpg"
   },
   {
     "id": "skull-crusher",
@@ -3857,8 +3911,8 @@ window.EXLIB = [
     "easier": "kickback",
     "harder": "diamond-pushup",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Band_Skull_Crusher/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Band_Skull_Crusher/1.jpg"
   },
   {
     "id": "jm-press",
@@ -3889,8 +3943,8 @@ window.EXLIB = [
     "easier": "skull-crusher",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/JM_Press/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/JM_Press/1.jpg"
   },
   {
     "id": "dragon-flag",
@@ -3922,8 +3976,8 @@ window.EXLIB = [
     "easier": "hollow",
     "harder": null,
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": null,
+    "img_end": null
   },
   {
     "id": "suitcase-carry",
@@ -3955,8 +4009,8 @@ window.EXLIB = [
     "easier": null,
     "harder": "pallof-press",
     "flag": null,
-    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/0.jpg",
-    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Ab_Crunch_Machine/1.jpg"
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Rickshaw_Carry/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Rickshaw_Carry/1.jpg"
   },
   {
     "id": "box-jump",
@@ -3988,7 +4042,9 @@ window.EXLIB = [
     "breath": "Expire à l'impulsion, inspire en haut.",
     "easier": "jump-squat",
     "harder": null,
-    "flag": null
+    "flag": null,
+    "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Box_Jump_Multiple_Response/0.jpg",
+    "img_end": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Box_Jump_Multiple_Response/1.jpg"
   },
   {
     "id": "sprawl",
@@ -4018,7 +4074,9 @@ window.EXLIB = [
     "breath": "Expire en sautant les pieds en arrière.",
     "easier": null,
     "harder": "burpee",
-    "flag": null
+    "flag": null,
+    "img": null,
+    "img_end": null
   }
 ];
 window.EXLIB_GROUPS = [...new Set(window.EXLIB.map(e => e.group))];

@@ -956,15 +956,24 @@ function renderCantine(el) {
     </div>
     <div class="label" style="margin-bottom:6px">CATALOGUE — ${recipes.length} RECETTES</div>
     <label class="field"><input id="rec-q" placeholder="RECHERCHER UNE RECETTE, UN INGRÉDIENT…"></label>
-    <div class="choices" id="meal-filters" style="margin-bottom:12px">
+    <div class="choices" id="meal-filters" style="margin-bottom:8px">
       ${['', 'petit-déj', 'déjeuner', 'dîner', 'collation', 'batch'].map(m =>
         `<button class="chip ${m === '' ? 'on' : ''}" data-m="${m}">${m === '' ? 'TOUT' : m === 'batch' ? '🍲 BATCH' : m.toUpperCase()}</button>`).join('')}
     </div>
+    <div class="choices" id="diet-filters" style="margin-bottom:12px">
+      ${['végétarien', 'vegan', 'sans gluten', 'sans lactose'].map(d => 
+        `<button class="chip" data-d="${d}">${d.toUpperCase()}</button>`).join('')}
+    </div>
     <div id="rec-list"></div>`;
 
+  let dietFilters = [];
+  
   const drawList = () => {
-    const list = recipes.filter(r => (!mealFilter || (mealFilter === 'batch' ? r.batch : r.meal === mealFilter))
-      && (!recQ || normR(r.name + ' ' + r.ing.map(i => i[0]).join(' ') + ' ' + (r.tags || []).join(' ') + ' ' + (r.micros || []).join(' ')).includes(normR(recQ))));
+    const list = recipes.filter(r => 
+      (!mealFilter || (mealFilter === 'batch' ? r.batch : r.meal === mealFilter)) &&
+      (dietFilters.length === 0 || dietFilters.every(d => (r.tags || []).includes(d))) &&
+      (!recQ || normR(r.name + ' ' + r.ing.map(i => i[0]).join(' ') + ' ' + (r.tags || []).join(' ') + ' ' + (r.micros || []).join(' ')).includes(normR(recQ)))
+    );
     $('#rec-list', el).innerHTML = list.map(r => {
       const n = items.filter(i => i === r.id).length;
       return `
@@ -1007,9 +1016,12 @@ function renderCantine(el) {
 }
 
 function sheetRecipe(rid) {
-  const r = window.RECIPES.find(x => x.id === rid);
+  // We use a clone to allow temporary local swaps without permanently altering the global DB
+  let r = cacheGet('recipe_swap_' + rid, null);
+  if (!r) r = JSON.parse(JSON.stringify(window.RECIPES.find(x => x.id === rid)));
   if (!r) return;
-  openSheet(`
+
+  const renderContent = () => `
     <div class="label">${r.meal.toUpperCase()}</div>
     <h1 class="title-xl" style="font-size:2.1rem">${esc(r.name.toUpperCase())}</h1>
     <div class="brick" style="margin-top:14px">
@@ -1021,13 +1033,62 @@ function sheetRecipe(rid) {
       <div class="row wrap" style="gap:5px;margin-top:10px">${(r.micros || []).map(m => `<span class="micro">${esc(m)}</span>`).join('')}</div>
       ${(r.tags || []).length ? `<div class="row wrap" style="gap:5px;margin-top:8px">${r.tags.map(t => `<span class="chip on">${esc(t.toUpperCase())}</span>`).join('')}</div>` : ''}
     </div>
-    ${r.batch ? `<div class="warn-note" style="margin-bottom:18px">🍲 BATCH : ${esc(r.batchNote || 'Multiplie les quantités.')}</div>` : ''}
+    ${r.batch ? `<div class="warn-note" style="margin-bottom:18px">🍲 BATCH : Multiplie les quantités pour cuisiner en gros.</div>` : ''}
     <div class="brick">
       <h2>INGRÉDIENTS (1 PORTION)</h2>
-      ${r.ing.map(([n, q]) => `<div class="checkline"><span class="grow">${esc(n)}</span><b class="sys num">${q} G</b></div>`).join('')}
+      <div id="ing-list">
+        ${r.ing.map(([n, q, cat, opts], i) => `
+          <div class="checkline" style="cursor:pointer;background:var(--win-bg);border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px;margin-bottom:6px" onclick="openSwapModal('${rid}', ${i})">
+            <span class="grow" style="font-weight:600">${esc(n)}</span>
+            <b class="sys num" style="margin-right:8px">${q} G</b>
+            ${opts && opts.swaps && opts.swaps.length ? '<span style="font-size:1.1rem;opacity:0.8">🔄</span>' : ''}
+          </div>
+        `).join('')}
+      </div>
+      <p class="mute small" style="margin-top:10px;text-align:center">💡 Clique sur un ingrédient pour voir ses remplaçants !</p>
     </div>
     <div class="brick"><h2>PRÉPARATION</h2><p style="font-weight:600;font-size:0.94rem;line-height:1.65">${esc(r.steps)}</p></div>
-    ${r.tip ? `<div class="warn-note" style="background:var(--panel);border-color:var(--line);color:var(--ink)">💡 ${esc(r.tip)}</div>` : ''}`);
+    <div class="row">
+      <button class="btn ghost grow" id="reset-recipe">RÉINITIALISER LES INGRÉDIENTS</button>
+    </div>`;
+
+  const sh = openSheet(renderContent());
+
+  $('#reset-recipe', sh).onclick = () => {
+    localStorage.removeItem('rc_recipe_swap_' + rid);
+    location.reload();
+  };
+
+  window.openSwapModal = (recipeId, ingIdx) => {
+    const ing = r.ing[ingIdx];
+    const opts = ing[3] || {};
+    if (!opts.swaps || !opts.swaps.length) { toast("Aucun remplaçant disponible."); return; }
+    
+    const swapSheet = openSheet(`
+      <div class="label">SUBSTITUTION</div>
+      <h2 style="font-size:1.8rem;margin-bottom:14px;color:var(--accent)">REMPLACER ${esc(ing[0].toUpperCase())}</h2>
+      <p class="mute" style="margin-bottom:18px">Choisis une alternative équivalente :</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${opts.swaps.map(s => `
+          <button class="btn ghost" style="justify-content:flex-start;padding:16px;text-align:left;font-weight:700" onclick="doSwap('${recipeId}', ${ingIdx}, '${esc(s)}')">
+            <span style="font-size:1.4rem;margin-right:12px">🔄</span> ${esc(s)}
+          </button>
+        `).join('')}
+      </div>
+    `);
+
+    window.doSwap = (rId, i, newName) => {
+      const oldName = r.ing[i][0];
+      r.ing[i][0] = newName;
+      // Put the old name back into the swaps array so it can be swapped back
+      r.ing[i][3].swaps = r.ing[i][3].swaps.filter(x => x !== newName).concat(oldName);
+      cacheSet('recipe_swap_' + rId, r);
+      swapSheet.remove();
+      sh.querySelector('.inner').innerHTML = '<button class="sheet-close" data-close>✕</button>' + renderContent();
+      sh.querySelector('[data-close]').onclick = () => { location.hash = ''; };
+      $('#reset-recipe', sh).onclick = () => { localStorage.removeItem('rc_recipe_swap_' + rid); location.reload(); };
+    };
+  };
 }
 
 function sheetShopping() {
@@ -1658,7 +1719,7 @@ function sheetOnboarding() {
   let step = 0;
   const sh = openSheet('<div id="ob"></div>', { closable: false });
   const ob = $('#ob', sh);
-  const steps = [stepBio, stepLogistique, stepNutrition];
+  const steps = [stepBio, stepLogistique];
 
   function shell(inner) {
     ob.innerHTML = `
@@ -1724,26 +1785,7 @@ function sheetOnboarding() {
       item.classList.toggle('on', a.equipment.includes(id));
     };
   }
-  function stepNutrition() {
-    // Grille dynamique depuis le catalogue EXCLUSION_OPTIONS
-    const exHtml = window.EXCLUSION_OPTIONS.map(ex =>
-      `<div class="eq-item ${a.allergies.includes(ex.id) ? 'on' : ''}" data-ex="${ex.id}"><span class="ico">${ex.icon}</span>${ex.label.slice(0,22).toUpperCase()}</div>`
-    ).join('');
-    shell(`
-      <h2>3 · LA CANTINE</h2>
-      <p class="mute small" style="margin-bottom:12px;font-weight:600">Coche ce que tu ne manges pas. Les recettes incompatibles seront masquées.</p>
-      <div class="eq-grid" id="ex-grid">${exHtml}</div>
-      <label class="field" style="margin-top:14px"><span>BUDGET COURSES / SEM (€)</span><input id="budget" type="number" inputmode="numeric" value="${a.budget || ''}"></label>
-      <p class="mute small" style="font-weight:600">Les ${window.RECIPES.length} recettes du camp sont déjà sans œufs ni oignons.</p>`);
-    bindChips([]);
-    ob.querySelector('#ex-grid').onclick = e => {
-      const item = e.target.closest('[data-ex]'); if (!item) return;
-      const id = item.dataset.ex;
-      const idx = a.allergies.indexOf(id);
-      idx >= 0 ? a.allergies.splice(idx, 1) : a.allergies.push(id);
-      item.classList.toggle('on', a.allergies.includes(id));
-    };
-  }
+  // stepNutrition was removed
   async function onNext() {
     collect();
     if (step === 0 && (!+a.age || !+a.height || !+a.weight)) { toast('ÂGE, TAILLE ET POIDS REQUIS'); return; }
